@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Entry Unlimited Blocks",
+  "name": "엔트리 블록 연결 제한 해제",
   "version": "0.1.0",
   "description": "Removes block connection restrictions in Entry.",
   "permissions": [
