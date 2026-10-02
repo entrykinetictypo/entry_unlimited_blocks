@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "엔트리 블록 연결 제한 해제",
   "version": "0.1.0",
-  "description": "Removes block connection restrictions in Entry.",
+  "description": "엔트리의 블록 연결 제한을 해제합니다.",
   "permissions": [
     "storage"
   ],
