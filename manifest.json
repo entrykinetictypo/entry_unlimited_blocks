@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "Entry Unlimited Blocks",
+  "version": "0.1.0",
+  "description": "Removes block connection restrictions in Entry.",
+  "content_scripts": [
+    {
+      "matches": [
+        "https://playentry.org/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_idle",
+      "world": "MAIN"
+    }
+  ]
+}
