@@ -5,6 +5,7 @@
   "description": "엔트리의 블록 연결 제한을 해제합니다.",
   "permissions": [
     "storage"
+    "tabs"
   ],
   "action": {
     "default_popup": "popup.html"
