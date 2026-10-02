@@ -3,6 +3,12 @@
   "name": "Entry Unlimited Blocks",
   "version": "0.1.0",
   "description": "Removes block connection restrictions in Entry.",
+  "permissions": [
+    "storage"
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
   "content_scripts": [
     {
       "matches": [
@@ -10,6 +16,15 @@
       ],
       "js": [
         "content.js"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://playentry.org/*"
+      ],
+      "js": [
+        "patch.js"
       ],
       "run_at": "document_idle",
       "world": "MAIN"
