@@ -78,15 +78,16 @@ addBlockButton.addEventListener("click", async () => {
         },
         (response) => {
             if (chrome.runtime.lastError) {
-                alert("엔트리 작품 만들기 페이지가 아닙니다.");
-                saveRecentBlock(blockId);
-            }
+    alert("엔트리 작품 만들기 페이지가 아닙니다.");
+    return;
+}
 
-            if (response?.success) {
-                addResult.textContent = `추가 요청 완료: ${blockId}`;
-            } else {
-                alert("블록 추가에 실패했습니다.");
-            }
+if (response?.success) {
+    saveRecentBlock(blockId);
+    addResult.textContent = `추가 요청 완료: ${blockId}`;
+} else {
+    alert("블록 추가에 실패했습니다.");
+}
         }
     );
 });
