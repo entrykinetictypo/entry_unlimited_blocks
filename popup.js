@@ -147,10 +147,21 @@ renderRecentBlocks();
 const unofficialBlocksBox = document.getElementById("unofficialBlocks");
 
 const unofficialBlocks = [
-    {
-        name: "우클릭 블록",
-        file: "unofficial/right_click.js"
-    }
+{name:"더미데이터",file:"unofficial/dummy.js"},
+{name:"강력크블록",file:"unofficial/strong.js"},
+{name:"공용블록",file:"unofficial/common.js"},
+{name:"기타블록",file:"unofficial/etc.js"},
+{name:"냥냥블록",file:"unofficial/nyang.js"},
+{name:"뉴블록",file:"unofficial/newblock.js"},
+{name:"매그넛블록",file:"unofficial/magnet.js"},
+{name:"민트블록",file:"unofficial/mint.js"},
+{name:"스페셜블록",file:"unofficial/special.js"},
+{name:"엔피아이블록 (NPI+)",file:"unofficial/npi.js"},
+{name:"우클릭블록",file:"unofficial/right_click.js"},
+{name:"크리스블록",file:"unofficial/kris.js"},
+{name:"특급블록",file:"unofficial/express.js"},
+{name:"특수블록",file:"unofficial/special2.js"},
+{name:"2.0블록",file:"unofficial/block20.js"}
 ];
 
 unofficialBlocks.forEach((item) => {
