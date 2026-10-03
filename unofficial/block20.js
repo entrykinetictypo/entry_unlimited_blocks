@@ -816,13 +816,31 @@ window.Block20 = window.Block20 || {
 
 const timer = setInterval(() => {
 
+let targetWindow = window;
+
+const iframe =
+document.querySelector("iframe.project_iframe") ||
+document.querySelector("iframe");
+
 if (
-!window.Entry ||
+iframe &&
+iframe.contentWindow &&
+iframe.contentWindow.Entry
+) {
+targetWindow = iframe.contentWindow;
+}
+
+const Entry =
+targetWindow.Entry;
+
+if (
+!Entry ||
 !Entry.block ||
 !Entry.playground ||
 !Entry.playground.mainWorkspace ||
 !Entry.playground.mainWorkspace.blockMenu ||
-!Entry.playground.blockMenu
+!Entry.playground.blockMenu ||
+!Entry.playground.blockMenu._categoryData
 ) {
 return;
 }
@@ -868,26 +886,21 @@ block.template
 
 }
 
+const blockMenu =
+Entry.playground.mainWorkspace.blockMenu;
+
 const exists =
 Entry.playground.blockMenu._categoryData
-?.some(
+.some(
 category =>
 category.category === "Block2.0"
 );
 
 if (!exists) {
 
-const blockMenu =
-Entry.playground.mainWorkspace.blockMenu;
-
-if (
-blockMenu &&
-blockMenu._generateCategoryElement &&
-blockMenu._categoryCol
-) {
-
 const fragment =
-document.createDocumentFragment();
+targetWindow.document
+.createDocumentFragment();
 
 const categoryElement =
 blockMenu._generateCategoryElement(
@@ -899,6 +912,7 @@ if (
 categoryElement &&
 categoryElement[0]
 ) {
+
 fragment.appendChild(
 categoryElement[0]
 );
@@ -914,11 +928,12 @@ blockMenu._categoryCol[0]
 fragment,
 categories[categories.length - 1]
 );
-}
 
 }
 
-Entry.playground.blockMenu._categoryData.push({
+Entry.playground.blockMenu
+._categoryData
+.push({
 category: "Block2.0",
 blocks: blockArray
 });
@@ -929,7 +944,8 @@ Entry.playground.blockMenu
 );
 
 const entryCategory =
-document.getElementById(
+targetWindow.document
+.getElementById(
 "entryCategoryBlock2.0"
 );
 
@@ -938,6 +954,7 @@ entryCategory.append("Block2.0");
 }
 
 }
+
 console.log(
 "Block2.0 직접 등록 완료",
 blockArray.length
