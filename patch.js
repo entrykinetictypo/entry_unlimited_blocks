@@ -115,6 +115,12 @@ const content = JSON.parse(
 
         Entry.clearProject();
         Entry.loadProject(project);
+        const restoredObject =
+    Entry.container.getObject(selectedId);
+
+if (restoredObject) {
+    Entry.container.selectObject(restoredObject);
+}
 
         console.log(
             `${NAME} block added: ${id}`
