@@ -47,11 +47,42 @@
 
         const project = Entry.exportProject();
 
-        if (!project?.objects?.length) {
-            throw new Error("프로젝트에 오브젝트가 없습니다.");
-        }
+        const project = Entry.exportProject();
 
-       const selectedId =
+if (!project?.objects?.length) {
+    alert("프로젝트에 오브젝트가 없습니다.");
+    return;
+}
+
+const emptyObjects = project.objects.filter((obj) => {
+    try {
+        const script = JSON.parse(obj.script);
+
+        return (
+            !Array.isArray(script) ||
+            !Array.isArray(script[0]) ||
+            script[0].length === 0
+        );
+    } catch (_) {
+        return true;
+    }
+});
+
+if (emptyObjects.length > 0) {
+    const names = emptyObjects
+        .map((obj) => obj.name)
+        .join("\n");
+
+    alert(
+        "블록이 없는 오브젝트가 있습니다.\n\n" +
+        names +
+        "\n\n모든 오브젝트에 블록을 하나 이상 넣어주세요."
+    );
+
+    return;
+}
+
+const selectedId =
     Entry.container.selectedObject?.id;
 
 if (!selectedId) {
@@ -74,14 +105,6 @@ if (!targetObject) {
 const content = JSON.parse(
     targetObject.script
 );
-        if (
-            !Array.isArray(content) ||
-            !Array.isArray(content[0])
-        ) {
-            throw new Error(
-                "첫 번째 오브젝트에 블록이 하나 이상 있어야 합니다."
-            );
-        }
 
         content[0].unshift({
             type: id
