@@ -958,6 +958,7 @@ entryCategory.innerText =
 "Block2.0";
 }
 
+}
 
 }, 50);
 
