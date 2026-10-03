@@ -1,3 +1,4 @@
+console.log("block20.js 실행됨");
 window.Block20 = window.Block20 || {
     block: () => {
         const Blockcolor = '#0079c0'; //블록색깔
