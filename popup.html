@@ -5,127 +5,288 @@
   <title>Entry Unlimited Blocks</title>
 
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      width: 260px;
+      width: 300px;
       margin: 0;
-      padding: 24px;
+      padding: 16px;
       font-family: Arial, sans-serif;
-      text-align: center;
-      background: white;
+      background: #f7f8fa;
+      color: #222;
     }
 
     h2 {
-      margin: 0 0 18px;
-      font-size: 20px;
+      margin: 0 0 12px;
+      font-size: 18px;
+      text-align: left;
+    }
+
+    h3 {
+      margin: 14px 0 8px;
+      font-size: 14px;
+      text-align: left;
+      color: #444;
+    }
+
+    .card {
+      background: white;
+      border: 1px solid #e4e6ea;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
     }
 
     #status {
-      margin-bottom: 18px;
-      font-size: 15px;
+      font-size: 13px;
+      margin-bottom: 10px;
+      color: #555;
+      text-align: left;
+    }
+
+    button {
+      width: 100%;
+      border: none;
+      border-radius: 9px;
+      padding: 10px;
+      margin-top: 7px;
+      font-size: 13px;
+      cursor: pointer;
+      background: #eeeeee;
+      transition: 0.15s;
+    }
+
+    button:hover {
+      background: #dddddd;
     }
 
     #toggle {
-      border: none;
-      border-radius: 12px;
-      padding: 11px 22px;
-      font-size: 14px;
-      cursor: pointer;
-      background: #eeeeee;
+      background: #222;
+      color: white;
     }
 
     #toggle:hover {
-      background: #dddddd;
+      background: #444;
+    }
+
+    input {
+      width: 100%;
+      padding: 9px 10px;
+      border: 1px solid #d7d9dd;
+      border-radius: 8px;
+      margin-top: 7px;
+      font-size: 13px;
+      background: white;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #999;
+    }
+
+    .hint {
+      margin: 8px 0 0;
+      font-size: 11px;
+      line-height: 1.45;
+      color: #777;
+      text-align: left;
+    }
+
+    #addResult {
+      margin-top: 9px;
+      font-size: 12px;
+      color: #555;
+      word-break: break-all;
+    }
+
+    #recentBlocks {
+      max-height: 150px;
+      overflow-y: auto;
+    }
+
+    #unofficialBlocks {
+      max-height: 230px;
+      overflow-y: auto;
+      padding-right: 3px;
+    }
+
+    #recentBlocks button,
+    #unofficialBlocks button {
+      margin-top: 6px !important;
+      padding: 8px !important;
+      font-size: 12px !important;
+    }
+
+    .mini-section {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid #eeeeee;
+    }
+
+    .row {
+      display: flex;
+      gap: 7px;
+    }
+
+    .row input {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .row button {
+      flex: 1;
+    }
+
+    #unloadUnofficial {
+      background: #f3f3f3;
+    }
+
+    #unbanBlocks {
+      background: #222;
+      color: white;
+    }
+
+    #unbanBlocks:hover {
+      background: #444;
     }
   </style>
 </head>
 
 <body>
-  <h2>블록 연결 제한 해제</h2>
 
-  <div id="status">상태 확인 중...</div>
+  <div class="card">
+    <h2>블록 연결 제한 해제</h2>
 
-  <button id="toggle">불러오는 중...</button>
-  <hr style="margin:20px 0;">
+    <div id="status">상태 확인 중...</div>
 
-<h2>블록 불러오기</h2>
+    <button id="toggle">불러오는 중...</button>
+  </div>
 
-<input
-  id="blockId"
-  type="text"
-  placeholder="예: when_run_button_click"
-  style="
-    width: 220px;
-    box-sizing: border-box;
-    padding: 9px 10px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    margin-bottom: 10px;
-  "
->
 
-<button id="addBlock">블록 추가</button>
+  <div class="card">
+    <h2>블록 불러오기</h2>
 
-<div
-  id="addResult"
-  style="
-    margin-top: 10px;
-    font-size: 13px;
-  "
-></div>
+    <input
+      id="blockId"
+      type="text"
+      placeholder="예: when_run_button_click"
+    >
 
-<hr style="margin:20px 0;">
+    <button id="addBlock">블록 추가</button>
 
-<h2>최근 추가한 블록</h2>
+    <div id="addResult"></div>
+  </div>
 
-<div id="recentBlocks"></div>
 
-<hr style="margin:20px 0;">
+  <div class="card">
+    <h2>최근 추가한 블록</h2>
 
-<h2>비공식 블록</h2>
+    <div id="recentBlocks"></div>
+  </div>
 
-<div id="unofficialBlocks"></div>
 
-<p style="font-size:12px; color:#666;">
-작품을 저장한 뒤 클릭하세요.
-</p>
+  <div class="card">
+    <h2>비공식 블록</h2>
 
-<button id="unloadUnofficial">비공식 블록 전체 해제</button>
+    <div id="unofficialBlocks"></div>
 
-<hr style="margin:20px 0;">
+    <p class="hint">
+      작품을 저장한 뒤 클릭하세요.
+    </p>
 
-<h2>콘솔 기능</h2>
+    <button id="unloadUnofficial">
+      비공식 블록 전체 해제
+    </button>
+  </div>
 
-<button id="unbanBlocks">하드웨어,인공지능,확장,더미데이터 등 불러오기</button>
 
-<p style="font-size:12px; color:#666; margin-top:6px;">
-하드웨어 블록은 2분 이상 걸릴 수 있으니 기다려 주세요.
-</p>
+  <div class="card">
+    <h2>콘솔 기능</h2>
 
-<h3>초시계 설정</h3>
+    <button id="unbanBlocks">
+      하드웨어,인공지능,확장,더미데이터 등 불러오기
+    </button>
 
-<input id="timerName" type="text" placeholder="초시계 이름">
+    <p class="hint">
+      하드웨어 블록은 2분 이상 걸릴 수 있으니 기다려 주세요.
+    </p>
 
-<input id="timerX" type="number" placeholder="X 좌표">
 
-<input id="timerY" type="number" placeholder="Y 좌표">
+    <div class="mini-section">
+      <h3>초시계 설정</h3>
 
-<button id="applyTimer">초시계 적용</button>
+      <input
+        id="timerName"
+        type="text"
+        placeholder="초시계 이름"
+      >
 
-<button id="showTimer">초시계 보이기</button>
+      <div class="row">
+        <input
+          id="timerX"
+          type="number"
+          placeholder="X 좌표"
+        >
 
-<button id="hideTimer">초시계 숨기기</button>
+        <input
+          id="timerY"
+          type="number"
+          placeholder="Y 좌표"
+        >
+      </div>
 
-<h3>함수 편집</h3>
+      <button id="applyTimer">
+        초시계 적용
+      </button>
 
-<input id="localVariableCount" type="number" value="1" min="1" placeholder="개수">
+      <div class="row">
+        <button id="showTimer">
+          보이기
+        </button>
 
-<button id="addLocalVariable">지역변수 추가</button>
+        <button id="hideTimer">
+          숨기기
+        </button>
+      </div>
+    </div>
 
-<h3>프레임 속도</h3>
 
-<input id="frameSpeed" type="number" placeholder="예: 120">
+    <div class="mini-section">
+      <h3>함수 편집</h3>
 
-<button id="applyFrameSpeed">프레임 속도 적용</button>
+      <input
+        id="localVariableCount"
+        type="number"
+        value="1"
+        min="1"
+        placeholder="개수"
+      >
+
+      <button id="addLocalVariable">
+        지역변수 추가
+      </button>
+    </div>
+
+
+    <div class="mini-section">
+      <h3>프레임 속도</h3>
+
+      <input
+        id="frameSpeed"
+        type="number"
+        placeholder="예: 120"
+      >
+
+      <button id="applyFrameSpeed">
+        프레임 속도 적용
+      </button>
+    </div>
+
+  </div>
+
 
   <script src="popup.js"></script>
 </body>
