@@ -39,6 +39,7 @@ toggleButton.addEventListener("click", () => {
         );
     });
 });
+
 const blockIdInput = document.getElementById("blockId");
 const addBlockButton = document.getElementById("addBlock");
 const addResult = document.getElementById("addResult");
@@ -47,7 +48,7 @@ addBlockButton.addEventListener("click", async () => {
     const blockId = blockIdInput.value.trim();
 
     if (!blockId) {
-        addResult.textContent = "블록 ID를 입력하세요.";
+        alert("블록 ID를 입력하세요.");
         return;
     }
 
@@ -57,7 +58,15 @@ addBlockButton.addEventListener("click", async () => {
     });
 
     if (!tab || !tab.id) {
-        addResult.textContent = "현재 탭을 찾을 수 없습니다.";
+        alert("현재 탭을 찾을 수 없습니다.");
+        return;
+    }
+
+    if (
+        !tab.url ||
+        !tab.url.startsWith("https://playentry.org/ws/")
+    ) {
+        alert("엔트리 작품 만들기 페이지가 아닙니다.");
         return;
     }
 
@@ -69,14 +78,14 @@ addBlockButton.addEventListener("click", async () => {
         },
         (response) => {
             if (chrome.runtime.lastError) {
-                addResult.textContent = "엔트리 작업 화면에서 사용하세요.";
+                alert("엔트리 작품 만들기 페이지가 아닙니다.");
                 return;
             }
 
             if (response?.success) {
                 addResult.textContent = `추가 요청 완료: ${blockId}`;
             } else {
-                addResult.textContent = "추가 요청 실패";
+                alert("블록 추가에 실패했습니다.");
             }
         }
     );
