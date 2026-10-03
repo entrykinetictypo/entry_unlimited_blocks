@@ -33,7 +33,58 @@
             typeof Entry.container.getAllObjects === "function"
         );
     }
+    function addBlockById(blockId) {
+    try {
+        if (!window.Entry) {
+            throw new Error("Entry가 아직 준비되지 않았습니다.");
+        }
 
+        const id = String(blockId || "").trim();
+
+        if (!id) {
+            throw new Error("블록 ID가 비어 있습니다.");
+        }
+
+        const project = Entry.exportProject();
+
+        if (!project?.objects?.length) {
+            throw new Error("프로젝트에 오브젝트가 없습니다.");
+        }
+
+        const content = JSON.parse(
+            project.objects[0].script
+        );
+
+        if (
+            !Array.isArray(content) ||
+            !Array.isArray(content[0])
+        ) {
+            throw new Error(
+                "첫 번째 오브젝트에 블록이 하나 이상 있어야 합니다."
+            );
+        }
+
+        content[0].unshift({
+            type: id
+        });
+
+        project.objects[0].script =
+            JSON.stringify(content);
+
+        Entry.clearProject();
+        Entry.loadProject(project);
+
+        console.log(
+            `${NAME} block added: ${id}`
+        );
+
+    } catch (error) {
+        console.error(
+            `${NAME} add block failed`,
+            error
+        );
+    }
+}
     function startWaiting() {
         if (waitingTimer || installed || !enabled) {
             return;
@@ -1273,20 +1324,31 @@
         }
     }
 
-    window.addEventListener("message", (event) => {
-        if (event.source !== window) {
-            return;
-        }
+   window.addEventListener("message", (event) => {
+    if (event.source !== window) {
+        return;
+    }
 
-        if (
-            event.data?.source !== "ENTRY_UNLIMITED_BLOCKS" ||
-            event.data?.type !== "SET_ENABLED"
-        ) {
-            return;
-        }
+    if (
+        event.data?.source !== "ENTRY_UNLIMITED_BLOCKS"
+    ) {
+        return;
+    }
 
+    if (
+        event.data?.type === "SET_ENABLED"
+    ) {
         setEnabled(event.data.enabled);
-    });
+        return;
+    }
 
-    requestState();
+    if (
+        event.data?.type === "ADD_BLOCK"
+    ) {
+        addBlockById(event.data.blockId);
+    }
+});
+
+requestState();
+
 })();
