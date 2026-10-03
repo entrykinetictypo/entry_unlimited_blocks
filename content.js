@@ -96,6 +96,27 @@
 
             return;
         }
+        if (message?.type === "RUN_ENTRY_CODE") {
+const script = document.createElement("script");
+
+script.textContent = `
+try {
+${message.code}
+} catch (error) {
+console.error("RUN_ENTRY_CODE failed", error);
+}
+`;
+
+(document.head || document.documentElement).appendChild(script);
+
+script.remove();
+
+sendResponse({
+success: true
+});
+
+return;
+}
     }
 );
 
