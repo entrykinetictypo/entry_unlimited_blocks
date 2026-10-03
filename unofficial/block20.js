@@ -958,22 +958,6 @@ entryCategory.innerText =
 "Block2.0";
 }
 
-const entryCategory =
-targetWindow.document
-.getElementById(
-"entryCategoryBlock2.0"
-);
-
-if (entryCategory) {
-entryCategory.append("Block2.0");
-}
-
-}
-
-console.log(
-"Block2.0 직접 등록 완료",
-blockArray.length
-);
 
 }, 50);
 
