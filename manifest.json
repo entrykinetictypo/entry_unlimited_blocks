@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "블록 연결 제한 해제/블록 불러오기",
-  "version": "0.1.0",
+  "version": "1.4.1",
   "description": "엔트리의 블록 연결 제한을 해제합니다.그리고 블록의 아이디로 블록을 가져옵니다.",
   "permissions": [
     "storage",
