@@ -19,7 +19,7 @@
             const enabled =
                 typeof result.enabled === "boolean"
                     ? result.enabled
-                    : true;
+                    : false;
 
             callback(enabled);
         });
