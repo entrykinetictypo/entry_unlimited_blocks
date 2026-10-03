@@ -226,35 +226,7 @@ chrome.tabs.reload(tab.id);
 const unbanBlocksButton =
 document.getElementById("unbanBlocks");
 
-unbanBlocksButton.addEventListener("click", async () => {
-const [tab] = await chrome.tabs.query({
-active: true,
-currentWindow: true
-});
 
-if (
-!tab ||
-!tab.id ||
-!tab.url ||
-!tab.url.startsWith("https://playentry.org/ws/")
-) {
-alert("엔트리 작품 만들기 페이지가 아닙니다.");
-return;
-}
-
-chrome.tabs.sendMessage(
-tab.id,
-{
-type: "RUN_ENTRY_CODE",
-code: `
-for (let i of Entry.playground.blockMenu._bannedClass) {
-Entry.playground.blockMenu.unbanClass(i);
-console.log(i);
-}
-`
-}
-);
-});
 async function runEntryCode(code) {
 const [tab] = await chrome.tabs.query({
 active: true,
@@ -388,6 +360,19 @@ document
 .getElementById("addLocalVariable")
 .addEventListener("click", () => {
 
+const count =
+Number(
+document.getElementById("localVariableCount").value
+);
+
+if (
+!Number.isInteger(count) ||
+count <= 0
+) {
+alert("추가할 개수를 입력하세요.");
+return;
+}
+
 runEntryCode(`
 if (
 !Entry.Func ||
@@ -395,9 +380,14 @@ if (
 ) {
 alert("함수 편집창을 먼저 열어주세요.");
 } else {
-Entry.Func.targetFunc.appendLocalVariable(
-Entry.Func.targetFunc.defaultLocalVariable()
-);
+for (let i = 0; i < ${count}; i++) {
+const v =
+Entry.Func.targetFunc.defaultLocalVariable();
+
+v.name = "변수" + (i + 1);
+
+Entry.Func.targetFunc.appendLocalVariable(v);
+}
 }
 `);
 
