@@ -58,11 +58,9 @@
     );
 
     chrome.runtime.onMessage.addListener(
-        (message, sender, sendResponse) => {
-            if (message?.type !== "ADD_ENTRY_BLOCK") {
-                return;
-            }
+    (message, sender, sendResponse) => {
 
+        if (message?.type === "ADD_ENTRY_BLOCK") {
             window.postMessage(
                 {
                     source: "ENTRY_UNLIMITED_BLOCKS",
@@ -75,7 +73,30 @@
             sendResponse({
                 success: true
             });
+
+            return;
         }
-    );
+
+        if (message?.type === "LOAD_UNOFFICIAL_BLOCK") {
+            const script = document.createElement("script");
+
+            script.src = chrome.runtime.getURL(
+                message.file
+            );
+
+            script.onload = () => {
+                script.remove();
+            };
+
+            document.documentElement.appendChild(script);
+
+            sendResponse({
+                success: true
+            });
+
+            return;
+        }
+    }
+);
 
 })();
