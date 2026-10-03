@@ -1,6 +1,6 @@
-# Entry Unlimited Blocks
+# easy console
 
-엔트리의 블록 연결 제한을 해제하는 Chrome 확장 프로그램입니다.
+콘솔을 편하게 쓰는 확장 프로그램입니다.
 
 ## 기능
 
