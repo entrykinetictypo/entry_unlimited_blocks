@@ -820,6 +820,8 @@ if (
 !window.Entry ||
 !Entry.block ||
 !Entry.playground ||
+!Entry.playground.mainWorkspace ||
+!Entry.playground.mainWorkspace.blockMenu ||
 !Entry.playground.blockMenu
 ) {
 return;
