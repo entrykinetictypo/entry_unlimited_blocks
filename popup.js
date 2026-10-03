@@ -297,18 +297,6 @@ runEntryAction("UNBAN_BLOCKS");
 
 });
 
-
-// 2. 장면 제한 제거
-
-document
-.getElementById("removeSceneLimit")
-.addEventListener("click", () => {
-
-runEntryAction("REMOVE_SCENE_LIMIT");
-
-});
-
-
 // 3. 초시계 설정
 
 document
