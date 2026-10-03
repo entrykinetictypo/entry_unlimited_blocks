@@ -223,8 +223,7 @@ return;
 
 chrome.tabs.reload(tab.id);
 });
-const unbanBlocksButton =
-document.getElementById("unbanBlocks");
+
 
 
 async function runEntryCode(code) {
