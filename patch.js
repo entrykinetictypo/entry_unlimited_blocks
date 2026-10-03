@@ -1369,7 +1369,7 @@ const content = JSON.parse(
         }
     }
 
-   window.addEventListener("message", (event) => {
+  window.addEventListener("message", (event) => {
     if (event.source !== window) {
         return;
     }
@@ -1391,6 +1391,139 @@ const content = JSON.parse(
         event.data?.type === "ADD_BLOCK"
     ) {
         addBlockById(event.data.blockId);
+        return;
+    }
+
+    if (
+        event.data?.type === "ENTRY_ACTION"
+    ) {
+        const action = event.data.action;
+        const data = event.data.data || {};
+
+        try {
+
+            if (action === "UNBAN_BLOCKS") {
+                for (let i of Entry.playground.blockMenu._bannedClass) {
+                    Entry.playground.blockMenu.unbanClass(i);
+                }
+                return;
+            }
+
+            if (action === "REMOVE_SCENE_LIMIT") {
+                Entry.scene.maxCount = NaN;
+                return;
+            }
+
+            if (action === "SET_TIMER") {
+                if (
+                    data.name !== undefined &&
+                    data.name !== ""
+                ) {
+                    Entry.engine.projectTimer.setName(
+                        data.name
+                    );
+                }
+
+                if (
+                    data.x !== undefined &&
+                    data.x !== ""
+                ) {
+                    Entry.engine.projectTimer.setX(
+                        Number(data.x)
+                    );
+                }
+
+                if (
+                    data.y !== undefined &&
+                    data.y !== ""
+                ) {
+                    Entry.engine.projectTimer.setY(
+                        Number(data.y)
+                    );
+                }
+
+                return;
+            }
+
+            if (action === "SHOW_TIMER") {
+                Entry.engine.projectTimer.setVisible(true);
+                return;
+            }
+
+            if (action === "HIDE_TIMER") {
+                Entry.engine.projectTimer.setVisible(false);
+                return;
+            }
+
+            if (action === "ADD_LOCAL_VARIABLE") {
+                if (
+                    !Entry.Func ||
+                    !Entry.Func.targetFunc
+                ) {
+                    alert("함수 편집창을 먼저 열어주세요.");
+                    return;
+                }
+
+                const count =
+                    Number(data.count) || 1;
+
+                for (
+                    let i = 0;
+                    i < count;
+                    i++
+                ) {
+                    const v =
+                        Entry.Func.targetFunc.defaultLocalVariable();
+
+                    v.name =
+                        "변수" + (i + 1);
+
+                    Entry.Func.targetFunc.appendLocalVariable(v);
+                }
+
+                return;
+            }
+
+            if (action === "SET_FRAME_SPEED") {
+                const speed =
+                    Number(data.speed);
+
+                if (
+                    !Number.isFinite(speed) ||
+                    speed <= 0
+                ) {
+                    return;
+                }
+
+                const selectedId =
+                    Entry.container.selectedObject?.id;
+
+                const project =
+                    Entry.exportProject();
+
+                project.speed = speed;
+
+                Entry.clearProject();
+                Entry.loadProject(project);
+
+                setTimeout(() => {
+                    if (selectedId) {
+                        Entry.container.selectObject(
+                            selectedId
+                        );
+                    }
+                }, 100);
+
+                return;
+            }
+
+        } catch (error) {
+            console.error(
+                "ENTRY_ACTION failed:",
+                action,
+                error
+            );
+        }
     }
 });
 
