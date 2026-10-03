@@ -224,9 +224,7 @@ return;
 chrome.tabs.reload(tab.id);
 });
 
-
-
-async function runEntryCode(code) {
+async function runEntryAction(action, data = {}) {
 const [tab] = await chrome.tabs.query({
 active: true,
 currentWindow: true
@@ -245,8 +243,40 @@ return;
 chrome.tabs.sendMessage(
 tab.id,
 {
-type: "RUN_ENTRY_CODE",
-code: code
+type: "ENTRY_ACTION",
+action: action,
+data: data
+},
+() => {
+if (chrome.runtime.lastError) {
+alert("엔트리 페이지를 새로고침해 주세요.");
+}
+}
+);
+}
+
+async function runEntryAction(action, data = {}) {
+const [tab] = await chrome.tabs.query({
+active: true,
+currentWindow: true
+});
+
+if (
+!tab ||
+!tab.id ||
+!tab.url ||
+!tab.url.startsWith("https://playentry.org/ws/")
+) {
+alert("엔트리 작품 만들기 페이지가 아닙니다.");
+return;
+}
+
+chrome.tabs.sendMessage(
+tab.id,
+{
+type: "ENTRY_ACTION",
+action: action,
+data: data
 },
 () => {
 if (chrome.runtime.lastError) {
@@ -263,12 +293,7 @@ document
 .getElementById("unbanBlocks")
 .addEventListener("click", () => {
 
-runEntryCode(`
-for (let i of Entry.playground.blockMenu._bannedClass) {
-Entry.playground.blockMenu.unbanClass(i);
-console.log(i);
-}
-`);
+runEntryAction("UNBAN_BLOCKS");
 
 });
 
@@ -279,9 +304,7 @@ document
 .getElementById("removeSceneLimit")
 .addEventListener("click", () => {
 
-runEntryCode(`
-Entry.scene.maxCount = NaN;
-`);
+runEntryAction("REMOVE_SCENE_LIMIT");
 
 });
 
@@ -301,32 +324,14 @@ document.getElementById("timerX").value;
 const y =
 document.getElementById("timerY").value;
 
-let code = "";
-
-if (name !== "") {
-code += `
-Entry.engine.projectTimer.setName(${JSON.stringify(name)});
-`;
+runEntryAction(
+"SET_TIMER",
+{
+name: name,
+x: x,
+y: y
 }
-
-if (x !== "") {
-code += `
-Entry.engine.projectTimer.setX(${Number(x)});
-`;
-}
-
-if (y !== "") {
-code += `
-Entry.engine.projectTimer.setY(${Number(y)});
-`;
-}
-
-if (code === "") {
-alert("설정할 값을 입력하세요.");
-return;
-}
-
-runEntryCode(code);
+);
 
 });
 
@@ -335,9 +340,7 @@ document
 .getElementById("showTimer")
 .addEventListener("click", () => {
 
-runEntryCode(`
-Entry.engine.projectTimer.setVisible(true);
-`);
+runEntryAction("SHOW_TIMER");
 
 });
 
@@ -346,9 +349,7 @@ document
 .getElementById("hideTimer")
 .addEventListener("click", () => {
 
-runEntryCode(`
-Entry.engine.projectTimer.setVisible(false);
-`);
+runEntryAction("HIDE_TIMER");
 
 });
 
@@ -372,23 +373,12 @@ alert("추가할 개수를 입력하세요.");
 return;
 }
 
-runEntryCode(`
-if (
-!Entry.Func ||
-!Entry.Func.targetFunc
-) {
-alert("함수 편집창을 먼저 열어주세요.");
-} else {
-for (let i = 0; i < ${count}; i++) {
-const v =
-Entry.Func.targetFunc.defaultLocalVariable();
-
-v.name = "변수" + (i + 1);
-
-Entry.Func.targetFunc.appendLocalVariable(v);
+runEntryAction(
+"ADD_LOCAL_VARIABLE",
+{
+count: count
 }
-}
-`);
+);
 
 });
 
@@ -412,23 +402,12 @@ alert("올바른 프레임 속도를 입력하세요.");
 return;
 }
 
-runEntryCode(`
-const selectedId =
-Entry.container.selectedObject?.id;
-
-const project =
-Entry.exportProject();
-
-project.speed = ${speed};
-
-Entry.clearProject();
-Entry.loadProject(project);
-
-setTimeout(() => {
-if (selectedId) {
-Entry.container.selectObject(selectedId);
+runEntryAction(
+"SET_FRAME_SPEED",
+{
+speed: speed
 }
-}, 100);
-`);
+);
 
 });
+
