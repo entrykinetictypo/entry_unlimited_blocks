@@ -87,8 +87,8 @@ const content = JSON.parse(
             type: id
         });
 
-        project.objects[0].script =
-            JSON.stringify(content);
+        targetObject.script =
+    JSON.stringify(content);
 
         Entry.clearProject();
         Entry.loadProject(project);
