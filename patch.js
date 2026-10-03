@@ -47,7 +47,7 @@
 
         const project = Entry.exportProject();
 
-        const project = Entry.exportProject();
+      
 
 if (!project?.objects?.length) {
     alert("프로젝트에 오브젝트가 없습니다.");
