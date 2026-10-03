@@ -79,7 +79,7 @@ addBlockButton.addEventListener("click", async () => {
         (response) => {
             if (chrome.runtime.lastError) {
                 alert("엔트리 작품 만들기 페이지가 아닙니다.");
-                return;
+                saveRecentBlock(blockId);
             }
 
             if (response?.success) {
@@ -90,3 +90,22 @@ addBlockButton.addEventListener("click", async () => {
         }
     );
 });
+function saveRecentBlock(blockId) {
+    chrome.storage.local.get(["recentBlocks"], (result) => {
+        let recentBlocks = Array.isArray(result.recentBlocks)
+            ? result.recentBlocks
+            : [];
+
+        recentBlocks = recentBlocks.filter(
+            (id) => id !== blockId
+        );
+
+        recentBlocks.unshift(blockId);
+
+        recentBlocks = recentBlocks.slice(0, 10);
+
+        chrome.storage.local.set({
+            recentBlocks: recentBlocks
+        });
+    });
+}
