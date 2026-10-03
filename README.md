@@ -33,6 +33,7 @@ Chrome 확장 프로그램 아이콘을 클릭하면 팝업이 열립니다.
 
 ```text
 entry-unlimited-blocks/
+unofficial folder
 ├─ manifest.json
 ├─ content.js
 ├─ patch.js
