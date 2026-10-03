@@ -122,18 +122,23 @@ function renderRecentBlocks() {
         recentBlocksBox.innerHTML = "";
 
         recentBlocks.forEach((blockId) => {
-            const button = document.createElement("button");
+    const button = document.createElement("button");
 
-            button.textContent = blockId;
+    button.textContent = blockId;
 
-            button.style.display = "block";
-            button.style.width = "100%";
-            button.style.marginBottom = "6px";
-            button.style.padding = "8px";
-            button.style.cursor = "pointer";
+    button.style.display = "block";
+    button.style.width = "100%";
+    button.style.marginBottom = "6px";
+    button.style.padding = "8px";
+    button.style.cursor = "pointer";
 
-            recentBlocksBox.appendChild(button);
-        });
+    button.addEventListener("click", () => {
+        blockIdInput.value = blockId;
+        addBlockButton.click();
+    });
+
+    recentBlocksBox.appendChild(button);
+});
     });
 }
 
