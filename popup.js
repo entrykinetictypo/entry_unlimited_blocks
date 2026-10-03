@@ -144,3 +144,50 @@ function renderRecentBlocks() {
 }
 
 renderRecentBlocks();
+const unofficialBlocksBox = document.getElementById("unofficialBlocks");
+
+const unofficialBlocks = [
+    {
+        name: "우클릭 블록",
+        file: "unofficial/right_click.js"
+    }
+];
+
+unofficialBlocks.forEach((item) => {
+    const button = document.createElement("button");
+
+    button.textContent = item.name;
+
+    button.style.display = "block";
+    button.style.width = "100%";
+    button.style.marginBottom = "6px";
+    button.style.padding = "8px";
+    button.style.cursor = "pointer";
+
+    button.addEventListener("click", async () => {
+        const [tab] = await chrome.tabs.query({
+            active: true,
+            currentWindow: true
+        });
+
+        if (
+            !tab ||
+            !tab.id ||
+            !tab.url ||
+            !tab.url.startsWith("https://playentry.org/ws/")
+        ) {
+            alert("엔트리 작품 만들기 페이지가 아닙니다.");
+            return;
+        }
+
+        chrome.tabs.sendMessage(
+            tab.id,
+            {
+                type: "LOAD_UNOFFICIAL_BLOCK",
+                file: item.file
+            }
+        );
+    });
+
+    unofficialBlocksBox.appendChild(button);
+});
