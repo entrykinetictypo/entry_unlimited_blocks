@@ -160,7 +160,7 @@ const unofficialBlocks = [
 {name:"우클릭블록",file:"unofficial/right_click.js"},
 {name:"크리스블록",file:"unofficial/kris.js"},
 {name:"특급블록",file:"unofficial/express.js"},
-{name:"특수블록",file:"unofficial/special2.js"},
+{name:"특수블록",file:"unofficial/tecsu.js"},
 {name:"2.0블록",file:"unofficial/block20.js"}
 ];
 
