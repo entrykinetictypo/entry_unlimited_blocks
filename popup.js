@@ -15,7 +15,7 @@ chrome.storage.local.get(["enabled"], (result) => {
     const enabled =
         typeof result.enabled === "boolean"
             ? result.enabled
-            : true;
+            : false;
 
     updateUI(enabled);
 });
@@ -25,7 +25,7 @@ toggleButton.addEventListener("click", () => {
         const current =
             typeof result.enabled === "boolean"
                 ? result.enabled
-                : true;
+                : false;
 
         const next = !current;
 
