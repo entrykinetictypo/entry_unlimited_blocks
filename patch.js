@@ -51,10 +51,29 @@
             throw new Error("프로젝트에 오브젝트가 없습니다.");
         }
 
-        const content = JSON.parse(
-            project.objects[0].script
-        );
+       const selectedId =
+    Entry.container.selectedObject?.id;
 
+if (!selectedId) {
+    throw new Error(
+        "선택된 오브젝트가 없습니다."
+    );
+}
+
+const targetObject =
+    project.objects.find(
+        (obj) => obj.id === selectedId
+    );
+
+if (!targetObject) {
+    throw new Error(
+        "선택된 오브젝트를 찾을 수 없습니다."
+    );
+}
+
+const content = JSON.parse(
+    targetObject.script
+);
         if (
             !Array.isArray(content) ||
             !Array.isArray(content[0])
