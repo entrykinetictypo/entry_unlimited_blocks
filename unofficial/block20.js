@@ -943,6 +943,20 @@ Entry.playground.blockMenu
 ._generateCategoryCode(
 "Block2.0"
 );
+const entryCategory =
+document.getElementById(
+"entryCategoryBlock2.0"
+);
+
+if (entryCategory) {
+entryCategory.classList.remove(
+"entryRemove",
+"entryRemoveCategory"
+);
+
+entryCategory.innerText =
+"Block2.0";
+}
 
 const entryCategory =
 targetWindow.document
