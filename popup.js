@@ -106,6 +106,35 @@ function saveRecentBlock(blockId) {
 
         chrome.storage.local.set({
             recentBlocks: recentBlocks
+        }, () => {
+            renderRecentBlocks();
         });
     });
 }
+const recentBlocksBox = document.getElementById("recentBlocks");
+
+function renderRecentBlocks() {
+    chrome.storage.local.get(["recentBlocks"], (result) => {
+        const recentBlocks = Array.isArray(result.recentBlocks)
+            ? result.recentBlocks
+            : [];
+
+        recentBlocksBox.innerHTML = "";
+
+        recentBlocks.forEach((blockId) => {
+            const button = document.createElement("button");
+
+            button.textContent = blockId;
+
+            button.style.display = "block";
+            button.style.width = "100%";
+            button.style.marginBottom = "6px";
+            button.style.padding = "8px";
+            button.style.cursor = "pointer";
+
+            recentBlocksBox.appendChild(button);
+        });
+    });
+}
+
+renderRecentBlocks();
