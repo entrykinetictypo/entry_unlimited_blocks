@@ -96,20 +96,16 @@
 
             return;
         }
-        if (message?.type === "RUN_ENTRY_CODE") {
-const script = document.createElement("script");
-
-script.textContent = `
-try {
-${message.code}
-} catch (error) {
-console.error("RUN_ENTRY_CODE failed", error);
-}
-`;
-
-(document.head || document.documentElement).appendChild(script);
-
-script.remove();
+        if (message?.type === "ENTRY_ACTION") {
+window.postMessage(
+{
+source: "ENTRY_UNLIMITED_BLOCKS",
+type: "ENTRY_ACTION",
+action: message.action,
+data: message.data || {}
+},
+"*"
+);
 
 sendResponse({
 success: true
