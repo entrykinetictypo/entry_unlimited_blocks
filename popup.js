@@ -255,3 +255,191 @@ console.log(i);
 }
 );
 });
+async function runEntryCode(code) {
+const [tab] = await chrome.tabs.query({
+active: true,
+currentWindow: true
+});
+
+if (
+!tab ||
+!tab.id ||
+!tab.url ||
+!tab.url.startsWith("https://playentry.org/ws/")
+) {
+alert("엔트리 작품 만들기 페이지가 아닙니다.");
+return;
+}
+
+chrome.tabs.sendMessage(
+tab.id,
+{
+type: "RUN_ENTRY_CODE",
+code: code
+},
+() => {
+if (chrome.runtime.lastError) {
+alert("엔트리 페이지를 새로고침해 주세요.");
+}
+}
+);
+}
+
+
+// 1. 모든 블록 불러오기
+
+document
+.getElementById("unbanBlocks")
+.addEventListener("click", () => {
+
+runEntryCode(`
+for (let i of Entry.playground.blockMenu._bannedClass) {
+Entry.playground.blockMenu.unbanClass(i);
+console.log(i);
+}
+`);
+
+});
+
+
+// 2. 장면 제한 제거
+
+document
+.getElementById("removeSceneLimit")
+.addEventListener("click", () => {
+
+runEntryCode(`
+Entry.scene.maxCount = NaN;
+`);
+
+});
+
+
+// 3. 초시계 설정
+
+document
+.getElementById("applyTimer")
+.addEventListener("click", () => {
+
+const name =
+document.getElementById("timerName").value;
+
+const x =
+document.getElementById("timerX").value;
+
+const y =
+document.getElementById("timerY").value;
+
+let code = "";
+
+if (name !== "") {
+code += `
+Entry.engine.projectTimer.setName(${JSON.stringify(name)});
+`;
+}
+
+if (x !== "") {
+code += `
+Entry.engine.projectTimer.setX(${Number(x)});
+`;
+}
+
+if (y !== "") {
+code += `
+Entry.engine.projectTimer.setY(${Number(y)});
+`;
+}
+
+if (code === "") {
+alert("설정할 값을 입력하세요.");
+return;
+}
+
+runEntryCode(code);
+
+});
+
+
+document
+.getElementById("showTimer")
+.addEventListener("click", () => {
+
+runEntryCode(`
+Entry.engine.projectTimer.setVisible(true);
+`);
+
+});
+
+
+document
+.getElementById("hideTimer")
+.addEventListener("click", () => {
+
+runEntryCode(`
+Entry.engine.projectTimer.setVisible(false);
+`);
+
+});
+
+
+// 4. 함수 지역변수 추가
+
+document
+.getElementById("addLocalVariable")
+.addEventListener("click", () => {
+
+runEntryCode(`
+if (
+!Entry.Func ||
+!Entry.Func.targetFunc
+) {
+alert("함수 편집창을 먼저 열어주세요.");
+} else {
+Entry.Func.targetFunc.appendLocalVariable(
+Entry.Func.targetFunc.defaultLocalVariable()
+);
+}
+`);
+
+});
+
+
+// 5. 프레임 속도 설정
+
+document
+.getElementById("applyFrameSpeed")
+.addEventListener("click", () => {
+
+const speed =
+Number(
+document.getElementById("frameSpeed").value
+);
+
+if (
+!Number.isFinite(speed) ||
+speed <= 0
+) {
+alert("올바른 프레임 속도를 입력하세요.");
+return;
+}
+
+runEntryCode(`
+const selectedId =
+Entry.container.selectedObject?.id;
+
+const project =
+Entry.exportProject();
+
+project.speed = ${speed};
+
+Entry.clearProject();
+Entry.loadProject(project);
+
+setTimeout(() => {
+if (selectedId) {
+Entry.container.selectObject(selectedId);
+}
+}, 100);
+`);
+
+});
