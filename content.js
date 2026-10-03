@@ -40,20 +40,42 @@
         sendState(changes.enabled.newValue);
     });
 
-    window.addEventListener("message", (event) => {
-        if (event.source !== window) {
-            return;
-        }
+    window.addEventListener(
+        "message",
+        (event) => {
+            if (
+                event.source !== window ||
+                event.data?.source !== "ENTRY_UNLIMITED_BLOCKS_PATCH" ||
+                event.data?.type !== "REQUEST_STATE"
+            ) {
+                return;
+            }
 
-        if (
-            event.data?.source !== "ENTRY_UNLIMITED_BLOCKS_PATCH" ||
-            event.data?.type !== "REQUEST_STATE"
-        ) {
-            return;
+            getCurrentState((enabled) => {
+                sendState(enabled);
+            });
         }
+    );
 
-        getCurrentState((enabled) => {
-            sendState(enabled);
-        });
-    });
+    chrome.runtime.onMessage.addListener(
+        (message, sender, sendResponse) => {
+            if (message?.type !== "ADD_ENTRY_BLOCK") {
+                return;
+            }
+
+            window.postMessage(
+                {
+                    source: "ENTRY_UNLIMITED_BLOCKS",
+                    type: "ADD_BLOCK",
+                    blockId: message.blockId
+                },
+                "*"
+            );
+
+            sendResponse({
+                success: true
+            });
+        }
+    );
+
 })();
