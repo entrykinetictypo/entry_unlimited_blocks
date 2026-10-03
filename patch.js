@@ -1409,10 +1409,7 @@ const content = JSON.parse(
                 return;
             }
 
-            if (action === "REMOVE_SCENE_LIMIT") {
-                Entry.scene.maxCount = NaN;
-                return;
-            }
+            
 
             if (action === "SET_TIMER") {
                 if (
