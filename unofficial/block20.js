@@ -1,4 +1,4 @@
-const Block20 = {
+window.Block20 = window.Block20 || {
     block: () => {
         const Blockcolor = '#0079c0'; //블록색깔
         const Blockcolor2 = '#003655'; //어두운 블록색깔
@@ -828,7 +828,7 @@ return;
 clearInterval(timer);
 
 const blocks =
-Block20.block();
+window.Block20.block();
 
 const blockArray = [];
 
@@ -875,6 +875,47 @@ category.category === "Block2.0"
 
 if (!exists) {
 
+const blockMenu =
+Entry.playground.mainWorkspace.blockMenu;
+
+if (
+blockMenu &&
+blockMenu._generateCategoryElement &&
+blockMenu._categoryCol
+) {
+
+const fragment =
+document.createDocumentFragment();
+
+const categoryElement =
+blockMenu._generateCategoryElement(
+"Block2.0",
+true
+);
+
+if (
+categoryElement &&
+categoryElement[0]
+) {
+fragment.appendChild(
+categoryElement[0]
+);
+
+const categories =
+blockMenu._categoryCol[0]
+.querySelectorAll(
+".entryCategoryElementWorkspace"
+);
+
+blockMenu._categoryCol[0]
+.insertBefore(
+fragment,
+categories[categories.length - 1]
+);
+}
+
+}
+
 Entry.playground.blockMenu._categoryData.push({
 category: "Block2.0",
 blocks: blockArray
@@ -885,8 +926,16 @@ Entry.playground.blockMenu
 "Block2.0"
 );
 
+const entryCategory =
+document.getElementById(
+"entryCategoryBlock2.0"
+);
+
+if (entryCategory) {
+entryCategory.append("Block2.0");
 }
 
+}
 console.log(
 "Block2.0 직접 등록 완료",
 blockArray.length
