@@ -1,3 +1,4 @@
+(() => {
 Entry.staticBlocks = [
 
     {
@@ -1189,3 +1190,4 @@ $('head').append(`
 `)
 
 $('#entryCategoryTecsuBlock').append('특수')
+})();
