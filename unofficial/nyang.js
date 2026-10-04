@@ -1,3 +1,4 @@
+(() => {
 const LibraryCreator = {
   start: (blocksJSON, category, text) => {
     let blockArray = new Array
@@ -1357,3 +1358,4 @@ const blocks = [
 ]
 
 LibraryCreator.start(blocks, 'NyangBlock', '냥냥블럭!')
+})();
