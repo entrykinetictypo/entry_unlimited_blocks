@@ -737,4 +737,4 @@ return data; // 반환
 ]
   alert('로딩완료'), open('https://Strong-block.simonjentry.repl.co')
 document.title = "Entry_Strong_Block";
-LibraryCreator.start(blocks, 'API', '강력크')
+LibraryCreator.start(blocks, 'StrongBlock', '강력크')
