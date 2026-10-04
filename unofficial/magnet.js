@@ -1816,7 +1816,7 @@ Entry.staticBlocks.push({
 
 });
 
-
+Lang.Blocks['MAGNETBLOCK'] = '매그넛';
 
 updateCategory('MagnetBlock')
 
