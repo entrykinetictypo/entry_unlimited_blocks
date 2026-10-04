@@ -1238,7 +1238,7 @@ addBlock('copy_text', '%1 텍스트 복사하기 %2', {
 
 });
 
-UnofficialRuntime.registerPackage({
+window.UnofficialRuntime.registerPackage({
     id: 'MagnetBlock',
     name: '매그넛',
     blocks: [
