@@ -29,6 +29,83 @@
      */
 
     const savedCategories = new Map();
+    /* =========================================
+   비공식 카테고리가 redraw 때 사라지는 것 방지
+   ========================================= */
+
+const viewMenu =
+    Entry.playground
+        ?.mainWorkspace
+        ?.blockMenu;
+
+if (
+    viewMenu &&
+    typeof viewMenu._generateCategoryView === "function"
+) {
+
+    const originalGenerateCategoryView =
+        viewMenu._generateCategoryView.bind(viewMenu);
+
+    viewMenu._generateCategoryView = function(categories) {
+
+        if (!Array.isArray(categories)) {
+            return originalGenerateCategoryView(categories);
+        }
+
+        /*
+         * 이번 redraw에 들어온 비공식 카테고리 기억
+         */
+        categories.forEach(item => {
+
+            const category = item?.category;
+
+            if (
+                !category ||
+                baseCategories.has(category)
+            ) {
+                return;
+            }
+
+            if (!savedCategories.has(category)) {
+                savedCategories.set(category, {
+                    category,
+                    blocks: []
+                });
+            }
+        });
+
+        /*
+         * 이미 기억한 비공식 카테고리가
+         * 이번 목록에서 빠졌으면 다시 추가
+         */
+        const merged = [...categories];
+
+        const exists =
+            new Set(
+                merged
+                    .filter(Boolean)
+                    .map(item => item.category)
+            );
+
+        savedCategories.forEach(
+            (_, category) => {
+
+                if (!exists.has(category)) {
+
+                    merged.push({
+                        category,
+                        visible: true
+                    });
+
+                }
+            }
+        );
+
+        return originalGenerateCategoryView(
+            merged
+        );
+    };
+}
 
 
     /* =========================================
