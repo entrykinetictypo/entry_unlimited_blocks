@@ -78,29 +78,10 @@
         }
 
        if (message?.type === "LOAD_UNOFFICIAL_BLOCK") {
-    const loadScript = (file, callback) => {
-        const script = document.createElement("script");
-        script.src = chrome.runtime.getURL(file);
-
-        script.onload = () => {
-            script.remove();
-
-            if (callback) {
-                callback();
-            }
-        };
-
-        document.documentElement.appendChild(script);
-    };
-
-    if (!window.__UNOFFICIAL_RUNTIME_LOADED__) {
-        loadScript("unofficial/runtime.js", () => {
-            window.__UNOFFICIAL_RUNTIME_LOADED__ = true;
-            loadScript(message.file);
-        });
-    } else {
-        loadScript(message.file);
-    }
+    const script = document.createElement("script");
+    script.src = chrome.runtime.getURL(message.file);
+    script.onload = () => script.remove();
+    document.documentElement.appendChild(script);
 
     sendResponse({ success: true });
     return;
