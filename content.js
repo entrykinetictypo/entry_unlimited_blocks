@@ -94,9 +94,15 @@
                     document.documentElement.appendChild(script);
                 };
 
-                loadScript("unofficial/runtime.js", () => {
-                    loadScript(message.file);
-                });
+              loadScript("unofficial/runtime.js", () => {
+    loadScript(message.file, () => {
+        window.postMessage({
+            source: "ENTRY_UNLIMITED_BLOCKS",
+            type: "UNOFFICIAL_LOADED",
+            file: message.file
+        }, "*");
+    });
+});
 
                 sendResponse({
                     success: true
