@@ -1,3 +1,5 @@
+window.UnofficialRuntime = window.UnofficialRuntime || {};
+
 UnofficialRuntime.registerPackage = function({
     id,
     name,
