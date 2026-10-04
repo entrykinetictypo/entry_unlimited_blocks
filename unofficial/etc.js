@@ -1356,4 +1356,4 @@ const blocks = [
   }
 ]
 
-LibraryCreator.start(blocks, 'API', '기타')
+LibraryCreator.start(blocks, 'EtcBlock', '기타')
