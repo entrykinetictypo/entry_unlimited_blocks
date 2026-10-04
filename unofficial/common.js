@@ -1170,7 +1170,7 @@ addBlock('very-good', '%1잘했어요%2', {
 
 Entry.staticBlocks.push({
 
-    category: 'API',
+    category: 'CommonBlock',
 
     visible: true,
 
@@ -1186,10 +1186,10 @@ Entry.staticBlocks.push({
 });
 
 
-updateCategory('API')
+updateCategory('CommonBlock')
 
 
-$('head').append(`<style> #entryCategoryAPI 
+$('head').append(`<style> #entryCategoryCommonBlock 
 
 { background-image: url(/lib/entry-js/images/moving.svg); 
 
@@ -1201,7 +1201,7 @@ $('head').append(`<style> #entryCategoryAPI
 
  margin-bottom: 1px; 
 
- } .entrySelectedCategory#entryCategoryAPI 
+ } .entrySelectedCategory#entryCategoryCommonBlock 
 
   { background-image: url(/lib/entry-js/images/moving_on.svg); 
 
@@ -1219,4 +1219,4 @@ color: #ffffffff;
 `)
 
 
-$('#entryCategoryAPI').append('공용')
+$('#entryCategoryCommonBlock').append('공용')
