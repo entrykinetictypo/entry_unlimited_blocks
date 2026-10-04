@@ -38,19 +38,22 @@ window.UnofficialRuntime.registerPackage = function({
 
     Lang.Blocks[id.toUpperCase()] = name;
 
-    const menu = Entry.playground.mainWorkspace.blockMenu;
-    const allBlocks = EntryStatic.getAllBlocks();
+   const menu = Entry.playground.mainWorkspace.blockMenu;
 
-    menu._categoryData = allBlocks;
+const categoryExists = menu._categoryData.some(
+    item => item.category === id
+);
 
-    menu._generateCategoryView(
-        allBlocks.map(item => ({
-            category: item.category,
-            visible: item.category !== "arduino"
-        }))
-    );
+if (!categoryExists) {
+    menu._categoryData.push({
+        category: id,
+        blocks: []
+    });
+}
 
-    menu._generateCategoryCode(id);
+menu._generateCategoryView(menu._categoryData);
+menu._generateCategoryCode(id);
+menu.setMenu();
 
     if (icon) {
         const el = document.getElementById(
