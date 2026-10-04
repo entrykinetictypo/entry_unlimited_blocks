@@ -330,37 +330,30 @@
 
     function buildCategoryView() {
 
-        const view = [];
+    const view = [];
 
+    originalBlocks.forEach(item => {
 
-        originalBlocks.forEach(item => {
-
-            view.push({
-                category: item.category,
-
-                visible:
-                    visibleBaseCategories
-                        .has(item.category)
-            });
-
+        view.push({
+            category: item.category,
+            visible: item.category !== "arduino"
         });
 
+    });
 
-        unofficialCategories.forEach(
-            (_, category) => {
+    unofficialCategories.forEach(
+        (_, category) => {
 
-                view.push({
-                    category,
-                    visible: true
-                });
+            view.push({
+                category,
+                visible: true
+            });
 
-            }
-        );
+        }
+    );
 
-
-        return view;
-    }
-
+    return view;
+}
 
     /* ==================================================
        7. 핵심 복구
