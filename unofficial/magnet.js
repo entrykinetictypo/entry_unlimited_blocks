@@ -1856,5 +1856,5 @@ color: #ffffffff;
 
 `)
 
-$('#entryCategoryMagnetBlock').append('매그넛')
+
 })();
