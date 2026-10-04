@@ -1797,7 +1797,7 @@ addBlock('copy_text', '%1 텍스트 복사하기 %2', {
 
 Entry.staticBlocks.push({
 
-    category: 'API',
+    category: 'MagnetBlock',
 
     visible: true,
 
@@ -1817,14 +1817,14 @@ Entry.staticBlocks.push({
 
 
 
-updateCategory('API')
+updateCategory('MagnetBlock')
 
 
 $('head').append(`
 
 <style>
 
-#entryCategoryAPI {
+#entryCategoryMagnetBlock {
 
 background-image: url(/lib/entry-js/images/hardware.svg);
 
@@ -1838,7 +1838,7 @@ margin-bottom: 1px;
 
 }
 
-.entrySelectedCategory#entryCategoryAPI {
+.entrySelectedCategory#entryCategoryMagnetBlock {
 
 background-image: url(/lib/entry-js/images/hardware_on.svg);
 
@@ -1855,4 +1855,4 @@ color: #ffffffff;
 
 `)
 
-$('#entryCategoryAPI').append('매그넛')
+$('#entryCategoryMagnetBlock').append('매그넛')
