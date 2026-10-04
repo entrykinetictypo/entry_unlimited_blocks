@@ -1810,7 +1810,7 @@ addBlock('npi off', 'NPI블록 불러오기 해제%1', {
     ],
     def: [],
 }, 'text', async (sprite, script) => {
-    Entry.playground.blockMenu.banCategory('API')
+    Entry.playground.blockMenu.banCategory('NPIBlock')
 })
 
 
@@ -1962,16 +1962,16 @@ Entry.staticBlocks.push({
 });
 
 
-updateCategory('API')
+updateCategory('NPIBlock')
 
 
-$('head').append(`<style> #entryCategoryAPI 
+$('head').append(`<style> #entryCategoryNPIBlock 
 { background-image: url(/lib/entry-js/images/robot.svg); 
  background-repeat: no-repeat; 
  border-bottom-right-radius: 6px; 
  border-bottom-left-radius: 6px; 
  margin-bottom: 1px; 
- } .entrySelectedCategory#entryCategoryAPI 
+ } .entrySelectedCategory#entryCategoryNPIBlock 
   { background-image: url(/lib/entry-js/images/robot_on.svg); 
 background-color: #3ed6c1ff;
 border-color: #000000ff;
@@ -1984,4 +1984,4 @@ color: #ffffffff;
 `)
 
 
-$('#entryCategoryAPI').append('NPI')
+$('#entryCategoryNPIBlock').append('NPI')
