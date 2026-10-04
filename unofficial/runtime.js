@@ -7,122 +7,61 @@
     console.log("🚀 Unofficial Runtime 시작");
 
 
-    /* ==================================================
-       1. Entry 기본 상태 저장
-       ================================================== */
+    /* =========================================
+       1. 엔트리 기본 카테고리만 처음에 기억
+       ========================================= */
 
-    const menu =
-        Entry.playground.mainWorkspace.blockMenu;
-
-    const originalGenerateCategoryView =
-        menu._generateCategoryView.bind(menu);
-
-
-    function cloneCategory(item) {
-        return {
-            ...item,
-            blocks: Array.isArray(item.blocks)
-                ? [...item.blocks]
-                : []
-        };
-    }
-
-
-    const originalBlocks =
+    const initialBlocks =
         Array.isArray(EntryStatic.getAllBlocks?.())
-            ? EntryStatic.getAllBlocks().map(cloneCategory)
+            ? EntryStatic.getAllBlocks()
             : [];
 
-
-    const baseCategoryIds =
+    const baseCategories =
         new Set(
-            originalBlocks
-                .filter(Boolean)
+            initialBlocks
+                .filter(item => item?.category)
                 .map(item => item.category)
         );
 
 
     /*
-       현재 화면에 실제로 보이는
-       공식 카테고리를 기억
-    */
+     * 비공식 카테고리 저장소
+     */
 
-    const visibleBaseCategories =
-        new Set();
-
-    document
-        .querySelectorAll(
-            ".entryCategoryElementWorkspace[id^='entryCategory']"
-        )
-        .forEach(element => {
-
-            const category =
-                element.id.replace(
-                    "entryCategory",
-                    ""
-                );
-
-            if (category) {
-                visibleBaseCategories.add(category);
-            }
-        });
+    const savedCategories = new Map();
 
 
-    console.log(
-        "📦 기본 카테고리:",
-        [...baseCategoryIds]
-    );
-
-
-    /* ==================================================
-       2. 비공식 카테고리 저장소
-       ================================================== */
-
-    const unofficialCategories =
-        new Map();
-
+    /* =========================================
+       2. 비공식 카테고리 기억
+       ========================================= */
 
     function saveCategory(item) {
 
         if (
             !item ||
             !item.category ||
-            baseCategoryIds.has(item.category)
+            baseCategories.has(item.category)
         ) {
             return;
         }
 
-
         const old =
-            unofficialCategories.get(
-                item.category
-            );
+            savedCategories.get(item.category);
 
-
-        const newBlocks =
-            Array.isArray(item.blocks)
-                ? item.blocks
-                : [];
-
-
-        unofficialCategories.set(
+        savedCategories.set(
             item.category,
             {
                 ...(old || {}),
                 ...item,
 
                 blocks:
-                    newBlocks.length > 0
-                        ? [...newBlocks]
+                    Array.isArray(item.blocks)
+                        ? [...item.blocks]
                         : old?.blocks || []
             }
         );
     }
 
-
-    /* ==================================================
-       3. 현재 Entry 상태에서 비공식 카테고리 탐색
-       ================================================== */
 
     function scanCategories() {
 
@@ -130,7 +69,7 @@
 
 
         /*
-         * A형 / B형 / C형
+         * A / B / C
          */
 
         try {
@@ -142,16 +81,11 @@
                 sources.push(all);
             }
 
-        } catch (e) {
-            console.warn(
-                "getAllBlocks 읽기 실패",
-                e
-            );
-        }
+        } catch (e) {}
 
 
         /*
-         * A형 / B형
+         * A / B
          */
 
         if (Array.isArray(Entry.staticBlocks)) {
@@ -162,22 +96,16 @@
 
 
         /*
-         * C형 / D형
+         * C / D
          */
 
-        if (
-            Array.isArray(
-                Entry.playground
-                    ?.blockMenu
-                    ?._categoryData
-            )
-        ) {
+        const categoryData =
+            Entry.playground
+                ?.blockMenu
+                ?._categoryData;
 
-            sources.push(
-                Entry.playground
-                    .blockMenu
-                    ._categoryData
-            );
+        if (Array.isArray(categoryData)) {
+            sources.push(categoryData);
         }
 
 
@@ -191,11 +119,11 @@
     }
 
 
-    /* ==================================================
-       4. 카테고리 이름 / 스타일 기억
-       ================================================== */
+    /* =========================================
+       3. 이름 / 스타일 기억
+       ========================================= */
 
-    function captureCategoryAppearance() {
+    function captureAppearance() {
 
         document
             .querySelectorAll(
@@ -209,67 +137,244 @@
                         ""
                     );
 
-
                 if (
                     !category ||
-                    baseCategoryIds.has(category)
+                    baseCategories.has(category)
                 ) {
                     return;
                 }
 
 
-                const saved =
-                    unofficialCategories.get(
-                        category
-                    ) || {
+                const data =
+                    savedCategories.get(category) ||
+                    {
                         category,
                         blocks: []
                     };
 
 
-                const text =
-                    element.textContent
-                        ?.trim();
+                const name =
+                    element.textContent?.trim();
 
-
-                if (text) {
-                    saved.__name = text;
+                if (name) {
+                    data.__name = name;
                 }
 
 
                 const style =
-                    element.getAttribute(
-                        "style"
-                    );
-
+                    element.getAttribute("style");
 
                 if (style) {
-                    saved.__style = style;
+                    data.__style = style;
                 }
 
 
-                unofficialCategories.set(
+                savedCategories.set(
                     category,
-                    saved
+                    data
                 );
             });
     }
 
 
-    function restoreCategoryAppearance() {
+    /* =========================================
+       4. staticBlocks에는
+          "빠진 비공식"만 추가
+       ========================================= */
 
-        unofficialCategories.forEach(
+    function restoreStaticBlocks() {
+
+        if (!Array.isArray(Entry.staticBlocks)) {
+            return;
+        }
+
+
+        let currentAll = [];
+
+        try {
+
+            const all =
+                EntryStatic.getAllBlocks?.();
+
+            if (Array.isArray(all)) {
+                currentAll = all;
+            }
+
+        } catch (e) {}
+
+
+        savedCategories.forEach(
             (data, category) => {
 
-                const element =
+                const exists =
+                    currentAll.some(
+                        item =>
+                            item?.category ===
+                            category
+                    );
+
+
+                if (exists) return;
+
+
+                const inStatic =
+                    Entry.staticBlocks.some(
+                        item =>
+                            item?.category ===
+                            category
+                    );
+
+
+                if (!inStatic) {
+
+                    Entry.staticBlocks.push({
+                        category,
+                        blocks:
+                            Array.isArray(data.blocks)
+                                ? [...data.blocks]
+                                : []
+                    });
+
+                }
+
+            }
+        );
+    }
+
+
+    /* =========================================
+       5. _categoryData에도
+          빠진 비공식만 추가
+       ========================================= */
+
+    function restoreCategoryData() {
+
+        const menus = [
+            Entry.playground?.blockMenu,
+            Entry.playground
+                ?.mainWorkspace
+                ?.blockMenu
+        ];
+
+
+        menus.forEach(menu => {
+
+            if (
+                !menu ||
+                !Array.isArray(menu._categoryData)
+            ) {
+                return;
+            }
+
+
+            savedCategories.forEach(
+                (data, category) => {
+
+                    const exists =
+                        menu._categoryData.some(
+                            item =>
+                                item?.category ===
+                                category
+                        );
+
+
+                    if (!exists) {
+
+                        menu._categoryData.push({
+                            category,
+                            blocks:
+                                Array.isArray(data.blocks)
+                                    ? [...data.blocks]
+                                    : []
+                        });
+
+                    }
+
+                }
+            );
+
+        });
+    }
+
+
+    /* =========================================
+       6. 화면에서 사라진
+          비공식 카테고리만 다시 생성
+       ========================================= */
+
+    function restoreCategoryElements() {
+
+        const menu =
+            Entry.playground
+                ?.mainWorkspace
+                ?.blockMenu;
+
+        if (!menu) return;
+
+
+        savedCategories.forEach(
+            (data, category) => {
+
+                let element =
                     document.getElementById(
                         "entryCategory" +
                         category
                     );
 
 
+                /*
+                 * 이미 있으면 기본 메뉴는 절대 안 건드림
+                 */
+
+                if (!element) {
+
+                    try {
+
+                        const generated =
+                            menu._generateCategoryElement?.(
+                                category,
+                                true
+                            );
+
+
+                        if (
+                            generated &&
+                            generated[0] &&
+                            menu._categoryCol?.[0]
+                        ) {
+
+                            menu._categoryCol[0]
+                                .appendChild(
+                                    generated[0]
+                                );
+
+                        }
+
+                    } catch (e) {
+
+                        console.warn(
+                            category +
+                            " 카테고리 생성 실패",
+                            e
+                        );
+
+                    }
+
+
+                    element =
+                        document.getElementById(
+                            "entryCategory" +
+                            category
+                        );
+                }
+
+
                 if (!element) return;
 
+
+                /*
+                 * 이름 복구
+                 */
 
                 if (data.__name) {
 
@@ -277,6 +382,10 @@
                         data.__name;
                 }
 
+
+                /*
+                 * inline style 복구
+                 */
 
                 if (data.__style) {
 
@@ -291,182 +400,74 @@
     }
 
 
-    /* ==================================================
-       5. 통합 categoryData 생성
-       ================================================== */
+    /* =========================================
+       7. 블록 메뉴 코드 생성
+       ========================================= */
 
-    function buildMergedCategories() {
+    function restoreCategoryCode() {
 
-        const result =
-            originalBlocks.map(
-                cloneCategory
-            );
+        const menu =
+            Entry.playground
+                ?.blockMenu;
 
-
-        unofficialCategories.forEach(
-            data => {
-
-                const copy =
-                    cloneCategory(data);
+        if (!menu) return;
 
 
-                delete copy.__name;
-                delete copy.__style;
-
-
-                result.push(copy);
-
-            }
-        );
-
-
-        return result;
-    }
-
-
-    /* ==================================================
-       6. 카테고리 화면 생성용 목록
-       ================================================== */
-
-    function buildCategoryView() {
-
-    const view = [];
-
-    originalBlocks.forEach(item => {
-
-        view.push({
-            category: item.category,
-            visible: item.category !== "arduino"
-        });
-
-    });
-
-    unofficialCategories.forEach(
-        (_, category) => {
-
-            view.push({
-                category,
-                visible: true
-            });
-
-        }
-    );
-
-    return view;
-}
-
-    /* ==================================================
-       7. 핵심 복구
-       ================================================== */
-
-    function reconcile() {
-
-        /*
-         * redraw 전에
-         * 현재 이름/스타일 확보
-         */
-
-        scanCategories();
-
-        captureCategoryAppearance();
-
-
-        const merged =
-            buildMergedCategories();
-
-
-        /*
-         * canonical staticBlocks
-         */
-
-        Entry.staticBlocks =
-            merged;
-
-
-        /*
-         * 이후 A형 등이 덮어써도
-         * 다음 reconcile에서 다시 복구
-         */
-
-        EntryStatic.getAllBlocks =
-            () => Entry.staticBlocks;
-
-
-        /*
-         * 메뉴 데이터 통합
-         */
-
-        if (Entry.playground?.blockMenu) {
-    Entry.playground.blockMenu._categoryData = merged;
-}
-
-if (Entry.playground?.mainWorkspace?.blockMenu) {
-    Entry.playground.mainWorkspace.blockMenu._categoryData = merged;
-}
-
-        /*
-         * 메뉴 다시 그리기
-         */
-
-        try {
-
-            originalGenerateCategoryView(
-                buildCategoryView()
-            );
-
-        } catch (e) {
-
-            console.error(
-                "카테고리 redraw 실패",
-                e
-            );
-        }
-
-
-        /*
-         * 이름 / inline style 복구
-         */
-
-        restoreCategoryAppearance();
-
-
-        /*
-         * 비공식 카테고리 코드 생성
-         */
-
-        unofficialCategories.forEach(
+        savedCategories.forEach(
             (_, category) => {
 
                 try {
 
-                    menu._generateCategoryCode(
+                    menu._generateCategoryCode?.(
                         category
                     );
 
-                } catch (e) {
-
-                    console.warn(
-                        category +
-                        " category code 생성 실패",
-                        e
-                    );
-                }
+                } catch (e) {}
 
             }
-        );
-
-
-        console.log(
-            "✅ Runtime 통합:",
-            [...unofficialCategories.keys()]
         );
     }
 
 
-    /* ==================================================
-       8. content.js에서 보내는
-          로드 완료 신호 받기
-       ================================================== */
+    /* =========================================
+       8. 통합 복구
+       ========================================= */
+
+    function reconcile() {
+
+        /*
+         * 현재 새로 로드된 카테고리 확보
+         */
+
+        scanCategories();
+
+        captureAppearance();
+
+
+        /*
+         * 엔트리 기본 카테고리는
+         * 여기서 절대 재작성하지 않음
+         */
+
+        restoreStaticBlocks();
+
+        restoreCategoryData();
+
+        restoreCategoryElements();
+
+        restoreCategoryCode();
+
+
+        console.log(
+            "✅ 비공식 카테고리:",
+            [...savedCategories.keys()]
+        );
+    }
+
+
+    /* =========================================
+       9. 비공식 블록 로드 완료
+       ========================================= */
 
     window.addEventListener(
         "message",
@@ -484,21 +485,20 @@ if (Entry.playground?.mainWorkspace?.blockMenu) {
 
 
             console.log(
-                "📥 로드 완료:",
+                "📥 로드:",
                 event.data.file
             );
 
 
             /*
-             * A / B / C 즉시 처리
+             * 일반 A/B/C
              */
 
             reconcile();
 
 
             /*
-             * Block2.0처럼
-             * setInterval을 사용하는 경우
+             * Block2.0 대기
              */
 
             setTimeout(
@@ -508,8 +508,7 @@ if (Entry.playground?.mainWorkspace?.blockMenu) {
 
 
             /*
-             * Express / right_click처럼
-             * 작품 재로드가 있는 경우
+             * Express / right_click reload 대응
              */
 
             setTimeout(
@@ -526,25 +525,19 @@ if (Entry.playground?.mainWorkspace?.blockMenu) {
     );
 
 
-    /* ==================================================
-       9. 디버그용
-       ================================================== */
-
     window.UnofficialRuntime = {
-
         reconcile,
 
         getCategories() {
             return [
-                ...unofficialCategories.keys()
+                ...savedCategories.keys()
             ];
         }
-
     };
 
 
     console.log(
-        "✅ Unofficial Runtime 준비 완료"
+        "✅ Runtime 준비 완료"
     );
 
 })();
