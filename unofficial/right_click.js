@@ -1,3 +1,4 @@
+(() => {
 Entry.staticBlocks = [
 
     {
@@ -823,4 +824,5 @@ const addBlock = (blockname, template, color, params, _class, func, skeleton = '
 })();
 
     console.log('우클릭 판단 블록 추가 및 작품 재로드 완료');
+})();
 })();
