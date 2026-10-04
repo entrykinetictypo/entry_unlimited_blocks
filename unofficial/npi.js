@@ -1827,7 +1827,7 @@ addBlock('off', '모든 카테고리 제거하기%1', {
     ],
     def: [],
 }, 'text', async (sprite, script) => {
-    Entry.playground.blockMenu.banCategory('API')
+    Entry.playground.blockMenu.banCategory('NPIBlock')
     Entry.playground.blockMenu.banCategory('start')
     Entry.playground.blockMenu.banCategory('flow')
     Entry.playground.blockMenu.banCategory('moving')
