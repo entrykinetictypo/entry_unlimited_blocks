@@ -182,7 +182,13 @@
           "빠진 비공식"만 추가
        ========================================= */
 
-     savedCategories.forEach(
+     function restoreStaticBlocks() {
+
+    if (!Array.isArray(Entry.staticBlocks)) {
+        return;
+    }
+
+    savedCategories.forEach(
         (data, category) => {
 
             const exists =
@@ -192,6 +198,7 @@
                 );
 
             if (!exists) {
+
                 Entry.staticBlocks.push({
                     category,
                     blocks:
@@ -208,7 +215,6 @@
         }
     );
 }
-
 
     /* =========================================
        5. _categoryData에도
@@ -368,20 +374,11 @@
     }
 
 
-    /* =========================================
-       7. 블록 메뉴 코드 생성
-       ========================================= */
-
-    function restoreCategoryCode() {
-
-        const menu =
-            Entry.playground
-                ?.blockMenu;
-
+    
        
 
     /* =========================================
-       8. 통합 복구
+       7. 통합 복구
        ========================================= */
 
     function reconcile() {
@@ -417,7 +414,7 @@
 
 
     /* =========================================
-       9. 비공식 블록 로드 완료
+       8. 비공식 블록 로드 완료
        ========================================= */
 
     window.addEventListener(
