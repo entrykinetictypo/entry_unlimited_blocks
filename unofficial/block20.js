@@ -1,3 +1,4 @@
+(() => {
 console.log("block20.js 실행됨");
 window.Block20 = window.Block20 || {
     block: () => {
@@ -962,4 +963,5 @@ entryCategory.innerText =
 
 }, 50);
 
+})();
 })();
