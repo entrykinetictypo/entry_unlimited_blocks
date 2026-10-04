@@ -408,24 +408,24 @@ return Entry.userAgent
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 Entry.staticBlocks.push({
-    category: 'API', blocks: [
+    category: 'NewBlock', blocks: [
 	    'boost_mode',
 	    'big_big',
 	    'com_browser'
     ]
 });
 
-updateCategory('API')
+updateCategory('NewBlock')
 
 $('head').append(`
 <style>
-#entryCategoryAPI {
+#entryCategoryNewBlock {
     background-repeat: no-repeat;
     border-bottom-right-radius: 6px;
     border-bottom-left-radius: 6px;
     margin-bottom: 1px;
 }
-.entrySelectedCategory#entryCategoryAPI {
+.entrySelectedCategory#entryCategoryNewBlock {
     background-color: #000001;
     border-color: #778893;
     color: #fff;
@@ -433,4 +433,4 @@ $('head').append(`
 </style>
 `)
 
-$('#entryCategoryAPI').append('뉴블록')
+$('#entryCategoryNewBlock').append('뉴블록')
