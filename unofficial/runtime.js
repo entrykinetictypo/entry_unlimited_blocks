@@ -2,12 +2,12 @@ console.log("runtime.js loaded");
 window.UnofficialRuntime = window.UnofficialRuntime || {};
 
 window.UnofficialRuntime.registerPackage = function({
-   console.log("registerPackage called", id, name); 
     id,
     name,
     blocks,
     icon = null
 }) {
+   console.log("registerPackage called", id, name); 
     const menu = Entry.playground.mainWorkspace.blockMenu;
 
     const exists = Entry.staticBlocks.some(
