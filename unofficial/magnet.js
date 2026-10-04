@@ -1,9 +1,5 @@
 (() => {
-EntryStatic.getAllBlocks = () => {
 
-    return Entry.staticBlocks;
-
-}
 
 const updateCategory = (category, options) => {
 
