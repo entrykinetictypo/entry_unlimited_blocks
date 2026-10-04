@@ -58,52 +58,71 @@
     );
 
     chrome.runtime.onMessage.addListener(
-    (message, sender, sendResponse) => {
+        (message, sender, sendResponse) => {
 
-        if (message?.type === "ADD_ENTRY_BLOCK") {
-            window.postMessage(
-                {
-                    source: "ENTRY_UNLIMITED_BLOCKS",
-                    type: "ADD_BLOCK",
-                    blockId: message.blockId
-                },
-                "*"
-            );
+            if (message?.type === "ADD_ENTRY_BLOCK") {
+                window.postMessage(
+                    {
+                        source: "ENTRY_UNLIMITED_BLOCKS",
+                        type: "ADD_BLOCK",
+                        blockId: message.blockId
+                    },
+                    "*"
+                );
 
-            sendResponse({
-                success: true
-            });
+                sendResponse({
+                    success: true
+                });
 
-            return;
+                return;
+            }
+
+            if (message?.type === "LOAD_UNOFFICIAL_BLOCK") {
+                const loadScript = (file, callback) => {
+                    const script = document.createElement("script");
+
+                    script.src = chrome.runtime.getURL(file);
+
+                    script.onload = () => {
+                        script.remove();
+
+                        if (callback) {
+                            callback();
+                        }
+                    };
+
+                    document.documentElement.appendChild(script);
+                };
+
+                loadScript("unofficial/runtime.js", () => {
+                    loadScript(message.file);
+                });
+
+                sendResponse({
+                    success: true
+                });
+
+                return;
+            }
+
+            if (message?.type === "ENTRY_ACTION") {
+                window.postMessage(
+                    {
+                        source: "ENTRY_UNLIMITED_BLOCKS",
+                        type: "ENTRY_ACTION",
+                        action: message.action,
+                        data: message.data || {}
+                    },
+                    "*"
+                );
+
+                sendResponse({
+                    success: true
+                });
+
+                return;
+            }
         }
-
-       if (message?.type === "LOAD_UNOFFICIAL_BLOCK") {
-    const script = document.createElement("script");
-    script.src = chrome.runtime.getURL(message.file);
-    script.onload = () => script.remove();
-    document.documentElement.appendChild(script);
-
-    sendResponse({ success: true });
-    return;
-}
-        if (message?.type === "ENTRY_ACTION") {
-window.postMessage(
-{
-source: "ENTRY_UNLIMITED_BLOCKS",
-type: "ENTRY_ACTION",
-action: message.action,
-data: message.data || {}
-},
-"*"
-);
-
-sendResponse({
-success: true
-});
-
-return;
-}
-    }
-);
+    );
 
 })();
