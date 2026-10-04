@@ -1,68 +1,161 @@
-console.log("runtime.js loaded");
+(() => {
+    "use strict";
 
-window.UnofficialRuntime = window.UnofficialRuntime || {};
-
-window.UnofficialRuntime.categories =
-    window.UnofficialRuntime.categories || [];
-
-if (!window.UnofficialRuntime.baseGetAllBlocks) {
-    window.UnofficialRuntime.baseGetAllBlocks =
-        EntryStatic.getAllBlocks.bind(EntryStatic);
-
-    EntryStatic.getAllBlocks = function() {
-        return [
-            ...window.UnofficialRuntime.baseGetAllBlocks(),
-            ...window.UnofficialRuntime.categories
-        ];
-    };
-}
-
-window.UnofficialRuntime.registerPackage = function({
-    id,
-    name,
-    blocks,
-    icon = null
-}) {
-    console.log("registerPackage called", id, name);
-
-    const exists = window.UnofficialRuntime.categories.some(
-        item => item.category === id
-    );
-
-    if (!exists) {
-        window.UnofficialRuntime.categories.push({
-            category: id,
-            blocks: blocks.map(block => block.name)
-        });
+    if (window.__ENTRY_UNOFFICIAL_RUNTIME__) {
+        return;
     }
 
-    Lang.Blocks[id.toUpperCase()] = name;
+    window.__ENTRY_UNOFFICIAL_RUNTIME__ = true;
 
-   const menu = Entry.playground.mainWorkspace.blockMenu;
+    const originalBlocks = (() => {
+        let blocks = [];
 
-const categoryExists = menu._categoryData.some(
-    item => item.category === id
-);
+        if (
+            typeof EntryStatic !== "undefined" &&
+            typeof EntryStatic.getAllBlocks === "function"
+        ) {
+            blocks = EntryStatic.getAllBlocks();
+        }
 
-if (!categoryExists) {
-    menu._categoryData.push({
-        category: id,
-        blocks: []
-    });
-}
+        if (!Array.isArray(blocks) && Array.isArray(Entry.staticBlocks)) {
+            blocks = Entry.staticBlocks;
+        }
 
-menu._generateCategoryView(menu._categoryData);
-menu._generateCategoryCode(id);
-menu.setMenu();
+        if (!Array.isArray(blocks)) {
+            blocks = [];
+        }
 
-    if (icon) {
-        const el = document.getElementById(
-            `entryCategory${id}`
+        return blocks.map((item) => ({
+            ...item,
+            blocks: Array.isArray(item.blocks)
+                ? [...item.blocks]
+                : item.blocks
+        }));
+    })();
+
+    const packages = new Map();
+
+    function getAllBlocks() {
+        const result = originalBlocks.map((item) => ({
+            ...item,
+            blocks: Array.isArray(item.blocks)
+                ? [...item.blocks]
+                : item.blocks
+        }));
+
+        packages.forEach((pkg) => {
+            result.push({
+                category: pkg.id,
+                visible: true,
+                blocks: [...pkg.blocks]
+            });
+        });
+
+        return result;
+    }
+
+    function refresh(selectedCategory) {
+        const allBlocks = getAllBlocks();
+
+        Entry.staticBlocks = allBlocks;
+
+        EntryStatic.getAllBlocks = () => {
+            return getAllBlocks();
+        };
+
+        packages.forEach((pkg) => {
+            if (
+                typeof Lang !== "undefined" &&
+                Lang.Blocks
+            ) {
+                Lang.Blocks[pkg.id.toUpperCase()] = pkg.name;
+            }
+        });
+
+        const menu =
+            Entry.playground.mainWorkspace.blockMenu;
+
+        menu._categoryData = allBlocks;
+
+        menu._generateCategoryView(
+            allBlocks.map((item) => ({
+                category: item.category,
+                visible:
+                    item.category === "arduino"
+                        ? false
+                        : item.visible !== false
+            }))
         );
 
-        if (el) {
-            el.style.backgroundImage = `url(${icon})`;
-            el.style.backgroundRepeat = "no-repeat";
+        packages.forEach((pkg) => {
+            menu._generateCategoryCode(pkg.id);
+        });
+
+        packages.forEach((pkg) => {
+            const el = document.getElementById(
+                `entryCategory${pkg.id}`
+            );
+
+            if (!el) {
+                return;
+            }
+
+            if (
+                pkg.name &&
+                !el.textContent.includes(pkg.name)
+            ) {
+                el.append(
+                    document.createTextNode(pkg.name)
+                );
+            }
+
+            if (pkg.icon) {
+                el.style.backgroundImage =
+                    `url(${pkg.icon})`;
+
+                el.style.backgroundRepeat =
+                    "no-repeat";
+            }
+        });
+
+        if (selectedCategory) {
+            setTimeout(() => {
+                const el = document.getElementById(
+                    `entryCategory${selectedCategory}`
+                );
+
+                if (el) {
+                    el.click();
+                }
+            }, 0);
         }
     }
-};
+
+    window.UnofficialRuntime = {
+        registerPackage({
+            id,
+            name,
+            blocks,
+            icon = null
+        }) {
+            if (!id || !Array.isArray(blocks)) {
+                return;
+            }
+
+            packages.set(id, {
+                id,
+                name: name || id,
+                blocks: [...blocks],
+                icon
+            });
+
+            refresh(id);
+        },
+
+        refresh,
+
+        getAllBlocks
+    };
+
+    console.log("UnofficialRuntime ready");
+})();
