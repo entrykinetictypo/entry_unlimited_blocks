@@ -182,64 +182,32 @@
           "빠진 비공식"만 추가
        ========================================= */
 
-    function restoreStaticBlocks() {
+     savedCategories.forEach(
+        (data, category) => {
 
-        if (!Array.isArray(Entry.staticBlocks)) {
-            return;
+            const exists =
+                Entry.staticBlocks.some(
+                    item =>
+                        item?.category === category
+                );
+
+            if (!exists) {
+                Entry.staticBlocks.push({
+                    category,
+                    blocks:
+                        Array.isArray(data.blocks)
+                            ? [...data.blocks]
+                            : []
+                });
+
+                console.log(
+                    "🔧 staticBlocks 복구:",
+                    category
+                );
+            }
         }
-
-
-        let currentAll = [];
-
-        try {
-
-            const all =
-                EntryStatic.getAllBlocks?.();
-
-            if (Array.isArray(all)) {
-                currentAll = all;
-            }
-
-        } catch (e) {}
-
-
-        savedCategories.forEach(
-            (data, category) => {
-
-                const exists =
-                    currentAll.some(
-                        item =>
-                            item?.category ===
-                            category
-                    );
-
-
-                if (exists) return;
-
-
-                const inStatic =
-                    Entry.staticBlocks.some(
-                        item =>
-                            item?.category ===
-                            category
-                    );
-
-
-                if (!inStatic) {
-
-                    Entry.staticBlocks.push({
-                        category,
-                        blocks:
-                            Array.isArray(data.blocks)
-                                ? [...data.blocks]
-                                : []
-                    });
-
-                }
-
-            }
-        );
-    }
+    );
+}
 
 
     /* =========================================
