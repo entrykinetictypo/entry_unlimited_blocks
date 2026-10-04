@@ -1,3 +1,4 @@
+(() => {
 Entry.staticBlocks = [
 
     {
@@ -1220,3 +1221,4 @@ color: #ffffffff;
 
 
 $('#entryCategoryCommonBlock').append('공용')
+})();
