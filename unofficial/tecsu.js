@@ -1132,7 +1132,7 @@ addBlock('today_weekday', '오늘 요일', {
 
 Entry.staticBlocks.push({
 
-    category: 'API', blocks: [
+    category: 'TecsuBlock', blocks: [
 
         'stop',
 
@@ -1155,14 +1155,14 @@ Entry.staticBlocks.push({
 })
 
 
-updateCategory('API')
+updateCategory('TecsuBlock')
 
 
 $('head').append(`
 
 <style> 
 
-#entryCategoryAPI 
+#entryCategoryTecsuBlock 
 
 { background-image: url(/lib/entry-js/images/hardware_on.svg);
 
@@ -1174,7 +1174,7 @@ $('head').append(`
 
  margin-bottom: 1px; 
 
- } .entrySelectedCategory#entryCategoryAPI 
+ } .entrySelectedCategory#entryCategoryTecsuBlock 
 
   { background-image: url(/lib/entry-js/images/hardware_on.svg);
 
@@ -1188,4 +1188,4 @@ $('head').append(`
 
 `)
 
-$('#entryCategoryAPI').append('특수')
+$('#entryCategoryTecsuBlock').append('특수')
