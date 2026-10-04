@@ -1,7 +1,7 @@
 console.log("runtime.js loaded");
 window.UnofficialRuntime = window.UnofficialRuntime || {};
 
-UnofficialRuntime.registerPackage = function({
+window.UnofficialRuntime.registerPackage = function({
    console.log("registerPackage called", id, name); 
     id,
     name,
