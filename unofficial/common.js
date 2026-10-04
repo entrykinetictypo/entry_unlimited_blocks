@@ -9,40 +9,12 @@ EntryStatic.getAllBlocks = () => {
 
 const updateCategory = (category, options) => {
 
-    Entry.playground.mainWorkspace.blockMenu._generateCategoryView([
-
-        { category: 'start', visible: true },
-
-        { category: 'flow', visible: true },
-
-        { category: 'moving', visible: true },
-
-        { category: 'looks', visible: true },
-
-        { category: 'brush', visible: true },
-
-        { category: 'text', visible: true },
-
-        { category: 'sound', visible: true },
-
-        { category: 'judgement', visible: true },
-
-        { category: 'calc', visible: true },
-
-        { category: 'variable', visible: true },
-
-        { category: 'func', visible: true },
-
-        { category: 'analysis', visible: true },
-
-        { category: 'ai_utilize', visible: true },
-
-        { category: 'expansion', visible: true },
-
-        { category: 'arduino', visible: false }, { category: category, visible: true }
-
-    ]);
-
+   Entry.playground.mainWorkspace.blockMenu._generateCategoryView(
+    Entry.staticBlocks.map(item => ({
+        category: item.category,
+        visible: item.category !== 'arduino'
+    }))
+); 
     for (let i = 0; i < $('.entryCategoryElementWorkspace').length; i++) {
 
         if (!($($('.entryCategoryElementWorkspace')[i]).attr('id') == 'entryCategorytext')) {
