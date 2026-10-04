@@ -1907,7 +1907,7 @@ addBlock('is_signal', '%1 신호를 받았는가?',{
 
 
 Entry.staticBlocks.push({
-    category: 'API', blocks: [
+    category: 'NPIBlock', blocks: [
         'alert1',
         'alert2',
         'npi',
