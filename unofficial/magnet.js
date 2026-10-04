@@ -1,5 +1,5 @@
 (() => {
-Entry.staticBlocks = [
+Entry.staticBlocks = Entry.staticBlocks || [
 
     {
 
@@ -564,81 +564,42 @@ EntryStatic.getAllBlocks = () => {
 }
 
 const updateCategory = (category, options) => {
-
-    Entry.playground.mainWorkspace.blockMenu._generateCategoryView([
-
-        { category: 'start', visible: true },
-
-        { category: 'flow', visible: true },
-
-        { category: 'moving', visible: true },
-
-        { category: 'looks', visible: true },
-
-        { category: 'brush', visible: true },
-
-        { category: 'text', visible: true },
-
-        { category: 'sound', visible: true },
-
-        { category: 'judgement', visible: true },
-
-        { category: 'calc', visible: true },
-
-        { category: 'variable', visible: true },
-
-        { category: 'func', visible: true },
-
-        { category: 'analysis', visible: true },
-
-        { category: 'ai_utilize', visible: true },
-
-        { category: 'expansion', visible: true },
-
-        { category: 'arduino', visible: false }, { category: category, visible: true }
-
-    ]);
-
-    for (let i = 0; i < $('.entryCategoryElementWorkspace').length; i++) {
-
-        if (!($($('.entryCategoryElementWorkspace')[i]).attr('id') == 'entryCategorytext')) {
-
-            $($('.entryCategoryElementWorkspace')[i]).attr('class', 'entryCategoryElementWorkspace');
-
-        }
-
-    }
+    Entry.playground.mainWorkspace.blockMenu._generateCategoryView(
+        Entry.staticBlocks.map(item => ({
+            category: item.category,
+            visible: item.category !== 'arduino'
+        }))
+    );
 
     Entry.playground.blockMenu._categoryData = EntryStatic.getAllBlocks();
 
     Entry.playground.blockMenu._generateCategoryCode(category);
 
     if (options) {
-
         if (options.background) {
+            $(`#entryCategory${category}`).css(
+                'background-image',
+                'url(' + options.background + ')'
+            );
 
-            $(`#entryCategory${category}`).css('background-image', 'url(' + options.background + ')');
-
-            $(`#entryCategory${category}`).css('background-repeat', 'no-repeat');
+            $(`#entryCategory${category}`).css(
+                'background-repeat',
+                'no-repeat'
+            );
 
             if (options.backgroundSize) {
-
-                $(`#entryCategory${category}`).css('background-size', options.backgroundSize + 'px');
-
+                $(`#entryCategory${category}`).css(
+                    'background-size',
+                    options.backgroundSize + 'px'
+                );
             }
-
         }
 
         if (options.name) {
-
-            $(`#entryCategory${category}`)[0].innerText = options.name
-
+            $(`#entryCategory${category}`)[0].innerText = options.name;
         }
-
     }
-
-}
-
+};
 
 const addBlock = (blockname, template, color, params, _class, func, skeleton = 'basic') => {
 
