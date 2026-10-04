@@ -410,24 +410,7 @@
             Entry.playground
                 ?.blockMenu;
 
-        if (!menu) return;
-
-
-        savedCategories.forEach(
-            (_, category) => {
-
-                try {
-
-                    menu._generateCategoryCode?.(
-                        category
-                    );
-
-                } catch (e) {}
-
-            }
-        );
-    }
-
+       
 
     /* =========================================
        8. 통합 복구
