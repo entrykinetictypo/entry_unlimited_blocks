@@ -1,3 +1,4 @@
+(() => {
 Entry.staticBlocks = [
     {
         category: 'start',
@@ -434,3 +435,4 @@ $('head').append(`
 `)
 
 $('#entryCategoryNewBlock').append('뉴블록')
+})();
