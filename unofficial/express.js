@@ -2697,7 +2697,7 @@ const blocks = [
 	}
 ]
 // 블럭 불러오기
-LibraryCreator.start(blocks, 'API', '특급');
+LibraryCreator.start(blocks, 'ExpressBlock', '특급');
 // 리뉴얼 이전 장면 1 로드 함수
 async function ExpressBlockLoad() {
 	if(Entry.getMainWS() && Entry.projectId) {
