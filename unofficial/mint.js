@@ -1,3 +1,4 @@
+(() => {
 if (!confirm("민트블록을 허용하시겠습니까?")) throw new Error("취소됬습니다.");
 console.time('로드 완료')
 Entry.staticBlocks = [
@@ -5063,3 +5064,4 @@ canvas.style.filter = 'invert(0%)';
 Entry.aiAssistantEnable = true;
 
 // 콘솔 붙여넣기 한줄용: $.get('https://cdn.jsdelivr.net/gh/minirang/MintBlock/block.js')
+})();
