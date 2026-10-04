@@ -455,7 +455,7 @@
 
         restoreCategoryElements();
 
-        restoreCategoryCode();
+        
 
 
         console.log(
