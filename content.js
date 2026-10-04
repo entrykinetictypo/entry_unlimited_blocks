@@ -77,25 +77,34 @@
             return;
         }
 
-        if (message?.type === "LOAD_UNOFFICIAL_BLOCK") {
-            const script = document.createElement("script");
+       if (message?.type === "LOAD_UNOFFICIAL_BLOCK") {
+    const loadScript = (file, callback) => {
+        const script = document.createElement("script");
+        script.src = chrome.runtime.getURL(file);
 
-            script.src = chrome.runtime.getURL(
-                message.file
-            );
+        script.onload = () => {
+            script.remove();
 
-            script.onload = () => {
-                script.remove();
-            };
+            if (callback) {
+                callback();
+            }
+        };
 
-            document.documentElement.appendChild(script);
+        document.documentElement.appendChild(script);
+    };
 
-            sendResponse({
-                success: true
-            });
+    if (!window.__UNOFFICIAL_RUNTIME_LOADED__) {
+        loadScript("unofficial/runtime.js", () => {
+            window.__UNOFFICIAL_RUNTIME_LOADED__ = true;
+            loadScript(message.file);
+        });
+    } else {
+        loadScript(message.file);
+    }
 
-            return;
-        }
+    sendResponse({ success: true });
+    return;
+}
         if (message?.type === "ENTRY_ACTION") {
 window.postMessage(
 {
