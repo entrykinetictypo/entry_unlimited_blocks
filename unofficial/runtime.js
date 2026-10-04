@@ -29,69 +29,7 @@
      */
 
     const savedCategories = new Map();
-     }
-
-    if (
-        !data ||
-        !Array.isArray(data.blocks)
-    ) {
-        return;
-    }
-
-    data.blocks = data.blocks.map(blockId => {
-
-        /*
-         * 이미 namespace 된 블록이면 그대로
-         */
-        if (
-            typeof blockId === "string" &&
-            blockId.startsWith("__UB_")
-        ) {
-            return blockId;
-        }
-
-        const original =
-            Entry.block?.[blockId];
-
-        if (!original) {
-            return blockId;
-        }
-
-        const newId =
-            "__UB_" +
-            prefix +
-            "_" +
-            blockId;
-
-        /*
-         * 블록 정의 복사
-         */
-        Entry.block[newId] = {
-            ...original,
-
-            def:
-                original.def
-                    ? {
-                        ...original.def,
-                        type: newId
-                    }
-                    : original.def
-        };
-
-        return newId;
-    });
-
-    /*
-     * 저장된 카테고리도 namespace 버전으로 기억
-     */
-    saveCategory(data);
-
-    console.log(
-        "📦 namespace:",
-        category,
-        data.blocks
-    );
-}
+     
     /* =========================================
    비공식 카테고리가 redraw 때 사라지는 것 방지
    ========================================= */
@@ -576,13 +514,7 @@ if (
                 "📥 로드:",
                 event.data.file
             );
-            if (event.data.file.includes("Etc")) {
-    namespaceCategory("EtcBlock", "Etc");
-}
-
-if (event.data.file.includes("Nyang")) {
-    namespaceCategory("NyangBlock", "Nyang");
-}
+            
 
 
             /*
