@@ -1,5 +1,21 @@
 console.log("runtime.js loaded");
+
 window.UnofficialRuntime = window.UnofficialRuntime || {};
+
+window.UnofficialRuntime.categories =
+    window.UnofficialRuntime.categories || [];
+
+if (!window.UnofficialRuntime.baseGetAllBlocks) {
+    window.UnofficialRuntime.baseGetAllBlocks =
+        EntryStatic.getAllBlocks.bind(EntryStatic);
+
+    EntryStatic.getAllBlocks = function() {
+        return [
+            ...window.UnofficialRuntime.baseGetAllBlocks(),
+            ...window.UnofficialRuntime.categories
+        ];
+    };
+}
 
 window.UnofficialRuntime.registerPackage = function({
     id,
@@ -7,15 +23,14 @@ window.UnofficialRuntime.registerPackage = function({
     blocks,
     icon = null
 }) {
-   console.log("registerPackage called", id, name); 
-    const menu = Entry.playground.mainWorkspace.blockMenu;
+    console.log("registerPackage called", id, name);
 
-    const exists = Entry.staticBlocks.some(
+    const exists = window.UnofficialRuntime.categories.some(
         item => item.category === id
     );
 
     if (!exists) {
-        Entry.staticBlocks.push({
+        window.UnofficialRuntime.categories.push({
             category: id,
             blocks: blocks.map(block => block.name)
         });
@@ -23,23 +38,28 @@ window.UnofficialRuntime.registerPackage = function({
 
     Lang.Blocks[id.toUpperCase()] = name;
 
-    menu._categoryData = Entry.staticBlocks;
+    const menu = Entry.playground.mainWorkspace.blockMenu;
+    const allBlocks = EntryStatic.getAllBlocks();
+
+    menu._categoryData = allBlocks;
 
     menu._generateCategoryView(
-        Entry.staticBlocks.map(item => ({
+        allBlocks.map(item => ({
             category: item.category,
-            visible: item.category !== 'arduino'
+            visible: item.category !== "arduino"
         }))
     );
 
     menu._generateCategoryCode(id);
 
     if (icon) {
-        const el = document.getElementById(`entryCategory${id}`);
+        const el = document.getElementById(
+            `entryCategory${id}`
+        );
 
         if (el) {
             el.style.backgroundImage = `url(${icon})`;
-            el.style.backgroundRepeat = 'no-repeat';
+            el.style.backgroundRepeat = "no-repeat";
         }
     }
 };
