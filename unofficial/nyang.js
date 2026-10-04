@@ -1356,4 +1356,4 @@ const blocks = [
   }
 ]
 
-LibraryCreator.start(blocks, 'API', '냥냥블럭!')
+LibraryCreator.start(blocks, 'NyangBlock', '냥냥블럭!')
