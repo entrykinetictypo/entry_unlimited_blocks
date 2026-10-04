@@ -396,17 +396,13 @@
          * 메뉴 데이터 통합
          */
 
-        if (
-            Entry.playground
-                ?.blockMenu
-        ) {
+        if (Entry.playground?.blockMenu) {
+    Entry.playground.blockMenu._categoryData = merged;
+}
 
-            Entry.playground
-                .blockMenu
-                ._categoryData =
-                merged;
-        }
-
+if (Entry.playground?.mainWorkspace?.blockMenu) {
+    Entry.playground.mainWorkspace.blockMenu._categoryData = merged;
+}
 
         /*
          * 메뉴 다시 그리기
