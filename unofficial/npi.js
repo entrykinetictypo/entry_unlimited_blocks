@@ -1,3 +1,4 @@
+(() => {
 //NPI 블록 1.6 버전
 //NPI 블록은 앞으로도 계속 업데이트 됩니다.
 
@@ -1985,3 +1986,4 @@ color: #ffffffff;
 
 
 $('#entryCategoryNPIBlock').append('NPI')
+})();
