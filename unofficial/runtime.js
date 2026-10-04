@@ -576,6 +576,13 @@ if (
                 "📥 로드:",
                 event.data.file
             );
+            if (event.data.file.includes("Etc")) {
+    namespaceCategory("EtcBlock", "Etc");
+}
+
+if (event.data.file.includes("Nyang")) {
+    namespaceCategory("NyangBlock", "Nyang");
+}
 
 
             /*
