@@ -762,33 +762,7 @@ const addBlock = (blockname, template, color, params, _class, func, skeleton = '
         backgroundSize: 28
     });
 
-    async function BlockLoad() {
-        if (Entry.getMainWS() && Entry.projectId) {
-            const TempProjectId = Entry.projectId;
-            const TempExportedProject = Entry.exportProject();
-
-            const ProjectData = await (
-                await fetch(
-                    'https://playentry.org/api/project/' +
-                    Entry.projectId
-                )
-            ).json();
-
-            Entry.clearProject();
-
-            Entry.loadProject(
-                Object.keys(TempExportedProject).reduce(
-                    function (acc, cur) {
-                        acc[cur] = ProjectData[cur];
-                        return acc;
-                    },
-                    {}
-                )
-            );
-
-            Entry.projectId = TempProjectId;
-        }
-    }
+    
 
     (async () => {
 
@@ -819,7 +793,13 @@ const addBlock = (blockname, template, color, params, _class, func, skeleton = '
 
     await BlockLoad();
 
-    console.log("비공식 블록 재로드 완료");
+    window.postMessage({
+    source: "ENTRY_UNLIMITED_BLOCKS",
+    type: "UNOFFICIAL_LOADED",
+    file: "right_click_reload"
+}, "*");
+
+console.log("우클릭 작품 재로드 후 runtime 복원 요청");
 
 })();
 
