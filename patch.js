@@ -1476,6 +1476,15 @@ const content = JSON.parse(
         addBlockById(event.data.blockId);
         return;
     }
+    if (
+    event.data?.type === "RESTORE_PROJECT_AFTER_UNOFFICIAL"
+) {
+    restoreProjectAfterUnofficial(
+        event.data.projectId
+    );
+
+    return;
+}
 
     if (
         event.data?.type === "ENTRY_ACTION"
