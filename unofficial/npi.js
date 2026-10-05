@@ -324,9 +324,12 @@ const updateCategory = (category, options) => {
     }
 }
 
-
+const NPI_PREFIX = "NPI_";
 const addBlock = (blockname, template, color, params, _class, func, skeleton = 'basic') => {
-    Entry.block[blockname] = {
+
+    const namespacedName = NPI_PREFIX + blockname;
+
+    Entry.block[namespacedName] = {
         color: color.color,
         outerLine: color.outerline,
         fontColor: color.fontColor,
@@ -336,7 +339,7 @@ const addBlock = (blockname, template, color, params, _class, func, skeleton = '
         events: {},
         def: {
             params: params.def,
-            type: blockname
+            type: namespacedName
         },
         paramsKeyMap: params.map,
         class: _class ? _class : 'default',
@@ -1959,7 +1962,7 @@ Entry.staticBlocks.push({
         'min','sec','big_num',
         'multiple','infinity', 'web', 'com','teb name','page name','check_site',
         'site','move','Search','illegal','npi off','off','easter_egg',
-    ]
+    ].map(blockname => NPI_PREFIX + blockname)
 });
 
 
