@@ -45,6 +45,63 @@ function sendProjectId() {
         projectId
     );
 }
+    async function restoreProjectAfterUnofficial(projectId) {
+    if (
+        !window.Entry ||
+        !projectId ||
+        typeof Entry.exportProject !== "function" ||
+        typeof Entry.clearProject !== "function" ||
+        typeof Entry.loadProject !== "function"
+    ) {
+        return;
+    }
+
+    try {
+        console.log(
+            `${NAME} 비공식 블록 등록 후 작품 복원 시작:`,
+            projectId
+        );
+
+        const tempProjectId = Entry.projectId;
+        const exportedProject = Entry.exportProject();
+
+        const response = await fetch(
+            `https://playentry.org/api/project/${projectId}`
+        );
+
+        if (!response.ok) {
+            throw new Error(
+                `작품 데이터 요청 실패: ${response.status}`
+            );
+        }
+
+        const projectData = await response.json();
+
+        const restoredProject =
+            Object.keys(exportedProject).reduce(
+                (acc, key) => {
+                    acc[key] = projectData[key];
+                    return acc;
+                },
+                {}
+            );
+
+        Entry.clearProject();
+        Entry.loadProject(restoredProject);
+
+        Entry.projectId = tempProjectId || projectId;
+
+        console.log(
+            `${NAME} 비공식 블록 포함 작품 복원 완료`
+        );
+
+    } catch (error) {
+        console.error(
+            `${NAME} 작품 복원 실패`,
+            error
+        );
+    }
+}
     function entryReady() {
         return Boolean(
             window.Entry &&
