@@ -19,7 +19,32 @@
             "*"
         );
     }
+function sendProjectId() {
+    const projectId = window.Entry?.projectId;
 
+    if (
+        !projectId ||
+        projectId === lastProjectId
+    ) {
+        return;
+    }
+
+    lastProjectId = projectId;
+
+    window.postMessage(
+        {
+            source: "ENTRY_UNLIMITED_BLOCKS_PATCH",
+            type: "PROJECT_ID",
+            projectId: projectId
+        },
+        "*"
+    );
+
+    console.log(
+        `${NAME} project detected:`,
+        projectId
+    );
+}
     function entryReady() {
         return Boolean(
             window.Entry &&
@@ -1526,5 +1551,9 @@ const content = JSON.parse(
 });
 
 requestState();
+setInterval(() => {
+    sendProjectId();
+}, 500);
 
+})();
 })();
