@@ -64,23 +64,23 @@ window.fetch = function(input, init = {}) {
         );
     }
 function sendProjectId() {
+
     const match =
         window.location.pathname.match(
-            /^\/ws\/([a-f0-9]{24})(?:\/|$)/i
+            /^\/ws\/([^/?#]+)/
         );
 
-    const projectId =
+    const routeId =
         match ? match[1] : null;
 
-    /*
-     * /ws/new 같은 새 작품 페이지는 무시
-     */
-    if (!projectId) {
+
+    if (!routeId) {
         return;
     }
 
+
     /*
-     * Entry 작업공간이 완전히 준비될 때까지 대기
+     * Entry 작업공간이 준비될 때까지 기다림
      */
     if (
         !window.Entry ||
@@ -89,34 +89,103 @@ function sendProjectId() {
         return;
     }
 
+
     /*
-     * Entry 인증 헤더 확보될 때까지 대기
+     * 새 작품
+     */
+    if (routeId === "new") {
+
+        if (lastProjectId === "__new__") {
+            return;
+        }
+
+        lastProjectId = "__new__";
+
+        window.postMessage(
+            {
+                source:
+                    "ENTRY_UNLIMITED_BLOCKS_PATCH",
+                type:
+                    "PROJECT_ID",
+                projectId:
+                    null,
+                isNew:
+                    true
+            },
+            "*"
+        );
+
+        console.log(
+            `${NAME} new workspace detected`
+        );
+
+        return;
+    }
+
+
+    /*
+     * 정상 작품 ID인지 확인
+     */
+    if (
+        !/^[a-f0-9]{24}$/i.test(routeId)
+    ) {
+        return;
+    }
+
+
+    /*
+     * /ws/new에서 저장되어
+     * 실제 ID로 바뀐 경우에는
+     * 비공식 블록을 다시 로드하지 않음
+     */
+    if (lastProjectId === "__new__") {
+
+        lastProjectId = routeId;
+
+        console.log(
+            `${NAME} new project saved:`,
+            routeId
+        );
+
+        return;
+    }
+
+
+    /*
+     * 저장된 작품은 작품 복원을 위해
+     * 인증 헤더가 필요함
      */
     if (!entryAuthHeaders) {
         return;
     }
 
-    /*
-     * 같은 작품은 한 번만 전송
-     */
-    if (projectId === lastProjectId) {
+
+    if (routeId === lastProjectId) {
         return;
     }
 
-    lastProjectId = projectId;
+
+    lastProjectId = routeId;
+
 
     window.postMessage(
         {
-            source: "ENTRY_UNLIMITED_BLOCKS_PATCH",
-            type: "PROJECT_ID",
-            projectId: projectId
+            source:
+                "ENTRY_UNLIMITED_BLOCKS_PATCH",
+            type:
+                "PROJECT_ID",
+            projectId:
+                routeId,
+            isNew:
+                false
         },
         "*"
     );
 
+
     console.log(
         `${NAME} project detected:`,
-        projectId
+        routeId
     );
 }
     async function restoreProjectAfterUnofficial(projectId) {
