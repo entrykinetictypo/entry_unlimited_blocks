@@ -66,16 +66,40 @@ window.fetch = function(input, init = {}) {
 function sendProjectId() {
     const match =
         window.location.pathname.match(
-            /^\/ws\/([^/?#]+)/
+            /^\/ws\/([a-f0-9]{24})(?:\/|$)/i
         );
 
     const projectId =
         match ? match[1] : null;
 
+    /*
+     * /ws/new 같은 새 작품 페이지는 무시
+     */
+    if (!projectId) {
+        return;
+    }
+
+    /*
+     * Entry 작업공간이 완전히 준비될 때까지 대기
+     */
     if (
-        !projectId ||
-        projectId === lastProjectId
+        !window.Entry ||
+        !Entry.playground?.mainWorkspace?.blockMenu
     ) {
+        return;
+    }
+
+    /*
+     * Entry 인증 헤더 확보될 때까지 대기
+     */
+    if (!entryAuthHeaders) {
+        return;
+    }
+
+    /*
+     * 같은 작품은 한 번만 전송
+     */
+    if (projectId === lastProjectId) {
         return;
     }
 
