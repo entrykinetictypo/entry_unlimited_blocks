@@ -248,25 +248,42 @@ function loadSavedUnofficialBlocks(projectId) {
 
                     function loadNext() {
 
-                        if (index >= files.length) {
-                            console.log(
-                                "[자동복원] 비공식 블록 정의 로드 완료"
-                            );
+                       if (index >= files.length) {
 
-                            window.postMessage(
-                                {
-                                    source:
-                                        "ENTRY_UNLIMITED_BLOCKS",
-                                    type:
-                                        "RESTORE_PROJECT_AFTER_UNOFFICIAL",
-                                    projectId:
-                                        projectId
-                                },
-                                "*"
-                            );
+    console.log(
+        "[자동복원] 비공식 블록 정의 로드 완료"
+    );
 
-                            return;
-                        }
+
+    /*
+     * 저장된 작품일 때만
+     * 서버 작품을 다시 불러옴
+     */
+    if (projectId) {
+
+        window.postMessage(
+            {
+                source:
+                    "ENTRY_UNLIMITED_BLOCKS",
+                type:
+                    "RESTORE_PROJECT_AFTER_UNOFFICIAL",
+                projectId:
+                    projectId
+            },
+            "*"
+        );
+
+    } else {
+
+        console.log(
+            "[새 작품] 작품 복원 없이 비공식 블록만 적용"
+        );
+
+    }
+
+
+    return;
+}
 
                         const file =
                             files[index++];
