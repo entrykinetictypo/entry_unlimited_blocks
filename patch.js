@@ -49,8 +49,6 @@ function sendProjectId() {
     if (
         !window.Entry ||
         !projectId ||
-        typeof Entry.exportProject !== "function" ||
-        typeof Entry.clearProject !== "function" ||
         typeof Entry.loadProject !== "function"
     ) {
         return;
@@ -58,38 +56,81 @@ function sendProjectId() {
 
     try {
         console.log(
-            `${NAME} 비공식 블록 등록 후 작품 복원 시작:`,
+            `${NAME} 비공식 블록 등록 후 작품 원본 복원 시작:`,
             projectId
         );
 
-        const tempProjectId = Entry.projectId;
-        const exportedProject = Entry.exportProject();
+        const query = `
+            query SELECT_PROJECT($id: ID!) {
+                project(id: $id) {
+                    id
+                    name
+                    speed
+                    objects
+                    variables
+                    cloudVariable
+                    messages
+                    functions
+                    tables
+                    scenes
+                    realTimeVariable
+                    learning
+                    expansionBlocks
+                    aiUtilizeBlocks
+                    hardwareLiteBlocks
+                    blockCategoryUsage
+                }
+            }
+        `;
 
         const response = await fetch(
-            `https://playentry.org/api/project/${projectId}`
+            "https://playentry.org/graphql/SELECT_PROJECT",
+            {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    query: query,
+                    variables: {
+                        id: projectId
+                    }
+                })
+            }
         );
 
         if (!response.ok) {
             throw new Error(
-                `작품 데이터 요청 실패: ${response.status}`
+                `작품 요청 실패: ${response.status}`
             );
         }
 
-        const projectData = await response.json();
+        const result = await response.json();
 
-        const restoredProject =
-            Object.keys(exportedProject).reduce(
-                (acc, key) => {
-                    acc[key] = projectData[key];
-                    return acc;
-                },
-                {}
+        const project =
+            result?.data?.project;
+
+        if (!project) {
+            throw new Error(
+                "작품 데이터를 찾을 수 없음"
             );
+        }
 
-        Entry.clearProject();
-        Entry.loadProject(restoredProject);
+        console.log(
+            `${NAME} 서버 작품 데이터 확보`,
+            project
+        );
 
-        Entry.projectId = tempProjectId || projectId;
+        if (
+            typeof Entry.clearProject === "function"
+        ) {
+            Entry.clearProject();
+        }
+
+        await Entry.loadProject(project);
+
+        Entry.projectId = projectId;
 
         console.log(
             `${NAME} 비공식 블록 포함 작품 복원 완료`
