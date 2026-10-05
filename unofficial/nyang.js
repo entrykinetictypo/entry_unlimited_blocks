@@ -383,8 +383,11 @@ const LibraryCreator = {
   }
 }
 let blockPOST
+
+const NYANG_PREFIX = "Nyang_";
+  
 const blocks = [
-  const NYANG_PREFIX = "Nyang_";
+  
   {
     name: 'fetchBlocks',
     template: '%1',
