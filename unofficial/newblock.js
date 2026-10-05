@@ -329,9 +329,12 @@ const updateCategory = (category, options) => {
 //	}
 //} else {
 //}
-	
+const NEW_PREFIX = "New_";	
 const addBlock = (blockname, template, color, params, _class, func, skeleton = 'basic') => {
-    Entry.block[blockname] = {
+
+    const namespacedName = NEW_PREFIX + blockname;
+
+    Entry.block[namespacedName] = {
         color: color.color,
         outerLine: color.outerline,
         skeleton: skeleton,
@@ -340,7 +343,7 @@ const addBlock = (blockname, template, color, params, _class, func, skeleton = '
         events: {},
         def: {
             params: params.def,
-            type: blockname
+            type: namespacedName
         },
         paramsKeyMap: params.map,
         class: _class ? _class : 'default',
@@ -413,7 +416,7 @@ Entry.staticBlocks.push({
 	    'boost_mode',
 	    'big_big',
 	    'com_browser'
-    ]
+    ].map(blockname => NEW_PREFIX + blockname)
 });
 
 updateCategory('NewBlock')
