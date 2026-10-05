@@ -639,43 +639,28 @@ const updateCategory = (category, options) => {
 
 }
 
-
+const COMMON_PREFIX = "Common_";
 const addBlock = (blockname, template, color, params, _class, func, skeleton = 'basic') => {
 
-    Entry.block[blockname] = {
+    const namespacedName = COMMON_PREFIX + blockname;
 
+    Entry.block[namespacedName] = {
         color: color.color,
-
         outerLine: color.outerline,
-
         fontColor: color.fontColor,
-
         skeleton: skeleton,
-
         statement: [],
-
         params: params.params,
-
         events: {},
-
         def: {
-
             params: params.def,
-
-            type: blockname
-
+            type: namespacedName
         },
-
         paramsKeyMap: params.map,
-
         class: _class ? _class : 'default',
-
         func: func,
-
         template: template
-
     }
-
 }
 
 
@@ -1182,7 +1167,7 @@ Entry.staticBlocks.push({
         'write', 'very-good',
 
 
-    ]
+    ].map(blockname => COMMON_PREFIX + blockname)
 
 });
 
