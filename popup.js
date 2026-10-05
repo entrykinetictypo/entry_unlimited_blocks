@@ -234,25 +234,32 @@ chrome.storage.local.get(
 const unloadUnofficialButton =
 document.getElementById("unloadUnofficial");
 
+
 unloadUnofficialButton.addEventListener("click", async () => {
-const [tab] = await chrome.tabs.query({
-active: true,
-currentWindow: true
+    const [tab] = await chrome.tabs.query({
+        active: true,
+        currentWindow: true
+    });
+
+    if (
+        !tab ||
+        !tab.id ||
+        !tab.url ||
+        !tab.url.startsWith("https://playentry.org/ws/")
+    ) {
+        alert("엔트리 작품 만들기 페이지가 아닙니다.");
+        return;
+    }
+
+    chrome.storage.local.set(
+        {
+            unofficialBlockStates: {}
+        },
+        () => {
+            chrome.tabs.reload(tab.id);
+        }
+    );
 });
-
-if (
-!tab ||
-!tab.id ||
-!tab.url ||
-!tab.url.startsWith("https://playentry.org/ws/")
-) {
-alert("엔트리 작품 만들기 페이지가 아닙니다.");
-return;
-}
-
-chrome.tabs.reload(tab.id);
-});
-
 
 
 async function runEntryAction(action, data = {}) {
