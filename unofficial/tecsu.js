@@ -639,84 +639,53 @@ const updateCategory = (category, options) => {
 
 }
 
-
+const TECSU_PREFIX = "Tecsu_";
 const addBlock = (blockname, template, color, params, _class, func, skeleton = 'basic') => {
 
-    Entry.block[blockname] = {
+    const namespacedName = TECSU_PREFIX + blockname;
 
+    Entry.block[namespacedName] = {
         color: color.color,
-
         outerLine: color.outerline,
-
         fontColor: color.fontColor,
-
         skeleton: skeleton,
-
         statement: [],
-
         params: params.params,
-
         events: {},
-
         def: {
-
             params: params.def,
-
-            type: blockname
-
+            type: namespacedName
         },
-
         paramsKeyMap: params.map,
-
         class: _class ? _class : 'default',
-
         func: func,
-
         template: template
-
     }
-
 }
 
 
 const newtext = (blockname, template, color, params, _class, func, skeleton = 'basic') => {
 
-    Entry.block[blockname] = {
+    const namespacedName = TECSU_PREFIX + blockname;
 
+    Entry.block[namespacedName] = {
         color: color.color,
-
         outerLine: color.outerline,
-
         fontColor: color.fontColor,
-
         skeleton: skeleton,
-
         statement: [],
-
         params: params.params,
-
         events: {},
-
         def: {
-
             params: params.def,
-
-            type: blockname
-
+            type: namespacedName
         },
-
         paramsKeyMap: params.map,
-
         class: _class ? _class : 'default',
-
         func: func,
-
         template: template
-
     }
-
 }
-
 
 addBlock('stop', '작품 %1시키기%2', {
 
@@ -1151,7 +1120,7 @@ Entry.staticBlocks.push({
 
         'today_weekday',
 
-    ]
+    ].map(blockname => TECSU_PREFIX + blockname)
 
 })
 
