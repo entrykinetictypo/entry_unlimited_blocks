@@ -29,6 +29,23 @@
      */
 
     const savedCategories = new Map();
+    
+    const CATEGORY_NAMES = {
+    NPIBlock: "NPI",
+    EtcBlock: "기타",
+    right_click: "우클릭",
+    NyangBlock: "냥냥블럭!",
+    ExpressBlock: "특급",
+    SpecialBlock: "스페셜",
+    KRIS: "크리스블록",
+    MagnetBlock: "매그넛",
+    CommonBlock: "공용",
+    "Block2.0": "Block2.0",
+    TecsuBlock: "특수",
+    StrongBlock: "강력크",
+    MintBlocks: "민트블록",
+    NewBlock: "뉴블록"
+};
      
     /* =========================================
    비공식 카테고리가 redraw 때 사라지는 것 방지
