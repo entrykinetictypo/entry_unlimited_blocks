@@ -179,98 +179,129 @@ window.addEventListener("message", (event) => {
 function loadSavedUnofficialBlocks(projectId) {
     if (!projectId) return;
 
-    const key = `unofficial_${projectId}`;
+    const loadOrder = [
+        "unofficial/etc.js",
+        "unofficial/right_click.js",
+        "unofficial/nyang.js",
+        "unofficial/express.js",
+        "unofficial/special.js",
+        "unofficial/kris.js",
+        "unofficial/magnet.js",
+        "unofficial/block20.js",
+        "unofficial/common.js",
+        "unofficial/tecsu.js",
+        "unofficial/strong.js",
+        "unofficial/mint.js",
+        "unofficial/newblock.js",
+        "unofficial/npi.js",
+        "unofficial/dummy.js"
+    ];
 
-    chrome.storage.local.get([key], (result) => {
-        const files = result[key] || [];
+    chrome.storage.local.get(
+        ["unofficialBlockStates"],
+        (result) => {
 
-        console.log(
-            "[자동복원] 작품:",
-            projectId,
-            files
-        );
+            const states =
+                result.unofficialBlockStates || {};
 
-        if (!files.length) {
-            return;
-        }
+            const files =
+                loadOrder.filter(
+                    (file) => states[file] === true
+                );
 
-        const loadScript = (file, callback) => {
-            const script =
-                document.createElement("script");
+            console.log(
+                "[비공식 블록 ON 목록]",
+                files
+            );
 
-            script.src =
-                chrome.runtime.getURL(file);
+            if (!files.length) {
+                console.log(
+                    "[비공식 블록] 모두 OFF"
+                );
+                return;
+            }
 
-            script.onload = () => {
-                script.remove();
+            const loadScript = (file, callback) => {
+                const script =
+                    document.createElement("script");
 
-                if (callback) {
-                    callback();
-                }
+                script.src =
+                    chrome.runtime.getURL(file);
+
+                script.onload = () => {
+                    script.remove();
+
+                    if (callback) {
+                        callback();
+                    }
+                };
+
+                document.documentElement
+                    .appendChild(script);
             };
 
-            document.documentElement
-                .appendChild(script);
-        };
+            loadScript(
+                "unofficial/runtime.js",
+                () => {
 
-        loadScript(
-            "unofficial/runtime.js",
-            () => {
+                    let index = 0;
 
-                let index = 0;
+                    function loadNext() {
 
-                function loadNext() {
-
-                 if (index >= files.length) {
-    console.log(
-        "[자동복원] 비공식 블록 정의 로드 완료"
-    );
-
-    window.postMessage(
-        {
-            source: "ENTRY_UNLIMITED_BLOCKS",
-            type: "RESTORE_PROJECT_AFTER_UNOFFICIAL",
-            projectId: projectId
-        },
-        "*"
-    );
-
-    return;
-}   
-
-                    const file =
-                        files[index++];
-
-                    console.log(
-                        "[자동복원] 불러오기:",
-                        file
-                    );
-
-                    loadScript(
-                        file,
-                        () => {
+                        if (index >= files.length) {
+                            console.log(
+                                "[자동복원] 비공식 블록 정의 로드 완료"
+                            );
 
                             window.postMessage(
                                 {
                                     source:
                                         "ENTRY_UNLIMITED_BLOCKS",
                                     type:
-                                        "UNOFFICIAL_LOADED",
-                                    file:
-                                        file
+                                        "RESTORE_PROJECT_AFTER_UNOFFICIAL",
+                                    projectId:
+                                        projectId
                                 },
                                 "*"
                             );
 
-                            loadNext();
+                            return;
                         }
-                    );
-                }
 
-                loadNext();
-            }
-        );
-    });
+                        const file =
+                            files[index++];
+
+                        console.log(
+                            "[자동복원] 불러오기:",
+                            file
+                        );
+
+                        loadScript(
+                            file,
+                            () => {
+
+                                window.postMessage(
+                                    {
+                                        source:
+                                            "ENTRY_UNLIMITED_BLOCKS",
+                                        type:
+                                            "UNOFFICIAL_LOADED",
+                                        file:
+                                            file
+                                    },
+                                    "*"
+                                );
+
+                                loadNext();
+                            }
+                        );
+                    }
+
+                    loadNext();
+                }
+            );
+        }
+    );
 }
 
 
