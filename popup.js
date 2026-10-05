@@ -231,6 +231,34 @@ chrome.storage.local.get(
         });
     }
 );
+const selectAllUnofficialButton =
+    document.getElementById("selectAllUnofficial");
+
+selectAllUnofficialButton.addEventListener("click", () => {
+
+    const allStates = {};
+
+    unofficialBlocks.forEach((item) => {
+        allStates[item.file] = true;
+    });
+
+    chrome.storage.local.set(
+        {
+            unofficialBlockStates: allStates
+        },
+        () => {
+
+            const checkboxes =
+                unofficialBlocksBox.querySelectorAll(
+                    'input[type="checkbox"]'
+                );
+
+            checkboxes.forEach((checkbox) => {
+                checkbox.checked = true;
+            });
+        }
+    );
+});
 const unloadUnofficialButton =
 document.getElementById("unloadUnofficial");
 
