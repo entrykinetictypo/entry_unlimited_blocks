@@ -1,6 +1,5 @@
 (() => {
-if (!confirm("민트블록을 허용하시겠습니까?")) throw new Error("취소됬습니다.");
-console.time('로드 완료')
+
 Entry.staticBlocks = [
     {
         category: 'start',
