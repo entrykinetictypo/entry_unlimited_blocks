@@ -6,6 +6,7 @@
     let enabled = false;
     let installed = false;
     let waitingTimer = null;
+    let lastProjectId = null;
 
     console.log(`${NAME} patch controller loaded`);
 
