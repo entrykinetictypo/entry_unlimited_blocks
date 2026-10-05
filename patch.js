@@ -64,7 +64,13 @@ window.fetch = function(input, init = {}) {
         );
     }
 function sendProjectId() {
-    const projectId = window.Entry?.projectId;
+    const match =
+        window.location.pathname.match(
+            /^\/ws\/([^/?#]+)/
+        );
+
+    const projectId =
+        match ? match[1] : null;
 
     if (
         !projectId ||
