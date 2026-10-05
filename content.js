@@ -147,7 +147,11 @@ function saveUnofficialBlock(projectId, file) {
                 [key]: files
             });
 
-            console.log("[비공식 블록 저장]", projectId, file);
+            console.log(
+                "[비공식 블록 저장]",
+                projectId,
+                file
+            );
         }
     });
 }
@@ -170,6 +174,8 @@ window.addEventListener("message", (event) => {
         data.file
     );
 });
+
+
 function loadSavedUnofficialBlocks(projectId) {
     if (!projectId) return;
 
@@ -178,17 +184,22 @@ function loadSavedUnofficialBlocks(projectId) {
     chrome.storage.local.get([key], (result) => {
         const files = result[key] || [];
 
+        console.log(
+            "[자동복원] 작품:",
+            projectId,
+            files
+        );
+
         if (!files.length) {
-            console.log("[자동복원] 저장된 비공식 블록 없음");
             return;
         }
 
-        console.log("[자동복원] 불러올 파일:", files);
-
         const loadScript = (file, callback) => {
-            const script = document.createElement("script");
+            const script =
+                document.createElement("script");
 
-            script.src = chrome.runtime.getURL(file);
+            script.src =
+                chrome.runtime.getURL(file);
 
             script.onload = () => {
                 script.remove();
@@ -198,35 +209,75 @@ function loadSavedUnofficialBlocks(projectId) {
                 }
             };
 
-            document.documentElement.appendChild(script);
+            document.documentElement
+                .appendChild(script);
         };
 
-        loadScript("unofficial/runtime.js", () => {
+        loadScript(
+            "unofficial/runtime.js",
+            () => {
 
-            let index = 0;
+                let index = 0;
 
-            const next = () => {
+                function loadNext() {
 
-                if (index >= files.length) {
-                    console.log("[자동복원] 비공식 블록 로드 완료");
-                    return;
+                    if (index >= files.length) {
+                        console.log(
+                            "[자동복원] 완료"
+                        );
+                        return;
+                    }
+
+                    const file =
+                        files[index++];
+
+                    console.log(
+                        "[자동복원] 불러오기:",
+                        file
+                    );
+
+                    loadScript(
+                        file,
+                        () => {
+
+                            window.postMessage(
+                                {
+                                    source:
+                                        "ENTRY_UNLIMITED_BLOCKS",
+                                    type:
+                                        "UNOFFICIAL_LOADED",
+                                    file:
+                                        file
+                                },
+                                "*"
+                            );
+
+                            loadNext();
+                        }
+                    );
                 }
 
-                const file = files[index++];
-
-                loadScript(file, () => {
-
-                    window.postMessage({
-                        source: "ENTRY_UNLIMITED_BLOCKS",
-                        type: "UNOFFICIAL_LOADED",
-                        file: file
-                    }, "*");
-
-                    next();
-                });
-            };
-
-            next();
-        });
+                loadNext();
+            }
+        );
     });
 }
+
+
+window.addEventListener("message", (event) => {
+
+    if (
+        event.source !== window ||
+        event.data?.source !==
+            "ENTRY_UNLIMITED_BLOCKS_PATCH" ||
+        event.data?.type !==
+            "PROJECT_ID"
+    ) {
+        return;
+    }
+
+    loadSavedUnofficialBlocks(
+        event.data.projectId
+    );
+});
+            
