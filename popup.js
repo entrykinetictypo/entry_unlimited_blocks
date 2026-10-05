@@ -190,14 +190,24 @@ unofficialBlocks.forEach((item) => {
             alert("엔트리 작품 만들기 페이지가 아닙니다.");
             return;
         }
+chrome.tabs.sendMessage(
+    tab.id,
+    {
+        type: "LOAD_UNOFFICIAL_BLOCK",
+        file: item.file
+    },
+    (response) => {
+        if (chrome.runtime.lastError) {
+            alert("엔트리 페이지를 새로고침해 주세요.");
+            return;
+        }
 
-        chrome.tabs.sendMessage(
-            tab.id,
-            {
-                type: "LOAD_UNOFFICIAL_BLOCK",
-                file: item.file
-            }
-        );
+        if (!response?.success) {
+            alert("비공식 블록을 불러오지 못했습니다.");
+        }
+    }
+);
+        
     });
 
     unofficialBlocksBox.appendChild(button);
