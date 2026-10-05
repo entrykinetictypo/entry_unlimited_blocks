@@ -234,7 +234,7 @@ return;
 chrome.tabs.reload(tab.id);
 });
 
-async function runEntryAction(action, data = {}) {
+
 const [tab] = await chrome.tabs.query({
 active: true,
 currentWindow: true
