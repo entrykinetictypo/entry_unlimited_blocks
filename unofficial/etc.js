@@ -345,10 +345,29 @@ const LibraryCreator = {
     }
     // 블록 추가하기
     for (let i in blocksJSON) {
-      let block = blocksJSON[i]
-      blockArray.push(block.name)
-      addBlock(block.name, block.template, { color: block.color.default, outerLine: block.color.darken }, { params: block.params, define: block.def, map: block.map }, block.class, block.func, block.skeleton)
-    }
+    let block = blocksJSON[i]
+
+    const namespacedName = ETC_PREFIX + block.name
+
+    blockArray.push(namespacedName)
+
+    addBlock(
+        namespacedName,
+        block.template,
+        {
+            color: block.color.default,
+            outerLine: block.color.darken
+        },
+        {
+            params: block.params,
+            define: block.def,
+            map: block.map
+        },
+        block.class,
+        block.func,
+        block.skeleton
+    )
+}
     // 블록 반영
     Entry.staticBlocks.push({ category: category, blocks: blockArray })
     // 카테고리 업데이트 (ws에서만)
@@ -363,6 +382,9 @@ const LibraryCreator = {
   }
 }
 let blockPOST
+
+const ETC_PREFIX = "Etc_";
+  
 const blocks = [
   {
     name: 'fetchBlocks',
