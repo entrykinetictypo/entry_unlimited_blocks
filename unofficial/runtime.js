@@ -515,7 +515,19 @@ if (
                 event.data.file
             );
             
-
+if (
+    event.data.file &&
+    event.data.file !== "ExpressBlock_reload" &&
+    event.data.file !== "right_click_reload" &&
+    Entry.projectId
+) {
+    window.postMessage({
+        source: "ENTRY_UNLIMITED_BLOCKS",
+        type: "SAVE_UNOFFICIAL_BLOCK",
+        projectId: Entry.projectId,
+        file: event.data.file
+    }, "*");
+}
 
             /*
              * 일반 A/B/C
