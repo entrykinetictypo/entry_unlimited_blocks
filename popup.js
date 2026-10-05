@@ -184,54 +184,72 @@ const unofficialBlocks = [
 {name:"2.0블록",file:"unofficial/block20.js"}
 ];
 
-unofficialBlocks.forEach((item) => {
-    const button = document.createElement("button");
+chrome.storage.local.get(
+    ["unofficialBlockStates"],
+    (result) => {
 
-    button.textContent = item.name;
+        const states =
+            result.unofficialBlockStates || {};
 
-    button.style.display = "block";
-    button.style.width = "100%";
-    button.style.marginBottom = "6px";
-    button.style.padding = "8px";
-    button.style.cursor = "pointer";
+        unofficialBlocks.forEach((item) => {
 
-    button.addEventListener("click", async () => {
-        const [tab] = await chrome.tabs.query({
-            active: true,
-            currentWindow: true
+            const label =
+                document.createElement("label");
+
+            label.style.display = "flex";
+            label.style.alignItems = "center";
+            label.style.gap = "8px";
+            label.style.padding = "7px 2px";
+            label.style.cursor = "pointer";
+
+            const checkbox =
+                document.createElement("input");
+
+            checkbox.type = "checkbox";
+
+            checkbox.style.width = "auto";
+            checkbox.style.margin = "0";
+            checkbox.style.padding = "0";
+
+            checkbox.checked =
+                states[item.file] === true;
+
+            const text =
+                document.createElement("span");
+
+            text.textContent = item.name;
+
+            checkbox.addEventListener(
+                "change",
+                () => {
+
+                    chrome.storage.local.get(
+                        ["unofficialBlockStates"],
+                        (result) => {
+
+                            const newStates = {
+                                ...(result.unofficialBlockStates || {})
+                            };
+
+                            newStates[item.file] =
+                                checkbox.checked;
+
+                            chrome.storage.local.set({
+                                unofficialBlockStates:
+                                    newStates
+                            });
+                        }
+                    );
+                }
+            );
+
+            label.appendChild(checkbox);
+            label.appendChild(text);
+
+            unofficialBlocksBox.appendChild(label);
         });
-
-        if (
-            !tab ||
-            !tab.id ||
-            !tab.url ||
-            !tab.url.startsWith("https://playentry.org/ws/")
-        ) {
-            alert("엔트리 작품 만들기 페이지가 아닙니다.");
-            return;
-        }
-chrome.tabs.sendMessage(
-    tab.id,
-    {
-        type: "LOAD_UNOFFICIAL_BLOCK",
-        file: item.file
-    },
-    (response) => {
-        if (chrome.runtime.lastError) {
-            alert("엔트리 페이지를 새로고침해 주세요.");
-            return;
-        }
-
-        if (!response?.success) {
-            alert("비공식 블록을 불러오지 못했습니다.");
-        }
     }
 );
-        
-    });
-
-    unofficialBlocksBox.appendChild(button);
-});
 const unloadUnofficialButton =
 document.getElementById("unloadUnofficial");
 
