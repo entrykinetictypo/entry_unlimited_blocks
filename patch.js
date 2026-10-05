@@ -7,6 +7,50 @@
     let installed = false;
     let waitingTimer = null;
     let lastProjectId = null;
+    let entryAuthHeaders = null;
+
+const originalFetch = window.fetch;
+
+window.fetch = function(input, init = {}) {
+    try {
+        const url =
+            typeof input === "string"
+                ? input
+                : input?.url || "";
+
+        const headers =
+            new Headers(
+                init.headers ||
+                input?.headers ||
+                {}
+            );
+
+        const csrfToken =
+            headers.get("csrf-token");
+
+        const xToken =
+            headers.get("x-token");
+
+        if (csrfToken && xToken) {
+            entryAuthHeaders = {
+                "csrf-token": csrfToken,
+                "x-token": xToken,
+                "x-client-type":
+                    headers.get("x-client-type") ||
+                    "Client"
+            };
+
+            console.log(
+                `${NAME} Entry 인증 헤더 확보`
+            );
+        }
+    } catch (_) {}
+
+    return originalFetch.apply(
+        this,
+        arguments
+    );
+};
 
     console.log(`${NAME} patch controller loaded`);
 
