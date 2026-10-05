@@ -626,44 +626,29 @@ const updateCategory = (category, options) => {
 
 }
 
-const addBlock = (blockname, template, color, params, _class, func, skeleton = 'basic') => {
+const MAGNET_PREFIX = "Magnet_";
+	const addBlock = (blockname, template, color, params, _class, func, skeleton = 'basic') => {
 
-    Entry.block[blockname] = {
+    const namespacedName = MAGNET_PREFIX + blockname;
 
+    Entry.block[namespacedName] = {
         color: color.color,
-
         outerLine: color.outerline,
-
         fontColor: color.fontColor,
-
         skeleton: skeleton,
-
         statement: [],
-
         params: params.params,
-
         events: {},
-
         def: {
-
             params: params.def,
-
-            type: blockname
-
+            type: namespacedName
         },
-
         paramsKeyMap: params.map,
-
         class: _class ? _class : 'default',
-
         func: func,
-
         template: template
-
     }
-
 }
-
 
 
 const LibraryCreator = {
@@ -1798,7 +1783,7 @@ Entry.staticBlocks.push({
 
         '정보', 'id', 'boostmode', 'copy_text',
 
-    ]
+    ].map(blockname => MAGNET_PREFIX + blockname)
 
 });
 
