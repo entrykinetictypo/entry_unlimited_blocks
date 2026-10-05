@@ -322,8 +322,12 @@ $(`#entryCategory${category}`)[0].innerText = options.name
 }
 }
 }
+const SPECIAL_PREFIX = "Special_";
 const addBlock = (blockname, template, color, params, _class, func, skeleton = 'basic') => {
-Entry.block[blockname] = {
+
+const namespacedName = SPECIAL_PREFIX + blockname;
+
+Entry.block[namespacedName] = {
 color: color.color,
 outerLine: color.outerline,
 skeleton: skeleton,
@@ -332,15 +336,15 @@ params: params.params,
 events: {},
 def: {
 params: params.def,
-type: blockname
+type: namespacedName
 },
 paramsKeyMap: params.map,
 class: _class ? _class : 'default',
 func: func,
 template: template
 }
-} // 블록 추가 시작
-
+}
+//////////허허 이 주석을 발견하면 제작품에 꽈뚜루쀵빵이라고 해봐여
 //////////0.1/
 addBlock('fetch', '%1 가져오기', {
 color: EntryStatic.colorSet.block.default.HARDWAR,
@@ -1361,7 +1365,7 @@ category: 'SpecialBlock', blocks: [
 'entry_console_clear',
 'change_var', 'entry_console_writing', 'finish',
 'likeList', 'boost_mode', 'mouse','didScroll','scrollHandle','box','stop_button(click)_start','open_win','pc','PromptConfirm','user.username','change(X)','mypage','asdf'
-]
+].map(blockname => SPECIAL_PREFIX + blockname)
 });
 
 
