@@ -117,7 +117,23 @@ function sendProjectId() {
                     functions
                     tables
                     scenes
-                    realTimeVariable
+                    realTimeVariable {
+    variableType
+    key
+    value
+    array {
+        key
+        data
+    }
+    minValue
+    maxValue
+    visible
+    x
+    y
+    width
+    height
+    object
+}
                     learning
                     expansionBlocks
                     aiUtilizeBlocks
