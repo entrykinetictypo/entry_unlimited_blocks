@@ -619,7 +619,7 @@ TYPE: 1
 }, 'text', (sprite, script) => {
 eval(`console.${script.getValue('TYPE', script)}('${script.getValue('CONTENT', script)}')`)
 return script.callReturn()
-}),console.log("스페셜블럭 로딩이 반정도 완료되었습니다."),alert("스페셜블럭 로딩이 반정도 완료되었습니다.");
+}),console.log("스페셜블럭 로딩이 반정도 완료되었습니다.");
 ////////////////////
 
 ////////////////////
@@ -1389,5 +1389,5 @@ color: #ffff;
 </style>
 `)
 
-$('#entryCategorySpecialBlock').append('스폐셜'), alert("현재스페셜블럭은1.6입니다~(알림)"),console.log("스페셜블럭 작동이 시작되었습니다."),document.title = "Special_Block_entry";
+$('#entryCategorySpecialBlock').append('스폐셜'),console.log("스페셜블럭 작동이 시작되었습니다."),document.title = "Special_Block_entry";
 })();
