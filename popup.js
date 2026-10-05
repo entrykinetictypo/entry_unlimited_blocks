@@ -235,67 +235,37 @@ chrome.tabs.reload(tab.id);
 });
 
 
-const [tab] = await chrome.tabs.query({
-active: true,
-currentWindow: true
-});
-
-if (
-!tab ||
-!tab.id ||
-!tab.url ||
-!tab.url.startsWith("https://playentry.org/ws/")
-) {
-alert("엔트리 작품 만들기 페이지가 아닙니다.");
-return;
-}
-
-chrome.tabs.sendMessage(
-tab.id,
-{
-type: "ENTRY_ACTION",
-action: action,
-data: data
-},
-() => {
-if (chrome.runtime.lastError) {
-alert("엔트리 페이지를 새로고침해 주세요.");
-}
-}
-);
-}
 
 async function runEntryAction(action, data = {}) {
-const [tab] = await chrome.tabs.query({
-active: true,
-currentWindow: true
-});
+    const [tab] = await chrome.tabs.query({
+        active: true,
+        currentWindow: true
+    });
 
-if (
-!tab ||
-!tab.id ||
-!tab.url ||
-!tab.url.startsWith("https://playentry.org/ws/")
-) {
-alert("엔트리 작품 만들기 페이지가 아닙니다.");
-return;
-}
+    if (
+        !tab ||
+        !tab.id ||
+        !tab.url ||
+        !tab.url.startsWith("https://playentry.org/ws/")
+    ) {
+        alert("엔트리 작품 만들기 페이지가 아닙니다.");
+        return;
+    }
 
-chrome.tabs.sendMessage(
-tab.id,
-{
-type: "ENTRY_ACTION",
-action: action,
-data: data
-},
-() => {
-if (chrome.runtime.lastError) {
-alert("엔트리 페이지를 새로고침해 주세요.");
+    chrome.tabs.sendMessage(
+        tab.id,
+        {
+            type: "ENTRY_ACTION",
+            action: action,
+            data: data
+        },
+        () => {
+            if (chrome.runtime.lastError) {
+                alert("엔트리 페이지를 새로고침해 주세요.");
+            }
+        }
+    );
 }
-}
-);
-}
-
 
 // 1. 모든 블록 불러오기
 
