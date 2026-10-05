@@ -256,6 +256,16 @@ unloadUnofficialButton.addEventListener("click", async () => {
             unofficialBlockStates: {}
         },
         () => {
+
+            const checkboxes =
+                unofficialBlocksBox.querySelectorAll(
+                    'input[type="checkbox"]'
+                );
+
+            checkboxes.forEach((checkbox) => {
+                checkbox.checked = false;
+            });
+
             chrome.tabs.reload(tab.id);
         }
     );
