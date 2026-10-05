@@ -445,11 +445,14 @@ if (
                  * 이름 복구
                  */
 
-                if (data.__name) {
+                const displayName =
+    data.__name ||
+    CATEGORY_NAMES[category];
 
-                    element.innerText =
-                        data.__name;
-                }
+if (displayName) {
+    element.innerText =
+        displayName;
+}
 
 
                 /*
