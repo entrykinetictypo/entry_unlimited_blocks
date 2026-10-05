@@ -177,7 +177,7 @@ window.addEventListener("message", (event) => {
 
 
 function loadSavedUnofficialBlocks(projectId) {
-    if (!projectId) return;
+   
 
     const loadOrder = [
         "unofficial/etc.js",
