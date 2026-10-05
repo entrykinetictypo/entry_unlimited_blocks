@@ -127,22 +127,37 @@ function sendProjectId() {
             }
         `;
 
-        const response = await fetch(
-            "https://playentry.org/graphql/SELECT_PROJECT",
-            {
-                method: "POST",
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    query: query,
-                    variables: {
-                        id: projectId
-                    }
-                })
+        if (!entryAuthHeaders) {
+    throw new Error(
+        "Entry 인증 헤더를 아직 확보하지 못했습니다."
+    );
+}
+
+const response = await fetch(
+    "https://playentry.org/graphql/SELECT_PROJECT",
+    {
+        method: "POST",
+        mode: "cors",
+        credentials: "include",
+        headers: {
+            "accept": "*/*",
+            "content-type": "application/json",
+            "csrf-token":
+                entryAuthHeaders["csrf-token"],
+            "x-token":
+                entryAuthHeaders["x-token"],
+            "x-client-type":
+                entryAuthHeaders["x-client-type"] ||
+                "Client"
+        },
+        body: JSON.stringify({
+            query: query,
+            variables: {
+                id: projectId
             }
-        );
+        })
+    }
+);
 
         if (!response.ok) {
             throw new Error(
