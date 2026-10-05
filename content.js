@@ -170,3 +170,63 @@ window.addEventListener("message", (event) => {
         data.file
     );
 });
+function loadSavedUnofficialBlocks(projectId) {
+    if (!projectId) return;
+
+    const key = `unofficial_${projectId}`;
+
+    chrome.storage.local.get([key], (result) => {
+        const files = result[key] || [];
+
+        if (!files.length) {
+            console.log("[자동복원] 저장된 비공식 블록 없음");
+            return;
+        }
+
+        console.log("[자동복원] 불러올 파일:", files);
+
+        const loadScript = (file, callback) => {
+            const script = document.createElement("script");
+
+            script.src = chrome.runtime.getURL(file);
+
+            script.onload = () => {
+                script.remove();
+
+                if (callback) {
+                    callback();
+                }
+            };
+
+            document.documentElement.appendChild(script);
+        };
+
+        loadScript("unofficial/runtime.js", () => {
+
+            let index = 0;
+
+            const next = () => {
+
+                if (index >= files.length) {
+                    console.log("[자동복원] 비공식 블록 로드 완료");
+                    return;
+                }
+
+                const file = files[index++];
+
+                loadScript(file, () => {
+
+                    window.postMessage({
+                        source: "ENTRY_UNLIMITED_BLOCKS",
+                        type: "UNOFFICIAL_LOADED",
+                        file: file
+                    }, "*");
+
+                    next();
+                });
+            };
+
+            next();
+        });
+    });
+}
