@@ -322,8 +322,12 @@ const updateCategory = (category, options) => {
         }
     }
 }
-const addBlock = (blockname, template, color, params, _class, func, skeleton = 'basic') => {
-    Entry.block[blockname] = {
+const MINT_PREFIX = "Mint_";
+   const addBlock = (blockname, template, color, params, _class, func, skeleton = 'basic') => {
+
+    const namespacedName = MINT_PREFIX + blockname;
+
+    Entry.block[namespacedName] = {
         color: color.color,
         outerLine: color.outerline,
         skeleton: skeleton,
@@ -332,7 +336,7 @@ const addBlock = (blockname, template, color, params, _class, func, skeleton = '
         events: {},
         def: {
             params: params.def,
-            type: blockname
+            type: namespacedName
         },
         paramsKeyMap: params.map,
         class: _class ? _class : 'default',
@@ -5024,7 +5028,7 @@ Entry.staticBlocks.push({
 
         'lag',
         'run_javascript_code',
-    ]
+    ].map(blockname => MINT_PREFIX + blockname)
 });
 updateCategory('MintBlocks')
 $('head').append(`<style> #entryCategoryMintBlocks 
