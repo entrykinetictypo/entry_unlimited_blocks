@@ -221,12 +221,22 @@ function loadSavedUnofficialBlocks(projectId) {
 
                 function loadNext() {
 
-                    if (index >= files.length) {
-                        console.log(
-                            "[자동복원] 완료"
-                        );
-                        return;
-                    }
+                 if (index >= files.length) {
+    console.log(
+        "[자동복원] 비공식 블록 정의 로드 완료"
+    );
+
+    window.postMessage(
+        {
+            source: "ENTRY_UNLIMITED_BLOCKS",
+            type: "RESTORE_PROJECT_AFTER_UNOFFICIAL",
+            projectId: projectId
+        },
+        "*"
+    );
+
+    return;
+}   
 
                     const file =
                         files[index++];
