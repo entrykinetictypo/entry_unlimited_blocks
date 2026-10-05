@@ -1872,6 +1872,15 @@ function stopVariableMove() {
                 Entry.engine.projectTimer.setVisible(false);
                 return;
             }
+            if (action === "START_VARIABLE_MOVE") {
+    startVariableMove();
+    return;
+}
+
+if (action === "STOP_VARIABLE_MOVE") {
+    stopVariableMove();
+    return;
+}
 
             if (action === "ADD_LOCAL_VARIABLE") {
                 if (
