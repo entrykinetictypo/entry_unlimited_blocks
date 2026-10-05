@@ -443,3 +443,25 @@ speed: speed
 
 });
 
+// 6. 변수 랜덤 이동
+
+document
+.getElementById("startVariableMove")
+.addEventListener("click", () => {
+
+    runEntryAction(
+        "START_VARIABLE_MOVE"
+    );
+
+});
+
+
+document
+.getElementById("stopVariableMove")
+.addEventListener("click", () => {
+
+    runEntryAction(
+        "STOP_VARIABLE_MOVE"
+    );
+
+});
