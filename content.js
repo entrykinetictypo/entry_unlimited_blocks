@@ -132,3 +132,41 @@
     );
 
 })();
+function saveUnofficialBlock(projectId, file) {
+    if (!projectId || !file) return;
+
+    const key = `unofficial_${projectId}`;
+
+    chrome.storage.local.get([key], (result) => {
+        const files = result[key] || [];
+
+        if (!files.includes(file)) {
+            files.push(file);
+
+            chrome.storage.local.set({
+                [key]: files
+            });
+
+            console.log("[비공식 블록 저장]", projectId, file);
+        }
+    });
+}
+
+window.addEventListener("message", (event) => {
+    if (event.source !== window) return;
+
+    const data = event.data;
+
+    if (
+        !data ||
+        data.source !== "ENTRY_UNLIMITED_BLOCKS" ||
+        data.type !== "SAVE_UNOFFICIAL_BLOCK"
+    ) {
+        return;
+    }
+
+    saveUnofficialBlock(
+        data.projectId,
+        data.file
+    );
+});
