@@ -1,25 +1,6 @@
 const statusText = document.getElementById("status");
 const toggleButton = document.getElementById("toggle");
-const unofficialModeToggle =
-    document.getElementById("unofficialModeToggle");
 
-chrome.storage.local.get(
-    ["unofficialModeEnabled"],
-    (result) => {
-        unofficialModeToggle.checked =
-            result.unofficialModeEnabled === true;
-    }
-);
-
-unofficialModeToggle.addEventListener(
-    "change",
-    () => {
-        chrome.storage.local.set({
-            unofficialModeEnabled:
-                unofficialModeToggle.checked
-        });
-    }
-);
 
 function updateUI(enabled) {
     if (enabled) {
