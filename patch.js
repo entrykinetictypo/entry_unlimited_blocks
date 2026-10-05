@@ -1597,7 +1597,190 @@ const content = JSON.parse(
             disablePatch();
         }
     }
+let variableMoveFlag = false;
+let variableMoveRunId = 0;
 
+
+function variableMoveStep(
+    variable,
+    time,
+    resolve,
+    x,
+    y,
+    count = 100,
+    runId
+) {
+
+    /*
+     * 정지 버튼을 눌렀으면
+     * 현재 이동도 바로 종료
+     */
+    if (
+        !variableMoveFlag ||
+        runId !== variableMoveRunId
+    ) {
+        resolve();
+        return;
+    }
+
+
+    variable.setX(
+        variable.getX() + x
+    );
+
+    variable.setY(
+        variable.getY() + y
+    );
+
+
+    count--;
+
+
+    if (count > 0) {
+
+        setTimeout(
+            variableMoveStep,
+            time,
+            variable,
+            time,
+            resolve,
+            x,
+            y,
+            count,
+            runId
+        );
+
+    } else {
+
+        resolve();
+
+    }
+}
+
+
+async function moveVariableRandom(
+    variable,
+    runId
+) {
+
+    const targetX =
+        Math.floor(
+            Math.random() * 480
+        ) - 240;
+
+    const targetY =
+        Math.floor(
+            Math.random() * 260
+        ) - 130;
+
+    const totalTime =
+        Math.random() * 700;
+
+
+    const currentX =
+        variable.getX();
+
+    const currentY =
+        variable.getY();
+
+
+    await new Promise((resolve) => {
+
+        variableMoveStep(
+            variable,
+            totalTime / 100,
+            resolve,
+            (targetX - currentX) / 100,
+            (targetY - currentY) / 100,
+            100,
+            runId
+        );
+
+    });
+}
+
+
+function startVariableMove() {
+
+    /*
+     * 이미 실행 중이면
+     * 또 실행하지 않음
+     */
+    if (variableMoveFlag) {
+        return;
+    }
+
+
+    const variables =
+        Entry.variableContainer
+            ?.variables_;
+
+
+    if (
+        !variables ||
+        typeof variables.forEach !==
+            "function"
+    ) {
+
+        console.warn(
+            "변수 목록을 찾을 수 없습니다."
+        );
+
+        return;
+    }
+
+
+    variableMoveFlag = true;
+
+    const runId =
+        ++variableMoveRunId;
+
+
+    variables.forEach(
+        async function(variable) {
+
+            /*
+             * 변수 표시창 보이기
+             */
+            variable.setVisible(true);
+
+
+            while (
+                variableMoveFlag &&
+                runId === variableMoveRunId
+            ) {
+
+                await moveVariableRandom(
+                    variable,
+                    runId
+                );
+
+            }
+
+        }
+    );
+
+
+    console.log(
+        "변수 랜덤 이동 시작"
+    );
+}
+
+
+function stopVariableMove() {
+
+    variableMoveFlag = false;
+
+    /*
+     * 이전 실행을 완전히 무효화
+     */
+    variableMoveRunId++;
+
+
+    console.log(
+        "변수 랜덤 이동 정지"
+    );
+}
   window.addEventListener("message", (event) => {
     if (event.source !== window) {
         return;
