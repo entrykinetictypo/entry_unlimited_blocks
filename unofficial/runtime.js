@@ -119,9 +119,16 @@ if (
             }
         );
 
-        return originalGenerateCategoryView(
-            merged
-        );
+      const result =
+    originalGenerateCategoryView(
+        merged
+    );
+
+setTimeout(() => {
+    restoreCategoryElements();
+}, 0);
+
+return result;  
     };
 }
 
