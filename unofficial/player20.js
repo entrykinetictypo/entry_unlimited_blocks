@@ -30,50 +30,50 @@
         ).href;
 
 
-    function findTargetWindow() {
+   function findTargetWindow() {
 
-        /*
-         * 현재 창에 Entry가 있으면 사용
-         */
-        if (
-            window.Entry &&
-            Entry.block
-        ) {
-            return window;
-        }
+    /*
+     * iframe 안의 실제 실행 Entry 먼저 찾기
+     */
+    const iframes =
+        document.querySelectorAll(
+            "iframe"
+        );
 
+    for (const iframe of iframes) {
 
-        /*
-         * iframe 안의 실제 실행 Entry 찾기
-         */
-        const iframes =
-            document.querySelectorAll(
-                "iframe"
-            );
+        try {
 
-        for (const iframe of iframes) {
+            const target =
+                iframe.contentWindow;
 
-            try {
+            if (
+                target &&
+                target.Entry &&
+                target.Entry.block
+            ) {
+                return target;
+            }
 
-                const target =
-                    iframe.contentWindow;
+        } catch (_) {}
 
-                if (
-                    target &&
-                    target.Entry &&
-                    target.Entry.block
-                ) {
-                    return target;
-                }
-
-            } catch (_) {}
-
-        }
-
-
-        return null;
     }
 
+
+    /*
+     * iframe에 Entry가 없을 때만
+     * 현재 창의 Entry 사용
+     */
+    if (
+        window.Entry &&
+        window.Entry.block
+    ) {
+        return window;
+    }
+
+
+    return null;
+}
 
     function registerBlock20(targetWindow) {
 
