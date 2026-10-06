@@ -338,4 +338,58 @@ window.addEventListener("message", (event) => {
         event.data.projectId
     );
 });
-            
+/* =========================================
+   실제 작품 실행창 - Block2.0 지원
+   ========================================= */
+
+if (
+    !window.location.pathname
+        .startsWith("/ws/")
+) {
+
+    chrome.storage.local.get(
+        ["unofficialBlockStates"],
+        (result) => {
+
+            const states =
+                result.unofficialBlockStates ||
+                {};
+
+
+            if (
+                states[
+                    "unofficial/block20.js"
+                ] !== true
+            ) {
+                return;
+            }
+
+
+            const script =
+                document.createElement(
+                    "script"
+                );
+
+
+            script.src =
+                chrome.runtime.getURL(
+                    "unofficial/player20.js"
+                );
+
+
+            script.onload = () => {
+                script.remove();
+            };
+
+
+            (
+                document.head ||
+                document.documentElement
+            ).appendChild(
+                script
+            );
+
+        }
+    );
+
+}            
