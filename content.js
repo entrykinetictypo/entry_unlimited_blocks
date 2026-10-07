@@ -363,66 +363,100 @@ if (publicProjectMatch) {
     ];
 
     console.log(
-        "[공개 작품] 비공식 블록 자동 로드 시작"
+        "[공개 작품] 비공식 블록 자동 로드 대기"
     );
 
-    let index = 0;
+    const timer = setInterval(() => {
 
-    function loadNextPublicBlock() {
-
-        if (index >= publicFiles.length) {
-
-            console.log(
-                "[공개 작품] 1차 비공식 블록 파일 로드 완료"
+        const iframe =
+            document.querySelector(
+                "iframe.project_iframe"
+            ) ||
+            document.querySelector(
+                "iframe"
             );
 
+        if (
+            !iframe ||
+            !iframe.contentWindow ||
+            !iframe.contentWindow.Entry ||
+            !iframe.contentWindow.Entry.block
+        ) {
             return;
         }
 
-        const file =
-            publicFiles[index++];
+        clearInterval(timer);
 
-        const script =
-            document.createElement(
-                "script"
-            );
-
-        script.src =
-            chrome.runtime.getURL(
-                file
-            );
-
-        script.onload = () => {
-
-            console.log(
-                "[공개 작품] 로드:",
-                file
-            );
-
-            script.remove();
-
-            loadNextPublicBlock();
-        };
-
-        script.onerror = () => {
-
-            console.log(
-                "[공개 작품] 로드 실패:",
-                file
-            );
-
-            script.remove();
-
-            loadNextPublicBlock();
-        };
-
-        (
-            document.head ||
-            document.documentElement
-        ).appendChild(
-            script
+        console.log(
+            "[공개 작품] Entry iframe 준비 완료"
         );
-    }
 
-    loadNextPublicBlock();
+        const targetDocument =
+            iframe.contentDocument;
+
+        let index = 0;
+
+        function loadNextPublicBlock() {
+
+            if (
+                index >=
+                publicFiles.length
+            ) {
+
+                console.log(
+                    "[공개 작품] 1차 비공식 블록 로드 완료"
+                );
+
+                return;
+            }
+
+            const file =
+                publicFiles[index++];
+
+            const script =
+                targetDocument
+                    .createElement(
+                        "script"
+                    );
+
+            script.src =
+                chrome.runtime.getURL(
+                    file
+                );
+
+            script.onload = () => {
+
+                console.log(
+                    "[공개 작품] 로드:",
+                    file
+                );
+
+                script.remove();
+
+                loadNextPublicBlock();
+            };
+
+            script.onerror = () => {
+
+                console.log(
+                    "[공개 작품] 로드 실패:",
+                    file
+                );
+
+                script.remove();
+
+                loadNextPublicBlock();
+            };
+
+            (
+                targetDocument.head ||
+                targetDocument.documentElement
+            ).appendChild(
+                script
+            );
+        }
+
+        loadNextPublicBlock();
+
+    }, 50);
 }
