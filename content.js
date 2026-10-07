@@ -342,6 +342,7 @@ window.addEventListener("message", (event) => {
 /* =========================================
    공개 작품 - Block2.0
    ========================================= */
+
 const publicProjectMatch =
     window.location.pathname.match(
         /^\/project\/([a-f0-9]{24})(?:\/|$)/i
@@ -371,6 +372,38 @@ if (publicProjectMatch) {
                 "[공개 작품] 저장된 비공식 블록:",
                 files
             );
+
+            if (
+                files.includes(
+                    "unofficial/block20.js"
+                )
+            ) {
+
+                const script =
+                    document.createElement(
+                        "script"
+                    );
+
+                script.src =
+                    chrome.runtime.getURL(
+                        "unofficial/block20.js"
+                    );
+
+                script.onload = () => {
+                    script.remove();
+                };
+
+                (
+                    document.head ||
+                    document.documentElement
+                ).appendChild(
+                    script
+                );
+
+                console.log(
+                    "[공개 작품] Block2.0 로드"
+                );
+            }
 
         }
     );
