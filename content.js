@@ -342,28 +342,34 @@ window.addEventListener("message", (event) => {
 /* =========================================
    공개 작품 - Block2.0
    ========================================= */
+const publicProjectMatch =
+    window.location.pathname.match(
+        /^\/project\/([a-f0-9]{24})(?:\/|$)/i
+    );
 
-if (
-    /^\/project\/[a-f0-9]{24}(?:\/|$)/i
-        .test(window.location.pathname)
-) {
+if (publicProjectMatch) {
+
+    const projectId =
+        publicProjectMatch[1];
+
+    const key =
+        `unofficial_${projectId}`;
 
     console.log(
-        "[공개 작품] content.js 진입"
+        "[공개 작품] 작품 ID:",
+        projectId
     );
 
     chrome.storage.local.get(
-        ["unofficialBlockStates"],
+        [key],
         (result) => {
 
-            const states =
-                result.unofficialBlockStates || {};
+            const files =
+                result[key] || [];
 
             console.log(
-                "[공개 작품] 2.0 상태:",
-                states[
-                    "unofficial/block20.js"
-                ]
+                "[공개 작품] 저장된 비공식 블록:",
+                files
             );
 
         }
