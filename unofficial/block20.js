@@ -816,150 +816,275 @@ window.Block20 = window.Block20 || {
 };
 (function () {
 
+let definitionsRegistered = false;
+let blockArray = [];
+
 const timer = setInterval(() => {
 
-let targetWindow = window;
+    let targetWindow = window;
 
-const iframe =
-document.querySelector("iframe.project_iframe") ||
-document.querySelector("iframe");
+    const iframe =
+        document.querySelector(
+            "iframe.project_iframe"
+        ) ||
+        document.querySelector(
+            "iframe"
+        );
 
-if (
-iframe &&
-iframe.contentWindow &&
-iframe.contentWindow.Entry
-) {
-targetWindow = iframe.contentWindow;
-}
+    try {
 
-const Entry =
-targetWindow.Entry;
+        if (
+            iframe &&
+            iframe.contentWindow &&
+            iframe.contentWindow.Entry &&
+            iframe.contentWindow.Entry.block
+        ) {
+            targetWindow =
+                iframe.contentWindow;
+        }
 
-if (
-!Entry ||
-!Entry.block ||
-!Entry.playground ||
-!Entry.playground.mainWorkspace ||
-!Entry.playground.mainWorkspace.blockMenu ||
-!Entry.playground.blockMenu ||
-!Entry.playground.blockMenu._categoryData
-) {
-return;
-}
+    } catch (_) {}
 
-clearInterval(timer);
 
-const blocks =
-window.Block20.block();
+    const Entry =
+        targetWindow.Entry;
 
-const blockArray = [];
 
-for (const block of blocks) {
+    /*
+     * Entry 실행 엔진만 준비되면
+     * 일단 블록 정의부터 등록
+     */
+    if (
+        !Entry ||
+        !Entry.block
+    ) {
+        return;
+    }
 
-blockArray.push(block.name);
 
-Entry.block[block.name] = {
-color: block.color.default,
-fontColor:
-block.color.font || "#ffffff",
-outerLine:
-block.color.darken,
-skeleton:
-block.skeleton,
-statement: [],
-params:
-block.params,
-events: {},
-def: {
-params:
-block.def,
-type:
-block.name
-},
-paramsKeyMap:
-block.map,
-class:
-block.class || "default",
-func:
-block.func,
-template:
-block.template
-};
+    if (!definitionsRegistered) {
 
-}
+        const blocks =
+            window.Block20.block();
 
-const blockMenu =
-Entry.playground.mainWorkspace.blockMenu;
+        blockArray = [];
 
-const exists =
-Entry.playground.blockMenu._categoryData
-.some(
-category =>
-category.category === "Block2.0"
-);
 
-if (!exists) {
+        for (const block of blocks) {
 
-const fragment =
-targetWindow.document
-.createDocumentFragment();
+            blockArray.push(
+                block.name
+            );
 
-const categoryElement =
-blockMenu._generateCategoryElement(
-"Block2.0",
-true
-);
 
-if (
-categoryElement &&
-categoryElement[0]
-) {
+            Entry.block[
+                block.name
+            ] = {
 
-fragment.appendChild(
-categoryElement[0]
-);
+                color:
+                    block.color.default,
 
-const categories =
-blockMenu._categoryCol[0]
-.querySelectorAll(
-".entryCategoryElementWorkspace"
-);
+                fontColor:
+                    block.color.font ||
+                    "#ffffff",
 
-blockMenu._categoryCol[0]
-.insertBefore(
-fragment,
-categories[categories.length - 1]
-);
+                outerLine:
+                    block.color.darken,
 
-}
+                skeleton:
+                    block.skeleton,
 
-Entry.playground.blockMenu
-._categoryData
-.push({
-category: "Block2.0",
-blocks: blockArray
-});
+                statement: [],
 
-Entry.playground.blockMenu
-._generateCategoryCode(
-"Block2.0"
-);
-const entryCategory =
-document.getElementById(
-"entryCategoryBlock2.0"
-);
+                params:
+                    block.params,
 
-if (entryCategory) {
-entryCategory.classList.remove(
-"entryRemove",
-"entryRemoveCategory"
-);
+                events: {},
 
-entryCategory.innerText =
-"Block2.0";
-}
+                def: {
+                    params:
+                        block.def,
 
-}
+                    type:
+                        block.name
+                },
+
+                paramsKeyMap:
+                    block.map,
+
+                class:
+                    block.class ||
+                    "default",
+
+                func:
+                    block.func,
+
+                template:
+                    block.template
+            };
+
+        }
+
+
+        definitionsRegistered =
+            true;
+
+
+        console.log(
+            "Block2.0 실행 정의 등록 완료",
+            blockArray.length
+        );
+    }
+
+
+    /*
+     * 공개 작품창에서는
+     * 카테고리가 필요 없음.
+     *
+     * Entry.block 등록만 했으면 끝.
+     */
+    const isWorkspace =
+        window.location.pathname
+            .startsWith("/ws/");
+
+
+    if (!isWorkspace) {
+
+        clearInterval(timer);
+
+        console.log(
+            "Block2.0 공개 작품 실행 준비 완료"
+        );
+
+        return;
+    }
+
+
+    /*
+     * 여기부터는 작품 만들기 창 전용
+     */
+    if (
+        !Entry.playground ||
+        !Entry.playground.mainWorkspace ||
+        !Entry.playground
+            .mainWorkspace
+            .blockMenu ||
+        !Entry.playground.blockMenu ||
+        !Entry.playground
+            .blockMenu
+            ._categoryData
+    ) {
+        return;
+    }
+
+
+    const blockMenu =
+        Entry.playground
+            .mainWorkspace
+            .blockMenu;
+
+
+    const exists =
+        Entry.playground
+            .blockMenu
+            ._categoryData
+            .some(
+                category =>
+                    category.category ===
+                    "Block2.0"
+            );
+
+
+    if (!exists) {
+
+        const fragment =
+            targetWindow.document
+                .createDocumentFragment();
+
+
+        const categoryElement =
+            blockMenu
+                ._generateCategoryElement(
+                    "Block2.0",
+                    true
+                );
+
+
+        if (
+            categoryElement &&
+            categoryElement[0]
+        ) {
+
+            fragment.appendChild(
+                categoryElement[0]
+            );
+
+
+            const categories =
+                blockMenu
+                    ._categoryCol[0]
+                    .querySelectorAll(
+                        ".entryCategoryElementWorkspace"
+                    );
+
+
+            blockMenu
+                ._categoryCol[0]
+                .insertBefore(
+                    fragment,
+                    categories[
+                        categories.length - 1
+                    ]
+                );
+        }
+
+
+        Entry.playground
+            .blockMenu
+            ._categoryData
+            .push({
+                category:
+                    "Block2.0",
+
+                blocks:
+                    blockArray
+            });
+
+
+        Entry.playground
+            .blockMenu
+            ._generateCategoryCode(
+                "Block2.0"
+            );
+
+
+        const entryCategory =
+            targetWindow.document
+                .getElementById(
+                    "entryCategoryBlock2.0"
+                );
+
+
+        if (entryCategory) {
+
+            entryCategory.classList.remove(
+                "entryRemove",
+                "entryRemoveCategory"
+            );
+
+            entryCategory.innerText =
+                "Block2.0";
+        }
+    }
+
+
+    clearInterval(timer);
+
+
+    console.log(
+        "Block2.0 작품 만들기 준비 완료",
+        blockArray.length
+    );
 
 }, 50);
 
