@@ -350,61 +350,32 @@ const publicProjectMatch =
 
 if (publicProjectMatch) {
 
-    const projectId =
-        publicProjectMatch[1];
-
-    const key =
-        `unofficial_${projectId}`;
-
     console.log(
-        "[공개 작품] 작품 ID:",
-        projectId
+        "[공개 작품] Block2.0 자동 로드 시작"
     );
 
-    chrome.storage.local.get(
-        [key],
-        (result) => {
+    const script =
+        document.createElement(
+            "script"
+        );
 
-            const files =
-                result[key] || [];
+    script.src =
+        chrome.runtime.getURL(
+            "unofficial/block20.js"
+        );
 
-            console.log(
-                "[공개 작품] 저장된 비공식 블록:",
-                files
-            );
+    script.onload = () => {
+        script.remove();
 
-            if (
-                files.includes(
-                    "unofficial/block20.js"
-                )
-            ) {
+        console.log(
+            "[공개 작품] Block2.0 파일 로드 완료"
+        );
+    };
 
-                const script =
-                    document.createElement(
-                        "script"
-                    );
-
-                script.src =
-                    chrome.runtime.getURL(
-                        "unofficial/block20.js"
-                    );
-
-                script.onload = () => {
-                    script.remove();
-                };
-
-                (
-                    document.head ||
-                    document.documentElement
-                ).appendChild(
-                    script
-                );
-
-                console.log(
-                    "[공개 작품] Block2.0 로드"
-                );
-            }
-
-        }
+    (
+        document.head ||
+        document.documentElement
+    ).appendChild(
+        script
     );
 }
