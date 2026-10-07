@@ -340,7 +340,7 @@ window.addEventListener("message", (event) => {
     );
 });
 /* =========================================
-   공개 작품 - Block2.0
+   공개 작품 - 비공식 블록 자동 로드
    ========================================= */
 
 const publicProjectMatch =
@@ -350,32 +350,79 @@ const publicProjectMatch =
 
 if (publicProjectMatch) {
 
+    const publicFiles = [
+        "unofficial/right_click.js",
+        "unofficial/special.js",
+        "unofficial/magnet.js",
+        "unofficial/block20.js",
+        "unofficial/common.js",
+        "unofficial/tecsu.js",
+        "unofficial/mint.js",
+        "unofficial/newblock.js",
+        "unofficial/npi.js"
+    ];
+
     console.log(
-        "[공개 작품] Block2.0 자동 로드 시작"
+        "[공개 작품] 비공식 블록 자동 로드 시작"
     );
 
-    const script =
-        document.createElement(
-            "script"
+    let index = 0;
+
+    function loadNextPublicBlock() {
+
+        if (index >= publicFiles.length) {
+
+            console.log(
+                "[공개 작품] 1차 비공식 블록 파일 로드 완료"
+            );
+
+            return;
+        }
+
+        const file =
+            publicFiles[index++];
+
+        const script =
+            document.createElement(
+                "script"
+            );
+
+        script.src =
+            chrome.runtime.getURL(
+                file
+            );
+
+        script.onload = () => {
+
+            console.log(
+                "[공개 작품] 로드:",
+                file
+            );
+
+            script.remove();
+
+            loadNextPublicBlock();
+        };
+
+        script.onerror = () => {
+
+            console.log(
+                "[공개 작품] 로드 실패:",
+                file
+            );
+
+            script.remove();
+
+            loadNextPublicBlock();
+        };
+
+        (
+            document.head ||
+            document.documentElement
+        ).appendChild(
+            script
         );
+    }
 
-    script.src =
-        chrome.runtime.getURL(
-            "unofficial/block20.js"
-        );
-
-    script.onload = () => {
-        script.remove();
-
-        console.log(
-            "[공개 작품] Block2.0 파일 로드 완료"
-        );
-    };
-
-    (
-        document.head ||
-        document.documentElement
-    ).appendChild(
-        script
-    );
+    loadNextPublicBlock();
 }
