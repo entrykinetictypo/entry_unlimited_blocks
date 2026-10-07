@@ -203,6 +203,11 @@ function loadSavedUnofficialBlocks(projectId) {
 
             const states =
                 result.unofficialBlockStates || {};
+            console.log(
+    "[공개 작품] 2.0 상태:",
+    states["unofficial/block20.js"],
+    states
+);
 
             const files =
                 loadOrder.filter(
