@@ -203,11 +203,7 @@ function loadSavedUnofficialBlocks(projectId) {
 
             const states =
                 result.unofficialBlockStates || {};
-            console.log(
-    "[공개 작품] 2.0 상태:",
-    states["unofficial/block20.js"],
-    states
-);
+         
 
             const files =
                 loadOrder.filter(
@@ -343,3 +339,33 @@ window.addEventListener("message", (event) => {
         event.data.projectId
     );
 });
+/* =========================================
+   공개 작품 - Block2.0
+   ========================================= */
+
+if (
+    /^\/project\/[a-f0-9]{24}(?:\/|$)/i
+        .test(window.location.pathname)
+) {
+
+    console.log(
+        "[공개 작품] content.js 진입"
+    );
+
+    chrome.storage.local.get(
+        ["unofficialBlockStates"],
+        (result) => {
+
+            const states =
+                result.unofficialBlockStates || {};
+
+            console.log(
+                "[공개 작품] 2.0 상태:",
+                states[
+                    "unofficial/block20.js"
+                ]
+            );
+
+        }
+    );
+}
