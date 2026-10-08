@@ -340,24 +340,43 @@ window.addEventListener("message", (event) => {
     );
 });
 /* =========================================
-   공개 작품 - public runtime 주입
+   공개 작품 - SPA 이동 감지 + public runtime 주입
    ========================================= */
 
-const publicProjectMatch =
-    window.location.pathname.match(
-        /^\/project\/([a-f0-9]{24})(?:\/|$)/i
-    );
+let lastPublicProjectId = null;
+let wasPublicProject = false;
 
-if (publicProjectMatch) {
+function checkPublicProject() {
+
+    const match =
+        window.location.pathname.match(
+            /^\/project\/([a-f0-9]{24})(?:\/|$)/i
+        );
+
+    if (!match) {
+        wasPublicProject = false;
+        return;
+    }
+
+    const projectId = match[1];
+
+    if (
+        wasPublicProject &&
+        lastPublicProjectId === projectId
+    ) {
+        return;
+    }
+
+    wasPublicProject = true;
+    lastPublicProjectId = projectId;
 
     console.log(
-        "[공개 작품] public-runtime 주입"
+        "[공개 작품] public-runtime 주입",
+        projectId
     );
 
     const script =
-        document.createElement(
-            "script"
-        );
+        document.createElement("script");
 
     script.src =
         chrome.runtime.getURL(
@@ -376,7 +395,20 @@ if (publicProjectMatch) {
     (
         document.head ||
         document.documentElement
-    ).appendChild(
-        script
-    );
+    ).appendChild(script);
 }
+
+
+/*
+ * 최초 접속
+ */
+checkPublicProject();
+
+
+/*
+ * Entry SPA 주소 변경 감지
+ */
+setInterval(
+    checkPublicProject,
+    300
+);
