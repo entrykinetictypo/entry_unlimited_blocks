@@ -289,8 +289,6 @@ Entry.staticBlocks = [
 
             'coordinate_object',
 
-            'get_sound_volume',
-
             'quotient_and_mod',
 
             'calc_operation',
@@ -304,8 +302,6 @@ Entry.staticBlocks = [
             'get_date',
 
             'distance_something',
-
-            'get_sound_duration',
 
             'get_user_name',
 
