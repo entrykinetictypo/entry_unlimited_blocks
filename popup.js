@@ -292,43 +292,98 @@ async function getUnofficialProjectKey() {
 const selectAllUnofficialButton =
     document.getElementById("selectAllUnofficial");
 
+const unloadUnofficialButton =
+    document.getElementById("unloadUnofficial");
 
-unloadUnofficialButton.addEventListener("click", async () => {
-    const [tab] = await chrome.tabs.query({
-        active: true,
-        currentWindow: true
-    });
 
-    if (
-        !tab ||
-        !tab.id ||
-        !tab.url ||
-        !tab.url.startsWith("https://playentry.org/ws/")
-    ) {
-        alert("엔트리 작품 만들기 페이지가 아닙니다.");
-        return;
+selectAllUnofficialButton.addEventListener(
+    "click",
+    async () => {
+
+        const storageKey =
+            await getUnofficialProjectKey();
+
+        if (!storageKey) {
+            return;
+        }
+
+        const allStates = {};
+
+        unofficialBlocks.forEach((item) => {
+            allStates[item.file] = true;
+        });
+
+        chrome.storage.local.set(
+            {
+                [storageKey]: allStates
+            },
+            () => {
+
+                const checkboxes =
+                    unofficialBlocksBox.querySelectorAll(
+                        'input[type="checkbox"]'
+                    );
+
+                checkboxes.forEach((checkbox) => {
+                    checkbox.checked = true;
+                });
+            }
+        );
     }
+);
 
-    chrome.storage.local.set(
-        {
-            unofficialBlockStates: {}
-        },
-        () => {
 
-            const checkboxes =
-                unofficialBlocksBox.querySelectorAll(
-                    'input[type="checkbox"]'
-                );
+unloadUnofficialButton.addEventListener(
+    "click",
+    async () => {
 
-            checkboxes.forEach((checkbox) => {
-                checkbox.checked = false;
+        const [tab] =
+            await chrome.tabs.query({
+                active: true,
+                currentWindow: true
             });
 
-            chrome.tabs.reload(tab.id);
+        if (
+            !tab ||
+            !tab.id ||
+            !tab.url ||
+            !tab.url.startsWith(
+                "https://playentry.org/ws/"
+            )
+        ) {
+            alert(
+                "엔트리 작품 만들기 페이지가 아닙니다."
+            );
+            return;
         }
-    );
-});
 
+        const storageKey =
+            await getUnofficialProjectKey();
+
+        if (!storageKey) {
+            return;
+        }
+
+        chrome.storage.local.set(
+            {
+                [storageKey]: {}
+            },
+            () => {
+
+                const checkboxes =
+                    unofficialBlocksBox.querySelectorAll(
+                        'input[type="checkbox"]'
+                    );
+
+                checkboxes.forEach((checkbox) => {
+                    checkbox.checked = false;
+                });
+
+                chrome.tabs.reload(tab.id);
+            }
+        );
+    }
+);
 
 async function runEntryAction(action, data = {}) {
     const [tab] = await chrome.tabs.query({
