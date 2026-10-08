@@ -564,6 +564,14 @@ EntryStatic.getAllBlocks = () => {
 }
 
 const updateCategory = (category, options) => {
+    if (
+        !Entry.playground ||
+        !Entry.playground.mainWorkspace ||
+        !Entry.playground.mainWorkspace.blockMenu ||
+        !Entry.playground.blockMenu
+    ) {
+        return;
+    }
 
     Entry.playground.mainWorkspace.blockMenu._generateCategoryView([
 
