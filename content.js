@@ -197,12 +197,17 @@ function loadSavedUnofficialBlocks(projectId) {
         "unofficial/dummy.js"
     ];
 
-    chrome.storage.local.get(
-        ["unofficialBlockStates"],
-        (result) => {
+    const storageKey =
+    projectId
+        ? "unofficialBlockStates_" + projectId
+        : "unofficialBlockStates_new";
 
-            const states =
-                result.unofficialBlockStates || {};
+chrome.storage.local.get(
+    [storageKey],
+    (result) => {
+
+        const states =
+            result[storageKey] || {};
          
 
             const files =
