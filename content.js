@@ -179,23 +179,24 @@ window.addEventListener("message", (event) => {
 function loadSavedUnofficialBlocks(projectId) {
    
 
-    const loadOrder = [
-        "unofficial/etc.js",
-        "unofficial/right_click.js",
-        "unofficial/nyang.js",
-        "unofficial/express.js",
-        "unofficial/special.js",
-        "unofficial/kris.js",
-        "unofficial/magnet.js",
-        "unofficial/block20.js",
-        "unofficial/common.js",
-        "unofficial/tecsu.js",
-        "unofficial/strong.js",
-        "unofficial/mint.js",
-        "unofficial/newblock.js",
-        "unofficial/npi.js",
-        "unofficial/dummy.js"
-    ];
+   const loadOrder = [
+    "unofficial/etc.js",
+    "unofficial/nyang.js",
+    "unofficial/express.js",
+    "unofficial/strong.js",
+
+    "unofficial/right_click.js",
+    "unofficial/special.js",
+    "unofficial/kris.js",
+    "unofficial/magnet.js",
+    "unofficial/block20.js",
+    "unofficial/common.js",
+    "unofficial/tecsu.js",
+    "unofficial/mint.js",
+    "unofficial/newblock.js",
+    "unofficial/npi.js",
+    "unofficial/dummy.js"
+];
 
     const storageKey =
     projectId
