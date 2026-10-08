@@ -293,6 +293,15 @@ const LibraryCreator = {
 			return Entry.staticBlocks;
 		}
 		function updateCategory(category, options) {
+			
+    if (
+        !Entry.playground ||
+        !Entry.playground.mainWorkspace ||
+        !Entry.playground.mainWorkspace.blockMenu ||
+        !Entry.playground.blockMenu
+    ) {
+        return;
+    }
 			Entry.playground.mainWorkspace.blockMenu._generateCategoryView([
 				{ category: 'start', visible: true },
 				{ category: 'flow', visible: true },
