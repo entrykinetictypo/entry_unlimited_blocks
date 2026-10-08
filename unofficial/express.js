@@ -368,8 +368,11 @@ const LibraryCreator = {
 		// 블록 반영
 		Entry.staticBlocks.push({ category: category, blocks: blockArray });
 		// 카테고리 업데이트 (ws에서만)
-		if (Entry.getMainWS()) {
-			updateCategory(category);
+		if (
+    typeof Entry.getMainWS === "function" &&
+    Entry.getMainWS()
+) {
+    updateCategory(category);
 			// 아이콘 적용
 			$('head').append(`<style>#entryCategory${category}{background-image:url(https://raw.githack.com/entry62045/entryjs/main/images/icon.svg);background-repeat:no-repeat;margin-bottom:1px;background-position-y: 10px;background-size: 20px;}.entrySelectedCategory#entryCategory${category}{background-image:url(https://raw.githack.com/entry62045/entryjs/main/images/icon_selected.svg);background-color:#FA6F23;border-color:##FA6F23;color:#fff}</style>`);
 			// 카테고리 이름 적용;
