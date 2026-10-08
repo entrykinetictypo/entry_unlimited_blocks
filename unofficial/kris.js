@@ -450,7 +450,38 @@ window.LibraryCreator = {
       }).observe(document, { subtree: true, childList: true });
       return;
     }
+ /* 공개 작품에서도 실행 정의 등록 */
+    for (const block of blocks) {
 
+      Entry.block[block.name] = {
+        color: block.color,
+        outerLine: block.outerLine,
+        skeleton: block.skeleton,
+        statement: [],
+        params: block.params,
+        events: {},
+        def: {
+          params: block.def,
+          type: block.name
+        },
+        paramsKeyMap: block.paramsKeyMap,
+        class: block.class || 'default',
+        func: block.func,
+        template: block.template
+      };
+
+    }
+
+    /* 공개 작품에는 작업공간 메뉴가 없음 */
+    if (
+      !Entry.playground ||
+      !Entry.playground.blockMenu
+    ) {
+      console.log(
+        '[KrisBlock] 공개 작품 실행 정의 등록 완료'
+      );
+      return;
+    }
     if (EntryStatic.getAllBlocks().some(block => category == block.category)) return;
     Lang.Blocks[category.toUpperCase()] = name;
 
