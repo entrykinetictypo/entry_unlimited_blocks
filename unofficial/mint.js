@@ -5068,9 +5068,12 @@ console.log("%c        ***", style);
 console.log("%c         *", style);
 console.log('%c 민트블록 로딩 완료!', 'color: #15d8aeff; font-weight: bold; font-size: 50px; font-family: Arial;');
 console.log('%c 제작자: 서울민트초코', 'color: #15d8aeff; font-weight: bold; font-size: 20px; font-family: Arial;');
-const canvas = document.querySelector('#entryCanvas');
-canvas.style.filter = 'invert(0%)';
-Entry.aiAssistantEnable = true;
 
+Entry.aiAssistantEnable = true;
+const canvas = document.querySelector('#entryCanvas');
+
+if (canvas) {
+    canvas.style.filter = 'invert(0%)';
+}
 // 콘솔 붙여넣기 한줄용: $.get('https://cdn.jsdelivr.net/gh/minirang/MintBlock/block.js')
 })();
