@@ -183,7 +183,7 @@ async function getUnofficialProjectKey() {
 
     const match =
         tab.url.match(
-            /\/ws\/([a-f0-9]{24})(?:\/|$)/i
+            /\/(?:ws|project)\/([a-f0-9]{24})(?:\/|$|\?)/i
         );
 
     if (match) {
@@ -192,7 +192,7 @@ async function getUnofficialProjectKey() {
 
     if (
         tab.url.startsWith(
-            "https://playentry.org/ws/new"
+            "https://playentry.org/ws"
         )
     ) {
         return "unofficialBlockStates_new";
@@ -200,7 +200,6 @@ async function getUnofficialProjectKey() {
 
     return null;
 }
-
 
 (async () => {
 
