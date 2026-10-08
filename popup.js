@@ -165,132 +165,132 @@ const unofficialBlocks = [
 {name:"2.0블록",file:"unofficial/block20.js"}
 ];
 
-chrome.storage.local.get(
-    ["unofficialBlockStates"],
-    (result) => {
 
-        const states =
-            result.unofficialBlockStates || {};
+async function getUnofficialProjectKey() {
 
-        unofficialBlocks.forEach((item) => {
-
-            const label =
-                document.createElement("label");
-
-            label.style.display = "flex";
-            label.style.alignItems = "center";
-            label.style.gap = "8px";
-            label.style.padding = "7px 2px";
-            label.style.cursor = "pointer";
-
-            const checkbox =
-                document.createElement("input");
-
-            checkbox.type = "checkbox";
-
-            checkbox.style.width = "auto";
-            checkbox.style.margin = "0";
-            checkbox.style.padding = "0";
-
-            checkbox.checked =
-                states[item.file] === true;
-
-            const text =
-                document.createElement("span");
-
-            text.textContent = item.name;
-
-            checkbox.addEventListener(
-                "change",
-                () => {
-
-                    chrome.storage.local.get(
-                        ["unofficialBlockStates"],
-                        (result) => {
-
-                            const newStates = {
-                                ...(result.unofficialBlockStates || {})
-                            };
-
-                            newStates[item.file] =
-                                checkbox.checked;
-
-                            chrome.storage.local.set({
-                                unofficialBlockStates:
-                                    newStates
-                            });
-                        }
-                    );
-                }
-            );
-
-            label.appendChild(checkbox);
-            label.appendChild(text);
-
-            unofficialBlocksBox.appendChild(label);
+    const [tab] =
+        await chrome.tabs.query({
+            active: true,
+            currentWindow: true
         });
+
+    if (
+        !tab ||
+        !tab.url
+    ) {
+        return null;
     }
-);
-const selectAllUnofficialButton =
-    document.getElementById("selectAllUnofficial");
 
-selectAllUnofficialButton.addEventListener("click", () => {
+    const match =
+        tab.url.match(
+            /\/ws\/([a-f0-9]{24})(?:\/|$)/i
+        );
 
-    const allStates = {};
+    if (match) {
+        return "unofficialBlockStates_" + match[1];
+    }
 
-    unofficialBlocks.forEach((item) => {
-        allStates[item.file] = true;
-    });
+    if (
+        tab.url.startsWith(
+            "https://playentry.org/ws/new"
+        )
+    ) {
+        return "unofficialBlockStates_new";
+    }
 
-    chrome.storage.local.set(
-        {
-            unofficialBlockStates: allStates
-        },
-        () => {
+    return null;
+}
 
-            const checkboxes =
-                unofficialBlocksBox.querySelectorAll(
-                    'input[type="checkbox"]'
+
+(async () => {
+
+    const storageKey =
+        await getUnofficialProjectKey();
+
+    if (!storageKey) {
+        return;
+    }
+
+    chrome.storage.local.get(
+        [storageKey],
+        (result) => {
+
+            const states =
+                result[storageKey] || {};
+
+            unofficialBlocks.forEach((item) => {
+
+                const label =
+                    document.createElement("label");
+
+                label.style.display = "flex";
+                label.style.alignItems = "center";
+                label.style.gap = "8px";
+                label.style.padding = "7px 2px";
+                label.style.cursor = "pointer";
+
+                const checkbox =
+                    document.createElement("input");
+
+                checkbox.type = "checkbox";
+
+                checkbox.style.width = "auto";
+                checkbox.style.margin = "0";
+                checkbox.style.padding = "0";
+
+                checkbox.checked =
+                    states[item.file] === true;
+
+                const text =
+                    document.createElement("span");
+
+                text.textContent =
+                    item.name;
+
+                checkbox.addEventListener(
+                    "change",
+                    () => {
+
+                        chrome.storage.local.get(
+                            [storageKey],
+                            (result) => {
+
+                                const newStates = {
+                                    ...(result[storageKey] || {})
+                                };
+
+                                newStates[item.file] =
+                                    checkbox.checked;
+
+                                chrome.storage.local.set({
+                                    [storageKey]:
+                                        newStates
+                                });
+                            }
+                        );
+                    }
                 );
 
-            checkboxes.forEach((checkbox) => {
-                checkbox.checked = true;
+                label.appendChild(
+                    checkbox
+                );
+
+                label.appendChild(
+                    text
+                );
+
+                unofficialBlocksBox.appendChild(
+                    label
+                );
             });
         }
     );
-});
-const applyUnofficialButton =
-    document.getElementById("applyUnofficial");
 
-applyUnofficialButton.addEventListener(
-    "click",
-    async () => {
+})();
 
-        const [tab] =
-            await chrome.tabs.query({
-                active: true,
-                currentWindow: true
-            });
 
-        if (
-            !tab ||
-            !tab.id ||
-            !tab.url ||
-            !tab.url.startsWith(
-                "https://playentry.org/ws/"
-            )
-        ) {
-            alert(
-                "엔트리 작품 만들기 페이지가 아닙니다."
-            );
-            return;
-        }
-
-        chrome.tabs.reload(tab.id);
-    }
-);
-const unloadUnofficialButton =
-document.getElementById("unloadUnofficial");
+const selectAllUnofficialButton =
+    document.getElementById("selectAllUnofficial");
 
 
 unloadUnofficialButton.addEventListener("click", async () => {
