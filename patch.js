@@ -2356,5 +2356,396 @@ async function installExtensionCheckFunction() {
         );
 
     if (!exists) {
+/* =========================================
+   확장 프로그램 감지용 변수 + 함수 자동 생성
+   ========================================= */
 
+function makeId() {
+    return Math.random()
+        .toString(36)
+        .slice(2, 6);
+}
+
+
+function hasExtensionCheckFunction(functions) {
+
+    return (functions || []).some(
+        (func) => {
+
+            try {
+
+                const content =
+                    JSON.parse(
+                        func.content
+                    );
+
+                const text =
+                    JSON.stringify(
+                        content
+                    );
+
+                return text.includes(
+                    "확장프로그램이 있는가?"
+                );
+
+            } catch (_) {
+                return false;
+            }
+        }
+    );
+}
+
+
+async function installExtensionCheckFunction() {
+
+    if (
+        !window.Entry ||
+        !Entry.variableContainer ||
+        typeof Entry.exportProject !== "function" ||
+        typeof Entry.loadProject !== "function"
+    ) {
+        return false;
+    }
+
+
+    /* =========================
+       1. @_ 변수 확인
+       ========================= */
+
+    let variable =
+        Entry.variableContainer
+            .getVariableByName("@_");
+
+
+    if (!variable) {
+
+        Entry.variableContainer
+            .addVariable({
+                name: "@_",
+                value: 0,
+                visible: false
+            });
+
+        console.log(
+            "[확장 감지] @_ 변수 생성"
+        );
+
+    } else {
+
+        console.log(
+            "[확장 감지] @_ 변수 이미 존재"
+        );
+    }
+
+
+    /* 변수 생성 결과를 작품 데이터에서 다시 확인 */
+
+    const project =
+        Entry.exportProject();
+
+
+    const variableData =
+        project.variables?.find(
+            v => v.name === "@_"
+        );
+
+
+    if (!variableData) {
+
+        console.warn(
+            "[확장 감지] @_ 변수 ID를 찾지 못함"
+        );
+
+        return false;
+    }
+
+
+    const variableId =
+        variableData.id;
+
+
+    /* =========================
+       2. 함수 중복 확인
+       ========================= */
+
+    project.functions =
+        Array.isArray(project.functions)
+            ? project.functions
+            : [];
+
+
+    if (
+        hasExtensionCheckFunction(
+            project.functions
+        )
+    ) {
+
+        console.log(
+            "[확장 감지] 함수 이미 존재"
+        );
+
+        return true;
+    }
+
+
+    /* =========================
+       3. 함수 생성
+       ========================= */
+
+    const functionId = makeId();
+
+    const createId = makeId();
+    const labelId = makeId();
+
+    const resultId = makeId();
+
+    const setId = makeId();
+    const zeroId = makeId();
+
+    const waitId = makeId();
+    const timeId = makeId();
+
+
+    const functionContent = [
+        [
+            {
+                id: createId,
+                x: 49.5,
+                y: 178,
+
+                type:
+                    "function_create_value",
+
+                params: [
+                    {
+                        id: labelId,
+                        x: 0,
+                        y: 0,
+
+                        type:
+                            "function_field_label",
+
+                        params: [
+                            "확장프로그램이 있는가?",
+                            null
+                        ],
+
+                        statements: [],
+
+                        movable: null,
+                        deletable: 1,
+                        emphasized: false,
+                        readOnly: null,
+                        copyable: false,
+                        assemble: true,
+                        extensions: []
+                    },
+
+                    null,
+                    null,
+
+                    {
+                        id: resultId,
+                        x: 0,
+                        y: 0,
+
+                        type:
+                            "get_variable",
+
+                        params: [
+                            variableId,
+                            null
+                        ],
+
+                        statements: [],
+
+                        movable: null,
+                        deletable: 1,
+                        emphasized: false,
+                        readOnly: null,
+                        copyable: true,
+                        assemble: true,
+                        extensions: []
+                    }
+                ],
+
+                statements: [
+                    [
+                        {
+                            id: setId,
+                            x: 0,
+                            y: 0,
+
+                            type:
+                                "set_variable",
+
+                            params: [
+                                variableId,
+
+                                {
+                                    id: zeroId,
+                                    x: 0,
+                                    y: 0,
+
+                                    type: "text",
+
+                                    params: [
+                                        "0"
+                                    ],
+
+                                    statements: [],
+
+                                    movable: null,
+                                    deletable: 1,
+                                    emphasized: false,
+                                    readOnly: null,
+                                    copyable: true,
+                                    assemble: true,
+                                    extensions: []
+                                },
+
+                                null
+                            ],
+
+                            statements: [],
+
+                            movable: null,
+                            deletable: 1,
+                            emphasized: false,
+                            readOnly: null,
+                            copyable: true,
+                            assemble: true,
+                            extensions: []
+                        },
+
+
+                        {
+                            id: waitId,
+                            x: 0,
+                            y: 0,
+
+                            type:
+                                "wait_second",
+
+                            params: [
+                                {
+                                    id: timeId,
+                                    x: 0,
+                                    y: 0,
+
+                                    type:
+                                        "number",
+
+                                    params: [
+                                        "0.2"
+                                    ],
+
+                                    statements: [],
+
+                                    movable: null,
+                                    deletable: 1,
+                                    emphasized: false,
+                                    readOnly: null,
+                                    copyable: true,
+                                    assemble: true,
+                                    extensions: []
+                                },
+
+                                null
+                            ],
+
+                            statements: [],
+
+                            movable: null,
+                            deletable: 1,
+                            emphasized: false,
+                            readOnly: null,
+                            copyable: true,
+                            assemble: true,
+                            extensions: []
+                        }
+                    ]
+                ],
+
+                movable: null,
+                deletable: false,
+                emphasized: false,
+                readOnly: null,
+                copyable: false,
+                assemble: true,
+                extensions: []
+            }
+        ]
+    ];
+
+
+    project.functions.push({
+        id: functionId,
+
+        type: "value",
+
+        localVariables: [],
+
+        useLocalVariables: false,
+
+        content:
+            JSON.stringify(
+                functionContent
+            )
+    });
+
+
+    /* =========================
+       4. 작품 다시 로드
+       ========================= */
+
+    const projectId =
+        Entry.projectId;
+
+
+    Entry.clearProject();
+
+    await Entry.loadProject(
+        project
+    );
+
+
+    if (projectId) {
+        Entry.projectId =
+            projectId;
+    }
+
+
+    console.log(
+        "[확장 감지] 확장프로그램이 있는가? 함수 생성 완료"
+    );
+
+    return true;
+}
+
+
+/* =========================================
+   Entry 준비 후 자동 실행
+   ========================================= */
+
+const extensionCheckInstaller =
+    setInterval(
+        async () => {
+
+            if (
+                !window.Entry ||
+                !Entry.variableContainer
+            ) {
+                return;
+            }
+
+            clearInterval(
+                extensionCheckInstaller
+            );
+
+            await installExtensionCheckFunction();
+
+        },
+        500
+    );
     
