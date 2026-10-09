@@ -2283,7 +2283,7 @@ function setExtensionDetectedVariable() {
     const variable =
         Entry.variableContainer
             .getVariableByName(
-                "@확장프로그램"
+                "@_"
             );
 
     if (!variable) {
