@@ -324,11 +324,16 @@ chrome.storage.local.get(
             );
 
             if (!files.length) {
-                console.log(
-                    "[비공식 블록] 모두 OFF"
-                );
-                return;
-            }
+    console.log(
+        "[비공식 블록] 모두 OFF"
+    );
+
+    restoreTempOrServerProject(
+        projectId
+    );
+
+    return;
+}
 
             const loadScript = (file, callback) => {
                 const script =
