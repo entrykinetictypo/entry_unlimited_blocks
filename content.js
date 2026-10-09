@@ -227,6 +227,57 @@ window.location.reload();
         }
     );
 });
+function restoreTempOrServerProject(projectId) {
+
+    const tempKey =
+        "unofficialTempProject_" +
+        (projectId || "new");
+
+    chrome.storage.local.get(
+        [tempKey],
+        (result) => {
+
+            const tempProject =
+                result[tempKey];
+
+            if (tempProject) {
+
+                window.postMessage(
+                    {
+                        source:
+                            "ENTRY_UNLIMITED_BLOCKS",
+                        type:
+                            "RESTORE_TEMP_PROJECT_AFTER_UNOFFICIAL",
+                        project:
+                            tempProject,
+                        projectId:
+                            projectId || null,
+                        storageKey:
+                            tempKey
+                    },
+                    "*"
+                );
+
+                return;
+            }
+
+            if (projectId) {
+
+                window.postMessage(
+                    {
+                        source:
+                            "ENTRY_UNLIMITED_BLOCKS",
+                        type:
+                            "RESTORE_PROJECT_AFTER_UNOFFICIAL",
+                        projectId:
+                            projectId
+                    },
+                    "*"
+                );
+            }
+        }
+    );
+}
 function loadSavedUnofficialBlocks(projectId) {
   
 
