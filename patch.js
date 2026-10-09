@@ -2013,6 +2013,122 @@ function stopVariableMove() {
         const data = event.data.data || {};
 
         try {
+      if (action === "OPEN_TIPS_DATE") {
+
+    if (
+        !/\/community\/tips\/list/.test(
+            location.pathname
+        )
+    ) {
+        alert("노팁 목록 페이지가 아닙니다.");
+        return;
+    }
+
+    const date =
+        new Date(data.date);
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
+        alert("날짜 형식이 올바르지 않습니다.");
+        return;
+    }
+
+    const button =
+        document.querySelector("button");
+
+    const list =
+        document.querySelector(
+            "section>div>div>div>div>ul"
+        );
+
+    if (!button || !list) {
+        alert("노팁 목록을 찾지 못했습니다.");
+        return;
+    }
+
+    const oldFetch =
+        window.fetch;
+
+    window.fetch =
+        function(input, init) {
+
+            const url =
+                typeof input === "string"
+                    ? input
+                    : input?.url || "";
+
+            if (
+                !url.includes(
+                    "SELECT_DISCUSS_LIST"
+                ) ||
+                !init?.body
+            ) {
+                return oldFetch.apply(
+                    this,
+                    arguments
+                );
+            }
+
+            const body =
+                JSON.parse(
+                    init.body
+                );
+
+            const variables =
+                body.variables;
+
+            if (
+                variables
+                    ?.pageParam
+                    ?.soft
+            ) {
+                window.fetch =
+                    oldFetch;
+
+                alert(
+                    "최신순에서만 가능합니다."
+                );
+
+                return oldFetch.apply(
+                    this,
+                    arguments
+                );
+            }
+
+            variables.searchAfter = [
+                date
+            ];
+
+            init.body =
+                JSON.stringify(
+                    body
+                );
+
+            window.fetch =
+                oldFetch;
+
+            console.log(
+                "[노팁 날짜 이동]",
+                date
+            );
+
+            return oldFetch.call(
+                this,
+                input,
+                init
+            );
+        };
+
+    list.innerHTML = "";
+    list.style = "";
+
+    button.click();
+
+    return;
+}      
 
             if (action === "UNBAN_BLOCKS") {
                 for (let i of Entry.playground.blockMenu._bannedClass) {
