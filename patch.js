@@ -1,5 +1,6 @@
 (() => {
     "use strict";
+    
 
     const NAME = "[Entry Unlimited Blocks]";
 
