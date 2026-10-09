@@ -1,3 +1,28 @@
+document.documentElement.style.display = "none";
+
+(async () => {
+
+    const [tab] =
+        await chrome.tabs.query({
+            active: true,
+            currentWindow: true
+        });
+
+    const url =
+        tab?.url || "";
+
+    const isEntryPage =
+        /^https:\/\/playentry\.org\/(?:ws|project)(?:\/|$)/i
+            .test(url);
+
+    if (!isEntryPage) {
+        window.close();
+        return;
+    }
+
+    document.documentElement.style.display = "";
+
+})();
 const statusText = document.getElementById("status");
 const toggleButton = document.getElementById("toggle");
 
