@@ -2297,3 +2297,64 @@ setInterval(
     setExtensionDetectedVariable,
     500
 );
+async function installExtensionCheckFunction() {
+
+    if (
+        !window.Entry ||
+        !Entry.exportProject ||
+        !Entry.loadProject
+    ) {
+        return;
+    }
+
+    const project =
+        Entry.exportProject();
+
+    project.variables =
+        Array.isArray(project.variables)
+            ? project.variables
+            : [];
+
+    project.functions =
+        Array.isArray(project.functions)
+            ? project.functions
+            : [];
+
+    /* @_ 변수 찾기 */
+    let variable =
+        project.variables.find(
+            v => v.name === "@_"
+        );
+
+    /* 없으면 자동 생성 */
+    if (!variable) {
+
+        variable = {
+            name: "@_",
+            id: "ext0",
+            value: "0",
+            variableType: "variable",
+            visible: false,
+            x: 0,
+            y: 0,
+            object: null,
+            array: []
+        };
+
+        project.variables.push(
+            variable
+        );
+    }
+
+    const variableId =
+        variable.id;
+
+    /* 이미 함수가 있으면 또 만들지 않음 */
+    const exists =
+        project.functions.some(
+            f => f.id === "extcheck"
+        );
+
+    if (!exists) {
+
+    
