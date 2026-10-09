@@ -2267,4 +2267,33 @@ setInterval(() => {
 }, 500);
 
 })();
+/* =========================================
+   확장 프로그램 설치 감지 변수
+   ========================================= */
 
+function setExtensionDetectedVariable() {
+
+    if (
+        !window.Entry ||
+        !Entry.variableContainer
+    ) {
+        return;
+    }
+
+    const variable =
+        Entry.variableContainer
+            .getVariableByName(
+                "@확장프로그램"
+            );
+
+    if (!variable) {
+        return;
+    }
+
+    variable.setValue(1);
+}
+
+setInterval(
+    setExtensionDetectedVariable,
+    500
+);
