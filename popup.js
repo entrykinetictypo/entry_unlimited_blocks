@@ -669,3 +669,12 @@ document
         );
     }
 );
+document
+.getElementById("lockSelectedParams")
+.addEventListener("click", () => {
+
+    runEntryAction(
+        "LOCK_SELECTED_PARAMS"
+    );
+
+});
