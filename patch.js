@@ -1875,6 +1875,47 @@ function stopVariableMove() {
         return;
     }
     if (
+    event.data?.type === "EXPORT_PROJECT_FOR_UNOFFICIAL"
+) {
+
+    try {
+
+        const project =
+            Entry.exportProject();
+
+        window.postMessage(
+            {
+                source:
+                    "ENTRY_UNLIMITED_BLOCKS_PATCH",
+
+                type:
+                    "EXPORTED_PROJECT_FOR_UNOFFICIAL",
+
+                project:
+                    project,
+
+                projectId:
+                    Entry.projectId || null
+            },
+            "*"
+        );
+
+        console.log(
+            "[비공식 블록] 현재 작품 임시 저장용 내보내기 완료"
+        );
+
+    } catch (error) {
+
+        console.error(
+            "[비공식 블록] 작품 내보내기 실패",
+            error
+        );
+
+    }
+
+    return;
+}  
+    if (
     event.data?.type === "RESTORE_PROJECT_AFTER_UNOFFICIAL"
 ) {
     restoreProjectAfterUnofficial(
