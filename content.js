@@ -222,16 +222,8 @@ window.addEventListener("message", (event) => {
                 "[비공식 블록] 현재 작품 임시 저장 완료",
                 storageKey
             );
-
-            window.postMessage(
-                {
-                    source:
-                        "ENTRY_UNLIMITED_BLOCKS_PATCH",
-                    type:
-                        "TEMP_PROJECT_SAVED_FOR_UNOFFICIAL"
-                },
-                "*"
-            );
+window.location.reload();
+           
         }
     );
 });
