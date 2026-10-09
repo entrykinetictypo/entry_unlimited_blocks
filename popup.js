@@ -339,18 +339,20 @@ const isTips =
     tab?.url?.startsWith(
         "https://playentry.org/community/tips/list"
     );
-
 if (
     !tab ||
     !tab.id ||
     !tab.url ||
-    (!isWorkspace && !isTips)
+    !tab.url.startsWith(
+        "https://playentry.org/ws/"
+    )
 ) {
     alert(
-        "지원하는 엔트리 페이지가 아닙니다."
+        "엔트리 작품 만들기 페이지가 아닙니다."
     );
     return;
 }
+
 
         chrome.tabs.sendMessage(
     tab.id,
