@@ -2670,11 +2670,11 @@ async function installExtensionCheckFunction() {
 
     return true;
 }
-
-
 /* =========================================
    Entry 준비 후 자동 실행
    ========================================= */
+
+let extensionCheckStableCount = 0;
 
 const extensionCheckInstaller =
     setInterval(
@@ -2688,17 +2688,44 @@ const extensionCheckInstaller =
                 return;
             }
 
-            const success =
-                await installExtensionCheckFunction();
+            const project =
+                Entry.exportProject();
 
-            if (success) {
-                clearInterval(
-                    extensionCheckInstaller
+            const variableExists =
+                project.variables?.some(
+                    v => v.name === "@_"
                 );
+
+            const functionExists =
+                hasExtensionCheckFunction(
+                    project.functions
+                );
+
+            if (
+                variableExists &&
+                functionExists
+            ) {
+                extensionCheckStableCount++;
+
+                if (
+                    extensionCheckStableCount >= 6
+                ) {
+                    clearInterval(
+                        extensionCheckInstaller
+                    );
+
+                    console.log(
+                        "[확장 감지] 설치 상태 안정화 완료"
+                    );
+                }
+
+                return;
             }
+
+            extensionCheckStableCount = 0;
+
+            await installExtensionCheckFunction();
 
         },
         500
     );
-
-    
