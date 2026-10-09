@@ -342,7 +342,21 @@ applyUnofficialButton.addEventListener(
             return;
         }
 
-        chrome.tabs.reload(tab.id);
+        chrome.tabs.sendMessage(
+    tab.id,
+    {
+        type:
+            "SAVE_AND_RELOAD_UNOFFICIAL"
+    },
+    () => {
+
+        if (chrome.runtime.lastError) {
+            alert(
+                "엔트리 페이지를 새로고침해 주세요."
+            );
+        }
+    }
+);
     }
 );
 const unloadUnofficialButton =
