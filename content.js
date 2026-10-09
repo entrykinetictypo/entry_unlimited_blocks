@@ -110,7 +110,26 @@
 
                 return;
             }
+if (
+    message?.type ===
+    "SAVE_AND_RELOAD_UNOFFICIAL"
+) {
+    window.postMessage(
+        {
+            source:
+                "ENTRY_UNLIMITED_BLOCKS",
+            type:
+                "EXPORT_PROJECT_FOR_UNOFFICIAL"
+        },
+        "*"
+    );
 
+    sendResponse({
+        success: true
+    });
+
+    return;
+}
             if (message?.type === "ENTRY_ACTION") {
                 window.postMessage(
                     {
