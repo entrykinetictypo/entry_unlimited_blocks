@@ -1896,6 +1896,7 @@ function stopVariableMove() {
 
         const project =
             Entry.exportProject();
+        allowUnofficialReload = true;
 
         window.postMessage(
             {
