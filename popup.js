@@ -10,10 +10,12 @@ document.documentElement.style.display = "none";
 
     const url =
         tab?.url || "";
-
-    const isEntryPage =
-        /^https:\/\/playentry\.org\/(?:ws|project)(?:\/|$)/i
-            .test(url);
+const isEntryPage =
+    /^https:\/\/playentry\.org\/(?:ws|project)(?:\/|$)/i
+        .test(url) ||
+    /^https:\/\/playentry\.org\/community\/tips\/list(?:\?|$)/i
+        .test(url);
+   
 
     if (!isEntryPage) {
         window.close();
