@@ -2130,7 +2130,103 @@ function stopVariableMove() {
 
     return;
 }      
+if (action === "LOCK_SELECTED_PARAMS") {
 
+    const board =
+        Entry.playground
+            ?.mainWorkspace
+            ?.board;
+
+    const selectedView =
+        board?.selectedBlockView ||
+        board?.workspace?.selectedBlockView;
+
+    const rootBlock =
+        selectedView?.block;
+
+    if (!(rootBlock instanceof Entry.Block)) {
+        alert("먼저 잠글 블록을 클릭해 주세요.");
+        return;
+    }
+
+
+    let lockedCount = 0;
+
+
+    function lockParams(block) {
+
+        const params =
+            block.params || [];
+
+        for (const param of params) {
+
+            if (!(param instanceof Entry.Block)) {
+                continue;
+            }
+
+
+            /*
+             * 실제 저장되는 블록 속성
+             */
+            param.set({
+                readOnly: true
+            });
+
+
+            /*
+             * 화면에도 즉시 반영
+             */
+            if (param.view) {
+
+                param.view.readOnly = true;
+
+                if (
+                    typeof param.view._setReadOnly ===
+                    "function"
+                ) {
+                    param.view._setReadOnly();
+                }
+            }
+
+
+            lockedCount++;
+
+
+            /*
+             * 그 안의 매개변수도 계속 탐색
+             */
+            lockParams(param);
+        }
+    }
+
+
+    lockParams(rootBlock);
+
+
+    /*
+     * 작품 변경 알림
+     */
+    try {
+        rootBlock
+            .getCode()
+            ?.changeEvent
+            ?.notify();
+    } catch (_) {}
+
+
+    if (lockedCount === 0) {
+        alert(
+            "잠글 매개변수 블록이 없습니다."
+        );
+    } else {
+        alert(
+            lockedCount +
+            "개의 매개변수 블록을 잠갔습니다."
+        );
+    }
+
+    return;
+}
             if (action === "UNBAN_BLOCKS") {
                 for (let i of Entry.playground.blockMenu._bannedClass) {
                     Entry.playground.blockMenu.unbanClass(i);
