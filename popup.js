@@ -619,3 +619,31 @@ document
     );
 
 });
+document
+.getElementById("openTipsDate")
+.addEventListener(
+    "click",
+    () => {
+
+        const date =
+            document
+                .getElementById(
+                    "tipsDate"
+                )
+                .value;
+
+        if (!date) {
+            alert(
+                "날짜를 입력하세요."
+            );
+            return;
+        }
+
+        runEntryAction(
+            "OPEN_TIPS_DATE",
+            {
+                date: date
+            }
+        );
+    }
+);
