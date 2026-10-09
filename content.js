@@ -175,9 +175,68 @@ window.addEventListener("message", (event) => {
     );
 });
 
+/* =========================================
+   비공식 블록 적용 전 작품 임시 저장
+   ========================================= */
 
+window.addEventListener("message", (event) => {
+
+    if (
+        event.source !== window ||
+        event.data?.source !==
+            "ENTRY_UNLIMITED_BLOCKS_PATCH" ||
+        event.data?.type !==
+            "EXPORTED_PROJECT_FOR_UNOFFICIAL"
+    ) {
+        return;
+    }
+
+    const project =
+        event.data.project;
+
+    if (!project) {
+        return;
+    }
+
+    const match =
+        window.location.pathname.match(
+            /^\/ws\/([a-f0-9]{24})(?:\/|$)/i
+        );
+
+    const projectKey =
+        match
+            ? match[1]
+            : "new";
+
+    const storageKey =
+        "unofficialTempProject_" +
+        projectKey;
+
+    chrome.storage.local.set(
+        {
+            [storageKey]: project
+        },
+        () => {
+
+            console.log(
+                "[비공식 블록] 현재 작품 임시 저장 완료",
+                storageKey
+            );
+
+            window.postMessage(
+                {
+                    source:
+                        "ENTRY_UNLIMITED_BLOCKS_PATCH",
+                    type:
+                        "TEMP_PROJECT_SAVED_FOR_UNOFFICIAL"
+                },
+                "*"
+            );
+        }
+    );
+});
 function loadSavedUnofficialBlocks(projectId) {
-   
+  
 
    const loadOrder = [
     "unofficial/etc.js",
