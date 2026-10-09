@@ -8,7 +8,21 @@
     let waitingTimer = null;
     let lastProjectId = null;
     let entryAuthHeaders = null;
+let allowUnofficialReload = false;
 
+window.addEventListener(
+    "beforeunload",
+    (event) => {
+
+        if (!allowUnofficialReload) {
+            return;
+        }
+
+        event.stopImmediatePropagation();
+        delete event.returnValue;
+    },
+    true
+);
 const originalFetch = window.fetch;
 
 window.fetch = function(input, init = {}) {
