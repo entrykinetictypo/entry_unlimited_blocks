@@ -2397,6 +2397,11 @@ function hasExtensionCheckFunction(functions) {
 
 
 async function installExtensionCheckFunction() {
+    if (
+    !location.pathname.startsWith("/ws/")
+) {
+    return false;
+}
 
     if (
         !window.Entry ||
@@ -2734,16 +2739,20 @@ const extensionCheckInstaller =
 
             if (
                 !window.Entry ||
-                !Entry.variableContainer
+                !Entry.variableContainer ||
+                typeof Entry.exportProject !== "function"
             ) {
                 return;
             }
 
-            clearInterval(
-                extensionCheckInstaller
-            );
+            const success =
+                await installExtensionCheckFunction();
 
-            await installExtensionCheckFunction();
+            if (success) {
+                clearInterval(
+                    extensionCheckInstaller
+                );
+            }
 
         },
         500
