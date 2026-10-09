@@ -310,58 +310,69 @@ function dismissEntryRecoveryPopup() {
 
                     count++;
 
-                    const buttons =
-                        [...document.querySelectorAll(
-                            "button"
-                        )];
+                    const documents = [
+                        document
+                    ];
 
-                    const noButton =
-                        buttons.find(
-                            (button) =>
-                                button.textContent
-                                    .trim() === "아니요"
+                    document
+                        .querySelectorAll("iframe")
+                        .forEach((iframe) => {
+                            try {
+                                if (
+                                    iframe.contentDocument
+                                ) {
+                                    documents.push(
+                                        iframe.contentDocument
+                                    );
+                                }
+                            } catch (_) {}
+                        });
+
+                    for (
+                        const doc of documents
+                    ) {
+
+                        const elements =
+                            [
+                                ...doc.querySelectorAll(
+                                    "button, [role='button'], div, span"
+                                )
+                            ];
+
+                        const noElement =
+                            elements.find(
+                                (element) =>
+                                    element.textContent
+                                        ?.trim() === "아니요"
+                            );
+
+                        if (!noElement) {
+                            continue;
+                        }
+
+                        const clickable =
+                            noElement.closest(
+                                "button, [role='button']"
+                            ) ||
+                            noElement;
+
+                        clickable.click();
+
+                        console.log(
+                            "[비공식 블록] 작품 복구창 아니요 자동 클릭"
                         );
 
-                    if (noButton) {
+                        clearInterval(
+                            timer
+                        );
 
-                        let parent =
-                            noButton.parentElement;
-
-                        for (
-                            let i = 0;
-                            i < 8 && parent;
-                            i++
-                        ) {
-
-                            const text =
-                                parent.innerText || "";
-
-                            if (
-                                text.includes(
-                                    "저장하지 않고 종료한 작품이 있습니다."
-                                )
-                            ) {
-
-                                noButton.click();
-
-                                console.log(
-                                    "[비공식 블록] 엔트리 복구창 자동 닫기"
-                                );
-
-                                clearInterval(
-                                    timer
-                                );
-
-                                return;
-                            }
-
-                            parent =
-                                parent.parentElement;
-                        }
+                        return;
                     }
 
-                    if (count >= 100) {
-                        clearInterval(timer);
+                    if (count >= 150) {
+                        clearInterval(
+                            timer
+                        );
                     }
 
                 }, 100);
