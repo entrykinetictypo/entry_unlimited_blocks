@@ -2757,4 +2757,5 @@ const extensionCheckInstaller =
         },
         500
     );
+   })();     
     
