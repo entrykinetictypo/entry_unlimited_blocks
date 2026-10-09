@@ -275,6 +275,101 @@ window.addEventListener("message", (event) => {
         }
     );
 });
+function dismissEntryRecoveryPopup() {
+
+    const match =
+        window.location.pathname.match(
+            /^\/ws\/([a-f0-9]{24}|new)(?:\/|$)/i
+        );
+
+    if (!match) {
+        return;
+    }
+
+    const projectKey =
+        match[1] === "new"
+            ? "new"
+            : match[1];
+
+    const tempKey =
+        "unofficialTempProject_" +
+        projectKey;
+
+    chrome.storage.local.get(
+        [tempKey],
+        (result) => {
+
+            if (!result[tempKey]) {
+                return;
+            }
+
+            let count = 0;
+
+            const timer =
+                setInterval(() => {
+
+                    count++;
+
+                    const buttons =
+                        [...document.querySelectorAll(
+                            "button"
+                        )];
+
+                    const noButton =
+                        buttons.find(
+                            (button) =>
+                                button.textContent
+                                    .trim() === "아니요"
+                        );
+
+                    if (noButton) {
+
+                        let parent =
+                            noButton.parentElement;
+
+                        for (
+                            let i = 0;
+                            i < 8 && parent;
+                            i++
+                        ) {
+
+                            const text =
+                                parent.innerText || "";
+
+                            if (
+                                text.includes(
+                                    "저장하지 않고 종료한 작품이 있습니다."
+                                )
+                            ) {
+
+                                noButton.click();
+
+                                console.log(
+                                    "[비공식 블록] 엔트리 복구창 자동 닫기"
+                                );
+
+                                clearInterval(
+                                    timer
+                                );
+
+                                return;
+                            }
+
+                            parent =
+                                parent.parentElement;
+                        }
+                    }
+
+                    if (count >= 100) {
+                        clearInterval(timer);
+                    }
+
+                }, 100);
+        }
+    );
+}
+
+dismissEntryRecoveryPopup();
 function restoreTempOrServerProject(projectId) {
 
     const tempKey =
