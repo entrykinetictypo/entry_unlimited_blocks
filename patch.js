@@ -1915,6 +1915,72 @@ function stopVariableMove() {
 
     return;
 }  
+ if (
+    event.data?.type ===
+    "RESTORE_TEMP_PROJECT_AFTER_UNOFFICIAL"
+) {
+
+    (async () => {
+
+        try {
+
+            const project =
+                event.data.project;
+
+            const projectId =
+                event.data.projectId;
+
+            if (
+                !project ||
+                !window.Entry ||
+                typeof Entry.loadProject !== "function"
+            ) {
+                return;
+            }
+
+            if (
+                typeof Entry.clearProject === "function"
+            ) {
+                Entry.clearProject();
+            }
+
+            await Entry.loadProject(
+                project
+            );
+
+            if (projectId) {
+                Entry.projectId =
+                    projectId;
+            }
+
+            window.postMessage(
+                {
+                    source:
+                        "ENTRY_UNLIMITED_BLOCKS_PATCH",
+                    type:
+                        "TEMP_PROJECT_RESTORED_FOR_UNOFFICIAL",
+                    storageKey:
+                        event.data.storageKey
+                },
+                "*"
+            );
+
+            console.log(
+                "[비공식 블록] 임시 작품 복원 완료"
+            );
+
+        } catch (error) {
+
+            console.error(
+                "[비공식 블록] 임시 작품 복원 실패",
+                error
+            );
+        }
+
+    })();
+
+    return;
+}     
     if (
     event.data?.type === "RESTORE_PROJECT_AFTER_UNOFFICIAL"
 ) {
