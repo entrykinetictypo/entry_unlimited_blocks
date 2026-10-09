@@ -2295,7 +2295,7 @@ function setExtensionDetectedVariable() {
 
 setInterval(
     setExtensionDetectedVariable,
-    500
+    50
 );
 async function installExtensionCheckFunction() {
 
