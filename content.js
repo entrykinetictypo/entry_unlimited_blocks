@@ -246,6 +246,35 @@ window.location.reload();
         }
     );
 });
+window.addEventListener("message", (event) => {
+
+    if (
+        event.source !== window ||
+        event.data?.source !==
+            "ENTRY_UNLIMITED_BLOCKS_PATCH" ||
+        event.data?.type !==
+            "TEMP_PROJECT_RESTORED_FOR_UNOFFICIAL"
+    ) {
+        return;
+    }
+
+    const storageKey =
+        event.data.storageKey;
+
+    if (!storageKey) {
+        return;
+    }
+
+    chrome.storage.local.remove(
+        [storageKey],
+        () => {
+            console.log(
+                "[비공식 블록] 임시 작품 삭제 완료",
+                storageKey
+            );
+        }
+    );
+});
 function restoreTempOrServerProject(projectId) {
 
     const tempKey =
