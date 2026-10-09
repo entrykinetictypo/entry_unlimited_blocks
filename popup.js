@@ -470,15 +470,27 @@ async function runEntryAction(action, data = {}) {
         currentWindow: true
     });
 
-    if (
-        !tab ||
-        !tab.id ||
-        !tab.url ||
-        !tab.url.startsWith("https://playentry.org/ws/")
-    ) {
-        alert("엔트리 작품 만들기 페이지가 아닙니다.");
-        return;
-    }
+  const isWorkspace =
+    tab?.url?.startsWith(
+        "https://playentry.org/ws/"
+    );
+
+const isTips =
+    tab?.url?.startsWith(
+        "https://playentry.org/community/tips/list"
+    );
+
+if (
+    !tab ||
+    !tab.id ||
+    !tab.url ||
+    (!isWorkspace && !isTips)
+) {
+    alert(
+        "지원하는 엔트리 페이지가 아닙니다."
+    );
+    return;
+}
 
     chrome.tabs.sendMessage(
         tab.id,
