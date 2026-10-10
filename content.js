@@ -451,7 +451,6 @@ function loadSavedUnofficialBlocks(projectId) {
     "unofficial/newblock.js",
     "unofficial/npi.js",
     "unofficial/dummy.js",
-    "uncharted/inject.js"
 ];
 
     const storageKey =
