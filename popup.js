@@ -1348,3 +1348,172 @@ document
 loadUnchartedSnippets(
     renderUnchartedSnippets
 );
+/* =========================
+   언차티드 업데이트 확인
+   ========================= */
+
+const UNCHARTED_CURRENT_VERSION =
+    "1.4.0";
+
+
+document
+.getElementById(
+    "unchartedCheckUpdateBtn"
+)
+.addEventListener(
+    "click",
+    async () => {
+
+        const status =
+            document.getElementById(
+                "unchartedUpdateStatus"
+            );
+
+        status.textContent =
+            "확인 중...";
+
+
+        try {
+
+            const url =
+                "https://raw.githubusercontent.com/" +
+                "KoreaIsNotAvailable/" +
+                "uncharted-blocks/" +
+                "main/manifest.json";
+
+
+            const response =
+                await fetch(
+                    url,
+                    {
+                        cache: "no-store"
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "GitHub 응답 오류 (" +
+                    response.status +
+                    ")"
+                );
+            }
+
+
+            const manifest =
+                await response.json();
+
+
+            const latestVersion =
+                manifest.version;
+
+
+            if (!latestVersion) {
+
+                throw new Error(
+                    "최신 버전을 읽을 수 없습니다."
+                );
+            }
+
+
+            const result =
+                compareUnchartedVersions(
+                    latestVersion,
+                    UNCHARTED_CURRENT_VERSION
+                );
+
+
+            if (result > 0) {
+
+                status.innerHTML =
+                    "🆕 새 버전 " +
+                    latestVersion +
+                    "이 있습니다.<br>" +
+                    "현재 버전: " +
+                    UNCHARTED_CURRENT_VERSION +
+                    "<br><br>" +
+                    '<a href="' +
+                    'https://github.com/' +
+                    'KoreaIsNotAvailable/' +
+                    'uncharted-blocks' +
+                    '" target="_blank">' +
+                    "GitHub에서 확인하기 ↗" +
+                    "</a>";
+
+                status.style.color =
+                    "#d97706";
+
+            } else {
+
+                status.textContent =
+                    "✅ 최신 버전입니다. " +
+                    "(v" +
+                    UNCHARTED_CURRENT_VERSION +
+                    ")";
+
+                status.style.color =
+                    "#16a34a";
+            }
+
+        } catch (error) {
+
+            status.textContent =
+                "확인 실패: " +
+                error.message;
+
+            status.style.color =
+                "#dc2626";
+        }
+    }
+);
+
+
+function compareUnchartedVersions(
+    latest,
+    current
+) {
+
+    const a =
+        String(latest)
+            .split(".")
+            .map(Number);
+
+    const b =
+        String(current)
+            .split(".")
+            .map(Number);
+
+
+    const length =
+        Math.max(
+            a.length,
+            b.length
+        );
+
+
+    for (
+        let i = 0;
+        i < length;
+        i++
+    ) {
+
+        const av =
+            a[i] || 0;
+
+        const bv =
+            b[i] || 0;
+
+
+        if (av > bv) {
+            return 1;
+        }
+
+        if (av < bv) {
+            return -1;
+        }
+    }
+
+
+    return 0;
+}
