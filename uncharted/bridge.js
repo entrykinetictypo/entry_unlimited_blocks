@@ -1,180 +1,294 @@
-// 언차티드 블록 bridge
-// 체크된 작품에서만 MAIN world에 언차티드 로드
-
+// isolated world
 (function () {
+    "use strict";
 
     console.log(
-        "[언차티드 블록/bridge] 시작"
+        "[언차티드 블록/bridge] 로드됨"
     );
 
+    const UNCHARTED_FILE =
+        "uncharted/inject.js";
 
-    /* =========================
+    const NEW_STATE_KEY =
+        "unofficialBlockStates_new";
+
+    const NEW_PROJECT_PENDING =
+        "entryUnlimitedNewProjectPending";
+
+    const EXACT_NEW_PROJECT_URL =
+        "https://playentry.org/ws/new?type=normal&mode=block&lang=ko";
+
+    let loadStarted = false;
+
+
+    /* =========================================
+       현재 최상위 페이지 주소
+       ========================================= */
+
+    function getTopUrl() {
+        try {
+            return window.top.location.href;
+        } catch (_) {
+            return window.location.href;
+        }
+    }
+
+
+    function getTopPath() {
+        try {
+            return window.top.location.pathname;
+        } catch (_) {
+            return window.location.pathname;
+        }
+    }
+
+
+    /* =========================================
        현재 작품 storage key
-       ========================= */
+       ========================================= */
 
     function getProjectStorageKey() {
 
-        let path =
-            window.location.pathname;
-
-        try {
-
-            if (
-                window.top &&
-                window.top.location
-            ) {
-                path =
-                    window.top.location.pathname;
-            }
-
-        } catch (_) {}
-
+        const path =
+            getTopPath();
 
         const match =
             path.match(
                 /^\/(?:ws|project)\/([a-f0-9]{24})(?:\/|$)/i
             );
 
-
         if (match) {
+            return {
+                key:
+                    "unofficialBlockStates_" +
+                    match[1],
 
-            return (
-                "unofficialBlockStates_" +
-                match[1]
-            );
-
+                projectId:
+                    match[1]
+            };
         }
-
 
         if (
-            path === "/ws" ||
-            path.startsWith("/ws/new")
+            path === "/ws/new" ||
+            path.startsWith("/ws/new/")
         ) {
+            return {
+                key:
+                    NEW_STATE_KEY,
 
-            return "unofficialBlockStates_new";
-
+                projectId:
+                    null
+            };
         }
-
 
         return null;
     }
 
 
-    /* =========================
-       MAIN world JS 로더
-       ========================= */
+    /* =========================================
+       MAIN world script 로더
+       ========================================= */
 
     function loadMainScript(file) {
 
         return new Promise(
             (resolve, reject) => {
 
-                function tryLoad() {
+                function inject() {
 
-                    const parent =
-                        document.documentElement ||
+                    const root =
                         document.head ||
-                        document.body;
+                        document.documentElement;
 
-
-                    if (!parent) {
-
+                    if (!root) {
                         setTimeout(
-                            tryLoad,
+                            inject,
                             10
                         );
-
                         return;
                     }
-
 
                     const script =
                         document.createElement(
                             "script"
                         );
 
-
                     script.src =
                         chrome.runtime.getURL(
                             file
                         );
 
+                    script.onload =
+                        () => {
 
-                    script.onload = () => {
-
-                        script.remove();
-
-                        console.log(
-                            "[언차티드 블록] 로드 완료:",
-                            file
-                        );
-
-                        resolve();
-                    };
-
-
-                    script.onerror = () => {
-
-                        script.remove();
-
-                        console.error(
-                            "[언차티드 블록] 로드 실패:",
-                            file
-                        );
-
-                        reject(
-                            new Error(
-                                "로드 실패: " +
+                            console.log(
+                                "[언차티드 블록] 로드 완료:",
                                 file
-                            )
-                        );
-                    };
+                            );
 
+                            script.remove();
 
-                    parent.appendChild(
+                            resolve();
+                        };
+
+                    script.onerror =
+                        () => {
+
+                            script.remove();
+
+                            reject(
+                                new Error(
+                                    "로드 실패: " +
+                                    file
+                                )
+                            );
+                        };
+
+                    root.appendChild(
                         script
                     );
                 }
 
-
-                tryLoad();
+                inject();
             }
         );
     }
 
 
-    /* =========================
-       체크 여부 확인 후 로드
-       ========================= */
+    /* =========================================
+       체크 상태 확인 후 언차티드 로드
+       ========================================= */
 
     function loadUnchartedIfEnabled() {
 
-        const storageKey =
-            getProjectStorageKey();
+        if (loadStarted) {
+            return;
+        }
 
 
-        if (!storageKey) {
+        const topUrl =
+            getTopUrl();
+
+
+        /*
+         * 새 작품 최초 진입
+         *
+         * 이전 _new 설정을 절대 사용하면 안 됨.
+         */
+        if (
+            topUrl ===
+            EXACT_NEW_PROJECT_URL
+        ) {
+
+            if (
+                window.top === window
+            ) {
+
+                sessionStorage.setItem(
+                    NEW_PROJECT_PENDING,
+                    "1"
+                );
+
+                chrome.storage.local.remove(
+                    [
+                        NEW_STATE_KEY,
+                        "unofficialTempProject_new"
+                    ],
+                    () => {
+
+                        console.log(
+                            "[언차티드 블록] 새 작품 - 이전 _new 상태 초기화"
+                        );
+                    }
+                );
+            }
+
+            console.log(
+                "[언차티드 블록] 새 작품 최초 진입 - 로드 대기"
+            );
 
             return;
+        }
 
+
+        const info =
+            getProjectStorageKey();
+
+        if (!info) {
+            return;
+        }
+
+
+        const keys = [
+            info.key
+        ];
+
+
+        /*
+         * /ws/new에서 비공식 블록 선택 후
+         * 실제 작품 ID가 생성된 직후라면
+         *
+         * content.js가 아직 _new → 작품ID 이동하기 전일 수 있음.
+         */
+        const pending =
+            sessionStorage.getItem(
+                NEW_PROJECT_PENDING
+            ) === "1";
+
+
+        if (
+            info.projectId &&
+            pending
+        ) {
+            keys.push(
+                NEW_STATE_KEY
+            );
         }
 
 
         chrome.storage.local.get(
-            [storageKey],
+            keys,
             async (result) => {
 
-                const states =
-                    result[storageKey] || {};
+                let states =
+                    result[
+                        info.key
+                    ];
 
 
-                const enabled =
+                /*
+                 * 작품 ID용 설정이 아직 없으면
+                 * 방금 만든 새 작품의 _new 설정 사용
+                 */
+                if (
+                    (!states ||
+                        Object.keys(
+                            states
+                        ).length === 0) &&
+                    info.projectId &&
+                    pending
+                ) {
+
+                    states =
+                        result[
+                            NEW_STATE_KEY
+                        ] || {};
+
+                    console.log(
+                        "[언차티드 블록] 새 작품 _new 상태 임시 사용"
+                    );
+                }
+
+
+                states =
+                    states || {};
+
+
+                if (
                     states[
-                        "uncharted/inject.js"
-                    ] === true;
-
-
-                if (!enabled) {
+                        UNCHARTED_FILE
+                    ] !== true
+                ) {
 
                     console.log(
                         "[언차티드 블록] OFF"
@@ -182,6 +296,10 @@
 
                     return;
                 }
+
+
+                loadStarted =
+                    true;
 
 
                 console.log(
@@ -210,11 +328,13 @@
 
                 } catch (error) {
 
+                    loadStarted =
+                        false;
+
                     console.error(
-                        "[언차티드 블록] 로드 중 오류",
+                        "[언차티드 블록] 로드 실패:",
                         error
                     );
-
                 }
             }
         );
@@ -224,9 +344,9 @@
     loadUnchartedIfEnabled();
 
 
-    /* =========================
-       inject.js ↔ storage 통신
-       ========================= */
+    /* =========================================
+       커스텀 코드 전달
+       ========================================= */
 
     window.addEventListener(
         "message",
@@ -237,7 +357,6 @@
             ) {
                 return;
             }
-
 
             if (
                 !event.data ||
@@ -261,11 +380,11 @@
                                 .unchartedCustomSnippets ||
                             [];
 
-
                         window.postMessage(
                             {
                                 type:
                                     "__UNCHARTED_SNIPPETS_RESPONSE__",
+
                                 snippets:
                                     snippets
                             },
