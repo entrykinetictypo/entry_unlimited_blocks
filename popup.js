@@ -679,3 +679,207 @@ document
     );
 
 });
+/* =========================================================
+   언차티드 확장 설정
+   ========================================================= */
+
+const toggleUnchartedPanel =
+    document.getElementById(
+        "toggleUnchartedPanel"
+    );
+
+const unchartedPanel =
+    document.getElementById(
+        "unchartedPanel"
+    );
+
+
+toggleUnchartedPanel.addEventListener(
+    "click",
+    () => {
+
+        const isOpen =
+            unchartedPanel.style.display !==
+            "none";
+
+        unchartedPanel.style.display =
+            isOpen
+                ? "none"
+                : "block";
+
+        toggleUnchartedPanel.textContent =
+            isOpen
+                ? "🧭 언차티드 확장 보기"
+                : "🧭 언차티드 확장 닫기";
+    }
+);
+
+
+/* =========================
+   다시 등록하기
+   ========================= */
+
+document
+.getElementById(
+    "unchartedReapplyBtn"
+)
+.addEventListener(
+    "click",
+    async () => {
+
+        const status =
+            document.getElementById(
+                "unchartedStatus"
+            );
+
+        status.textContent =
+            "재등록 중...";
+
+        try {
+
+            const [tab] =
+                await chrome.tabs.query({
+                    active: true,
+                    currentWindow: true
+                });
+
+            const resultArray =
+                await chrome.scripting.executeScript({
+                    target: {
+                        tabId: tab.id
+                    },
+                    world: "MAIN",
+                    func: () => {
+
+                        if (
+                            typeof window
+                                .__unchartedForceReapply ===
+                            "function"
+                        ) {
+
+                            return window
+                                .__unchartedForceReapply();
+                        }
+
+                        return (
+                            "언차티드가 현재 작품에서 " +
+                            "로드되지 않았습니다."
+                        );
+                    }
+                });
+
+            const result =
+                resultArray?.[0]?.result;
+
+            status.textContent =
+                result || "완료";
+
+        } catch (error) {
+
+            status.textContent =
+                "오류: " +
+                error.message;
+        }
+    }
+);
+/* =========================
+   Groq 개인 API 키
+   ========================= */
+
+const UNCHARTED_AI_KEY =
+    "unchartedGroqApiKey";
+
+
+function updateUnchartedAiKeyStatus(
+    hasKey
+) {
+
+    const status =
+        document.getElementById(
+            "unchartedAiKeyStatus"
+        );
+
+    status.textContent =
+        hasKey
+            ? "✅ 키가 설정되어 있습니다."
+            : "키가 설정되지 않았습니다.";
+}
+
+
+chrome.storage.local.get(
+    [UNCHARTED_AI_KEY],
+    (result) => {
+
+        updateUnchartedAiKeyStatus(
+            Boolean(
+                result[
+                    UNCHARTED_AI_KEY
+                ]
+            )
+        );
+    }
+);
+
+
+document
+.getElementById(
+    "unchartedAiKeySaveBtn"
+)
+.addEventListener(
+    "click",
+    () => {
+
+        const input =
+            document.getElementById(
+                "unchartedAiKeyInput"
+            );
+
+        const key =
+            input.value.trim();
+
+        if (!key) {
+
+            alert(
+                "API 키를 입력하세요."
+            );
+
+            return;
+        }
+
+        chrome.storage.local.set(
+            {
+                [UNCHARTED_AI_KEY]:
+                    key
+            },
+            () => {
+
+                input.value = "";
+
+                updateUnchartedAiKeyStatus(
+                    true
+                );
+            }
+        );
+    }
+);
+
+
+document
+.getElementById(
+    "unchartedAiKeyClearBtn"
+)
+.addEventListener(
+    "click",
+    () => {
+
+        chrome.storage.local.remove(
+            [UNCHARTED_AI_KEY],
+            () => {
+
+                updateUnchartedAiKeyStatus(
+                    false
+                );
+            }
+        );
+    }
+);
