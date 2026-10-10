@@ -282,10 +282,7 @@ const TEXT_COLOR =
                             "EntSave\n차원이다른 저장을 경험해보세요",
 
                         color:
-                            EntryStatic
-                                .colorSet
-                                .common
-                                .TEXT,
+                            TEXT_COLOR,
 
                         align:
                             "center"
@@ -334,11 +331,7 @@ const TEXT_COLOR =
                             "저장하기",
 
                         color:
-                            EntryStatic
-                                .colorSet
-                                .common
-                                .TEXT,
-
+                           TEXT_COLOR,
                         class:
                             "bold",
 
@@ -573,10 +566,7 @@ const TEXT_COLOR =
                             "가져오기",
 
                         color:
-                            EntryStatic
-                                .colorSet
-                                .common
-                                .TEXT,
+                            TEXT_COLOR,
 
                         align:
                             "center"
