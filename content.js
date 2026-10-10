@@ -654,60 +654,157 @@ setInterval(
     checkPublicProject,
     300
 );
-const NEW_PROJECT_URL =
+const EXACT_NEW_PROJECT_URL =
     "https://playentry.org/ws/new?type=normal&mode=block&lang=ko";
 
-const NEW_PROJECT_SESSION_KEY =
-    "entryUnlimitedNewProjectStarted";
+const NEW_PROJECT_PENDING =
+    "entryUnlimitedNewProjectPending";
 
 
-function checkNewProjectStart() {
+/*
+ * 진짜 새 작품 화면에 처음 들어옴
+ */
+if (
+    window.top === window &&
+    window.location.href === EXACT_NEW_PROJECT_URL
+) {
 
-    if (
-        window.location.href ===
-        NEW_PROJECT_URL
-    ) {
+    // 지금부터 만들어질 작품이라는 표시
+    sessionStorage.setItem(
+        NEW_PROJECT_PENDING,
+        "1"
+    );
 
-        // 이 탭에서 새 작품에 처음 들어온 경우만
-        if (
-            sessionStorage.getItem(
-                NEW_PROJECT_SESSION_KEY
-            ) !== "1"
-        ) {
-
-            sessionStorage.setItem(
-                NEW_PROJECT_SESSION_KEY,
-                "1"
-            );
-
-            chrome.storage.local.remove(
-                [
-                    "unofficialBlockStates_new"
-                ],
-                () => {
-
-                    console.log(
-                        "[새 작품] 비공식 블록 선택 상태 초기화"
-                    );
-                }
+    // 이전 새 작품의 찌꺼기 제거
+    chrome.storage.local.remove(
+        [
+            "unofficialBlockStates_new",
+            "unofficialTempProject_new"
+        ],
+        () => {
+            console.log(
+                "[새 작품] 이전 새 작품 설정 초기화"
             );
         }
-
-        return;
-    }
-
-
-    // 다른 작품으로 이동하면
-    // 다음 새 작품을 위해 초기화
-    sessionStorage.removeItem(
-        NEW_PROJECT_SESSION_KEY
     );
 }
 
 
-checkNewProjectStart();
+/*
+ * /ws/new 에서 생성된 설정을
+ * 실제 작품 ID로 이동
+ */
+function migrateNewProjectData(
+    projectId,
+    callback
+) {
 
-setInterval(
-    checkNewProjectStart,
-    300
-);
+    if (
+        !projectId ||
+        sessionStorage.getItem(
+            NEW_PROJECT_PENDING
+        ) !== "1"
+    ) {
+
+        callback();
+        return;
+    }
+
+
+    const oldStateKey =
+        "unofficialBlockStates_new";
+
+    const newStateKey =
+        "unofficialBlockStates_" +
+        projectId;
+
+    const oldTempKey =
+        "unofficialTempProject_new";
+
+    const newTempKey =
+        "unofficialTempProject_" +
+        projectId;
+
+
+    chrome.storage.local.get(
+        [
+            oldStateKey,
+            oldTempKey
+        ],
+        (result) => {
+
+            const saveData = {};
+
+
+            if (
+                result[
+                    oldStateKey
+                ]
+            ) {
+
+                saveData[
+                    newStateKey
+                ] =
+                    result[
+                        oldStateKey
+                    ];
+            }
+
+
+            if (
+                result[
+                    oldTempKey
+                ]
+            ) {
+
+                saveData[
+                    newTempKey
+                ] =
+                    result[
+                        oldTempKey
+                    ];
+            }
+
+
+            const finish = () => {
+
+                chrome.storage.local.remove(
+                    [
+                        oldStateKey,
+                        oldTempKey
+                    ],
+                    () => {
+
+                        sessionStorage.removeItem(
+                            NEW_PROJECT_PENDING
+                        );
+
+                        console.log(
+                            "[새 작품] 설정 이동 완료:",
+                            projectId
+                        );
+
+                        callback();
+                    }
+                );
+            };
+
+
+            if (
+                Object.keys(
+                    saveData
+                ).length
+            ) {
+
+                chrome.storage.local.set(
+                    saveData,
+                    finish
+                );
+
+            } else {
+
+                finish();
+            }
+        }
+    );
+}
