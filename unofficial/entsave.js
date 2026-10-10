@@ -850,33 +850,29 @@ const TEXT_COLOR =
             )
         ) {
 
-            $("head").append(`
-<style id="unofficial-entsave-style">
+          const style =
+    document.createElement("style");
 
+style.id =
+    "unofficial-entsave-style";
+
+style.textContent = `
 #entryCategory${CATEGORY} {
     background-image:
         url(/lib/entry-js/images/variable.svg);
-
-    background-repeat:
-        no-repeat;
-
-    margin-bottom:
-        1px;
+    background-repeat: no-repeat;
+    margin-bottom: 1px;
 }
 
 .entrySelectedCategory#entryCategory${CATEGORY} {
     background-image:
         url(/lib/entry-js/images/variable_on.svg);
-
-    background-color:
-        #8c22e3;
-
-    color:
-        #fff;
+    background-color: #8c22e3;
+    color: #fff;
 }
+`;
 
-</style>
-            `);
+document.head.appendChild(style); 
         }
 
 
