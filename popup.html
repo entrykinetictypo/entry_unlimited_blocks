@@ -211,6 +211,151 @@
   </div>
 <hr>
 
+<div class="card">
+  <button id="toggleUnchartedPanel">
+    🧭 언차티드 확장 보기
+  </button>
+
+  <div id="unchartedPanel" style="display:none;">
+
+    <div class="mini-section">
+      <h3>🔄 다시 등록하기</h3>
+
+      <p class="hint">
+        씬 전환 후 언차티드 블록이 안 보일 때 사용합니다.
+      </p>
+
+      <button id="unchartedReapplyBtn">
+        다시 등록하기
+      </button>
+
+      <div id="unchartedStatus" class="hint"></div>
+    </div>
+
+
+    <div class="mini-section">
+      <h3>🤖 Groq 개인 API 키</h3>
+
+      <p class="hint">
+        내 브라우저에만 저장되는 Groq API 키입니다.
+      </p>
+
+      <a
+        href="https://console.groq.com/keys"
+        target="_blank"
+        rel="noopener"
+        style="
+          display:block;
+          text-align:center;
+          margin-top:8px;
+          font-size:12px;
+        "
+      >
+        Groq API 키 발급받기 ↗
+      </a>
+
+      <div
+        id="unchartedAiKeyStatus"
+        class="hint"
+      >
+        키가 설정되지 않았습니다.
+      </div>
+
+      <div class="row">
+        <input
+          id="unchartedAiKeyInput"
+          type="password"
+          placeholder="gsk_..."
+        >
+
+        <button id="unchartedAiKeySaveBtn">
+          저장
+        </button>
+      </div>
+
+      <button id="unchartedAiKeyClearBtn">
+        키 삭제
+      </button>
+    </div>
+
+
+    <div class="mini-section">
+      <h3>🔗 이 작품용 공유 키</h3>
+
+      <p class="hint">
+        이 키는 작품 데이터 자체에 들어갑니다.
+        작품을 공유하면 키가 노출될 수 있습니다.
+      </p>
+
+      <div
+        id="unchartedSharedKeyStatus"
+        class="hint"
+      >
+        공유 키가 설정되지 않았습니다.
+      </div>
+
+      <div class="row">
+        <input
+          id="unchartedSharedKeyInput"
+          type="password"
+          placeholder="gsk_..."
+        >
+
+        <button id="unchartedSharedKeySaveBtn">
+          설정
+        </button>
+      </div>
+
+      <button id="unchartedSharedKeyClearBtn">
+        공유 키 삭제
+      </button>
+    </div>
+
+
+    <div class="mini-section">
+      <h3>📌 내 커스텀 코드</h3>
+
+      <p class="hint">
+        저장한 코드는 언차티드가 로드될 때 실행됩니다.
+      </p>
+
+      <input
+        id="unchartedSnippetTitle"
+        type="text"
+        placeholder="제목"
+      >
+
+      <textarea
+        id="unchartedSnippetCode"
+        rows="5"
+        placeholder="콘솔 코드를 입력하세요"
+        style="
+          width:100%;
+          margin-top:7px;
+          resize:vertical;
+        "
+      ></textarea>
+
+      <button id="unchartedAddSnippetBtn">
+        저장하고 추가하기
+      </button>
+
+      <div
+        id="unchartedSnippetList"
+        style="margin-top:8px;"
+      ></div>
+
+      <div
+        id="unchartedSnippetEmpty"
+        class="hint"
+      >
+        저장된 커스텀 코드가 없습니다.
+      </div>
+    </div>
+
+  </div>
+</div>
+
 <h2>노팁 날짜 이동</h2>
 
 <p>
