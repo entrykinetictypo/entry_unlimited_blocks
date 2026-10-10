@@ -190,6 +190,7 @@ const unofficialBlocks = [
 {name:"특급블록",file:"unofficial/express.js"},
 {name:"특수블록",file:"unofficial/tecsu.js"},
 {name:"2.0블록",file:"unofficial/block20.js"}
+{name:"언차티드 블록",file:"uncharted/inject.js"}
 ];
 
 
