@@ -52,8 +52,9 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "unofficial/*.js"
-      ],
+  "unofficial/*.js",
+  "uncharted/*.js"
+],
       "matches": [
         "https://playentry.org/*"
       ]
