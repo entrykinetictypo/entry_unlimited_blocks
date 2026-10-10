@@ -506,8 +506,7 @@ chrome.storage.local.get(
                 document.documentElement
                     .appendChild(script);
             };
-
-             loadScript(
+     loadScript(
                 "unofficial/runtime.js",
                 () => {
 
@@ -536,43 +535,34 @@ chrome.storage.local.get(
                             file
                         );
 
-                        function finishLoad(file) {
-
-                            window.postMessage(
-                                {
-                                    source:
-                                        "ENTRY_UNLIMITED_BLOCKS",
-                                    type:
-                                        "UNOFFICIAL_LOADED",
-                                    file:
-                                        file
-                                },
-                                "*"
-                            );
-
-                            loadNext();
-                        }
-
-
                         loadScript(
-    file,
-    () => {
+                            file,
+                            () => {
 
-        window.postMessage(
-            {
-                source:
-                    "ENTRY_UNLIMITED_BLOCKS",
-                type:
-                    "UNOFFICIAL_LOADED",
-                file:
-                    file
-            },
-            "*"
-        );
+                                window.postMessage(
+                                    {
+                                        source:
+                                            "ENTRY_UNLIMITED_BLOCKS",
+                                        type:
+                                            "UNOFFICIAL_LOADED",
+                                        file:
+                                            file
+                                    },
+                                    "*"
+                                );
 
-        loadNext();
-    }
-);
+                                loadNext();
+                            }
+                        );
+                    }
+
+                    loadNext();
+                }
+            );
+        }
+    );
+}
+
 
 window.addEventListener("message", (event) => {
 
@@ -590,6 +580,7 @@ window.addEventListener("message", (event) => {
         event.data.projectId
     );
 });
+       
 /* =========================================
    공개 작품 - SPA 이동 감지 + public runtime 주입
    ========================================= */
