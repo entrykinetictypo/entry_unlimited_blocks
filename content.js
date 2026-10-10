@@ -653,13 +653,13 @@ function checkPublicProject() {
 /*
  * 최초 접속
  */
-checkPublicProject();
+//checkPublicProject();
 
 
 /*
  * Entry SPA 주소 변경 감지
  */
-setInterval(
-    checkPublicProject,
-    300
-);
+//setInterval(
+  //  checkPublicProject,
+  //  300
+//);
