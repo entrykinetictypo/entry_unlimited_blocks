@@ -554,50 +554,25 @@ chrome.storage.local.get(
                         }
 
 
-                        if (
-                            file ===
-                            "uncharted/inject.js"
-                        ) {
+                        loadScript(
+    file,
+    () => {
 
-                            loadScript(
-                                "uncharted/matter.min.js",
-                                () => {
+        window.postMessage(
+            {
+                source:
+                    "ENTRY_UNLIMITED_BLOCKS",
+                type:
+                    "UNOFFICIAL_LOADED",
+                file:
+                    file
+            },
+            "*"
+        );
 
-                                    loadScript(
-                                        "uncharted/three.min.js",
-                                        () => {
-
-                                            loadScript(
-                                                "uncharted/inject.js",
-                                                () => {
-                                                    finishLoad(file);
-                                                }
-                                            );
-
-                                        }
-                                    );
-
-                                }
-                            );
-
-                        } else {
-
-                            loadScript(
-                                file,
-                                () => {
-                                    finishLoad(file);
-                                }
-                            );
-
-                        }
-                    }
-
-                    loadNext();
-                }
-            );
-        }
-    );
-}
+        loadNext();
+    }
+);
 
 window.addEventListener("message", (event) => {
 
