@@ -883,3 +883,468 @@ document
         );
     }
 );
+/* =========================
+   작품용 공유 키
+   ========================= */
+
+function updateUnchartedSharedKeyStatus(
+    hasKey
+) {
+
+    const status =
+        document.getElementById(
+            "unchartedSharedKeyStatus"
+        );
+
+    status.textContent =
+        hasKey
+            ? "✅ 이 작품에 공유 키가 설정되어 있습니다."
+            : "공유 키가 설정되지 않았습니다.";
+}
+
+
+async function refreshUnchartedSharedKey() {
+
+    try {
+
+        const [tab] =
+            await chrome.tabs.query({
+                active: true,
+                currentWindow: true
+            });
+
+        const resultArray =
+            await chrome.scripting.executeScript({
+                target: {
+                    tabId: tab.id
+                },
+                world: "MAIN",
+                func: () => {
+
+                    if (
+                        typeof window
+                            .__unchartedGetSharedGroqKeyStatus !==
+                        "function"
+                    ) {
+
+                        return false;
+                    }
+
+                    return window
+                        .__unchartedGetSharedGroqKeyStatus();
+                }
+            });
+
+        updateUnchartedSharedKeyStatus(
+            Boolean(
+                resultArray?.[0]?.result
+            )
+        );
+
+    } catch (_) {
+
+        updateUnchartedSharedKeyStatus(
+            false
+        );
+    }
+}
+
+
+refreshUnchartedSharedKey();
+
+
+document
+.getElementById(
+    "unchartedSharedKeySaveBtn"
+)
+.addEventListener(
+    "click",
+    async () => {
+
+        const input =
+            document.getElementById(
+                "unchartedSharedKeyInput"
+            );
+
+        const key =
+            input.value.trim();
+
+        if (!key) {
+
+            alert(
+                "공유 키를 입력하세요."
+            );
+
+            return;
+        }
+
+
+        const confirmed =
+            confirm(
+                "이 키는 작품 데이터에 저장됩니다.\n" +
+                "작품을 공유하면 키가 노출될 수 있습니다.\n\n" +
+                "계속할까요?"
+            );
+
+        if (!confirmed) {
+            return;
+        }
+
+
+        try {
+
+            const [tab] =
+                await chrome.tabs.query({
+                    active: true,
+                    currentWindow: true
+                });
+
+            const resultArray =
+                await chrome.scripting.executeScript({
+                    target: {
+                        tabId: tab.id
+                    },
+                    world: "MAIN",
+                    args: [
+                        key
+                    ],
+                    func: (keyValue) => {
+
+                        if (
+                            typeof window
+                                .__unchartedSetSharedGroqKey !==
+                            "function"
+                        ) {
+
+                            return false;
+                        }
+
+                        window
+                            .__unchartedSetSharedGroqKey(
+                                keyValue
+                            );
+
+                        return true;
+                    }
+                });
+
+            if (
+                resultArray?.[0]?.result
+            ) {
+
+                input.value = "";
+
+                updateUnchartedSharedKeyStatus(
+                    true
+                );
+
+            } else {
+
+                alert(
+                    "언차티드가 현재 작품에서 로드되지 않았습니다."
+                );
+            }
+
+        } catch (error) {
+
+            alert(
+                "오류: " +
+                error.message
+            );
+        }
+    }
+);
+
+
+document
+.getElementById(
+    "unchartedSharedKeyClearBtn"
+)
+.addEventListener(
+    "click",
+    async () => {
+
+        try {
+
+            const [tab] =
+                await chrome.tabs.query({
+                    active: true,
+                    currentWindow: true
+                });
+
+            await chrome.scripting.executeScript({
+                target: {
+                    tabId: tab.id
+                },
+                world: "MAIN",
+                func: () => {
+
+                    if (
+                        typeof window
+                            .__unchartedRemoveSharedGroqKey ===
+                        "function"
+                    ) {
+
+                        window
+                            .__unchartedRemoveSharedGroqKey();
+                    }
+                }
+            });
+
+            updateUnchartedSharedKeyStatus(
+                false
+            );
+
+        } catch (error) {
+
+            alert(
+                "오류: " +
+                error.message
+            );
+        }
+    }
+);
+/* =========================
+   커스텀 코드
+   ========================= */
+
+const UNCHARTED_SNIPPET_KEY =
+    "unchartedCustomSnippets";
+
+
+function loadUnchartedSnippets(
+    callback
+) {
+
+    chrome.storage.local.get(
+        [UNCHARTED_SNIPPET_KEY],
+        (result) => {
+
+            callback(
+                result[
+                    UNCHARTED_SNIPPET_KEY
+                ] || []
+            );
+        }
+    );
+}
+
+
+function saveUnchartedSnippets(
+    snippets,
+    callback
+) {
+
+    chrome.storage.local.set(
+        {
+            [UNCHARTED_SNIPPET_KEY]:
+                snippets
+        },
+        callback
+    );
+}
+
+
+function renderUnchartedSnippets(
+    snippets
+) {
+
+    const list =
+        document.getElementById(
+            "unchartedSnippetList"
+        );
+
+    const empty =
+        document.getElementById(
+            "unchartedSnippetEmpty"
+        );
+
+    list.innerHTML = "";
+
+
+    if (
+        snippets.length === 0
+    ) {
+
+        empty.style.display =
+            "block";
+
+        return;
+    }
+
+
+    empty.style.display =
+        "none";
+
+
+    snippets.forEach(
+        (snippet, index) => {
+
+            const row =
+                document.createElement(
+                    "div"
+                );
+
+            row.style.display =
+                "flex";
+
+            row.style.gap =
+                "6px";
+
+            row.style.alignItems =
+                "center";
+
+            row.style.marginBottom =
+                "6px";
+
+
+            const name =
+                document.createElement(
+                    "span"
+                );
+
+            name.textContent =
+                snippet.title;
+
+            name.style.flex =
+                "1";
+
+            name.style.fontSize =
+                "12px";
+
+
+            const remove =
+                document.createElement(
+                    "button"
+                );
+
+            remove.textContent =
+                "삭제";
+
+            remove.style.width =
+                "auto";
+
+            remove.style.marginTop =
+                "0";
+
+
+            remove.addEventListener(
+                "click",
+                () => {
+
+                    const next =
+                        snippets.filter(
+                            (_, i) =>
+                                i !== index
+                        );
+
+                    saveUnchartedSnippets(
+                        next,
+                        () => {
+                            renderUnchartedSnippets(
+                                next
+                            );
+                        }
+                    );
+                }
+            );
+
+
+            row.appendChild(
+                name
+            );
+
+            row.appendChild(
+                remove
+            );
+
+            list.appendChild(
+                row
+            );
+        }
+    );
+}
+
+
+document
+.getElementById(
+    "unchartedAddSnippetBtn"
+)
+.addEventListener(
+    "click",
+    () => {
+
+        const title =
+            document
+                .getElementById(
+                    "unchartedSnippetTitle"
+                )
+                .value
+                .trim();
+
+        const code =
+            document
+                .getElementById(
+                    "unchartedSnippetCode"
+                )
+                .value
+                .trim();
+
+
+        if (
+            !title ||
+            !code
+        ) {
+
+            alert(
+                "제목과 코드를 입력하세요."
+            );
+
+            return;
+        }
+
+
+        loadUnchartedSnippets(
+            (snippets) => {
+
+                snippets.push({
+                    title:
+                        title,
+
+                    code:
+                        code
+                });
+
+
+                saveUnchartedSnippets(
+                    snippets,
+                    () => {
+
+                        document
+                            .getElementById(
+                                "unchartedSnippetTitle"
+                            )
+                            .value =
+                            "";
+
+                        document
+                            .getElementById(
+                                "unchartedSnippetCode"
+                            )
+                            .value =
+                            "";
+
+                        renderUnchartedSnippets(
+                            snippets
+                        );
+                    }
+                );
+            }
+        );
+    }
+);
+
+
+loadUnchartedSnippets(
+    renderUnchartedSnippets
+);
