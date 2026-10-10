@@ -1,6 +1,8 @@
 (() => {
     "use strict";
-    
+    if (window.top !== window) {
+        return;
+    }
 
     const NAME = "[Entry Unlimited Blocks]";
 
