@@ -563,7 +563,6 @@ chrome.storage.local.get(
     );
 }
 
-
 window.addEventListener("message", (event) => {
 
     if (
@@ -576,10 +575,22 @@ window.addEventListener("message", (event) => {
         return;
     }
 
-    loadSavedUnofficialBlocks(
-        event.data.projectId
+
+    const projectId =
+        event.data.projectId;
+
+
+    migrateNewProjectData(
+        projectId,
+        () => {
+
+            loadSavedUnofficialBlocks(
+                projectId
+            );
+        }
     );
 });
+
        
 /* =========================================
    공개 작품 - SPA 이동 감지 + public runtime 주입
