@@ -2584,7 +2584,13 @@
     if (!window.__unchartedRenderLoopStarted) {
       (function loop() {
         try {
-          Entry.container.getCurrentObjects().forEach((obj) => {
+          const currentObjects =
+  Entry.container &&
+  typeof Entry.container.getCurrentObjects === "function"
+    ? Entry.container.getCurrentObjects()
+    : [];
+
+currentObjects.forEach((obj) => {
             try {
               const entity = obj.entity;
               if (entity && entity.__unchartedState && hasActiveEffect(entity.__unchartedState)) {
