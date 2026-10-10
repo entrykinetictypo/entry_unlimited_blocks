@@ -654,3 +654,60 @@ setInterval(
     checkPublicProject,
     300
 );
+const NEW_PROJECT_URL =
+    "https://playentry.org/ws/new?type=normal&mode=block&lang=ko";
+
+const NEW_PROJECT_SESSION_KEY =
+    "entryUnlimitedNewProjectStarted";
+
+
+function checkNewProjectStart() {
+
+    if (
+        window.location.href ===
+        NEW_PROJECT_URL
+    ) {
+
+        // 이 탭에서 새 작품에 처음 들어온 경우만
+        if (
+            sessionStorage.getItem(
+                NEW_PROJECT_SESSION_KEY
+            ) !== "1"
+        ) {
+
+            sessionStorage.setItem(
+                NEW_PROJECT_SESSION_KEY,
+                "1"
+            );
+
+            chrome.storage.local.remove(
+                [
+                    "unofficialBlockStates_new"
+                ],
+                () => {
+
+                    console.log(
+                        "[새 작품] 비공식 블록 선택 상태 초기화"
+                    );
+                }
+            );
+        }
+
+        return;
+    }
+
+
+    // 다른 작품으로 이동하면
+    // 다음 새 작품을 위해 초기화
+    sessionStorage.removeItem(
+        NEW_PROJECT_SESSION_KEY
+    );
+}
+
+
+checkNewProjectStart();
+
+setInterval(
+    checkNewProjectStart,
+    300
+);
