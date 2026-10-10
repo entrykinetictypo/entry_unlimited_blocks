@@ -57,10 +57,8 @@ function ready() {
         category
     ) {
         const blockMenu =
-            Entry.playground
-                .mainWorkspace
-                .blockMenu;
-
+    Entry.playground.mainWorkspace?.blockMenu ||
+    Entry.playground.blockMenu;
         const categoryList = [];
 
         const seen =
