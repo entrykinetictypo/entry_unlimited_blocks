@@ -113,32 +113,20 @@ function ready() {
             );
 
 
-        for (
-            let i = 0;
-            i <
-            $(".entryCategoryElementWorkspace")
-                .length;
-            i++
+       document
+    .querySelectorAll(
+        ".entryCategoryElementWorkspace"
+    )
+    .forEach((element) => {
+
+        if (
+            element.id !==
+            "entryCategorytext"
         ) {
-
-            const element =
-                $(".entryCategoryElementWorkspace")[
-                    i
-                ];
-
-            if (
-                $(element)
-                    .attr("id") !==
-                "entryCategorytext"
-            ) {
-
-                $(element)
-                    .attr(
-                        "class",
-                        "entryCategoryElementWorkspace"
-                    );
-            }
+            element.className =
+                "entryCategoryElementWorkspace";
         }
+    });
 
 
         blockMenu._categoryData =
