@@ -2070,73 +2070,46 @@ addBlock('m', '%1 동영상 멈추기%2', {
 
 
 
-
 Entry.staticBlocks.push({
-
-    category: 'API', blocks: [
-
-        'a',
-
-        'b',
-
-        'c',
-
-        'd',
-
-        'e',
-
-        'f',
-
-        'g',
-
-        'h',
-
-        'i',
-
-        'j',
-
-        'k',
-
-        'l',
-
-        'm',
-
+    category: VIDEO_CATEGORY,
+    blocks: [
+        "unofficial_video_play",
+        "unofficial_video_play_wait",
+        "unofficial_video_control",
+        "unofficial_video_close",
+        "unofficial_video_move",
+        "unofficial_video_get",
+        "unofficial_video_mute",
+        "unofficial_video_effect",
+        "unofficial_video_speed",
+        "unofficial_video_state",
+        "unofficial_video_size",
+        "unofficial_video_rotate",
+        "unofficial_video_stop"
     ]
-
-})
-
-
-updateCategory('API')
+});
 
 
-$('head').append(`
+updateCategory(VIDEO_CATEGORY)
 
 
-<style> #entryCategoryAPI 
+$("head").append(`
+<style>
+#entryCategory${VIDEO_CATEGORY} {
+    background-image: url(/lib/entry-js/images/sensor.svg);
+    background-repeat: no-repeat;
+    border-bottom-right-radius: 6px;
+    border-bottom-left-radius: 6px;
+    margin-bottom: 1px;
+}
 
-{ background-image: url(/lib/entry-js/images/sensor.svg);
+.entrySelectedCategory#entryCategory${VIDEO_CATEGORY} {
+    background-image: url(/lib/entry-js/images/sensor.on.svg);
+    border-color: #ffffffff;
+    color: #ffffffff;
+}
+</style>
+`);
 
- background-repeat: no-repeat; 
-
- border-bottom-right-radius: 6px; 
-
- border-bottom-left-radius: 6px; 
-
- margin-bottom: 1px;
-
-} .entrySelectedCategory#entryCategoryAPI
-
-{ background-image: url(/lib/entry-js/images/sensor.on.svg);
-
-background-color: c1
-
-border-color: #ffffffff;
-
-color: #ffffffff;
-
-} </style>
-
-`)
-
-
-$('#entryCategoryAPI').append('동영상')
+$(`#entryCategory${VIDEO_CATEGORY}`).append("동영상");
+})();
