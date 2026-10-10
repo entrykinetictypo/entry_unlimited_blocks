@@ -267,16 +267,10 @@ const TEXT_COLOR =
 
                 color: {
                     default:
-                        EntryStatic
-                            .colorSet
-                            .common
-                            .TRANSPARENT,
+                       TRANSPARENT,
 
                     darken:
-                        EntryStatic
-                            .colorSet
-                            .common
-                            .TRANSPARENT
+                       TRANSPARENT,
                 },
 
                 params: [
@@ -326,16 +320,9 @@ const TEXT_COLOR =
 
                 color: {
                     default:
-                        EntryStatic
-                            .colorSet
-                            .common
-                            .TRANSPARENT,
-
+                        TRANSPARENT,
                     darken:
-                        EntryStatic
-                            .colorSet
-                            .common
-                            .TRANSPARENT
+                       TRANSPARENT,
                 },
 
                 params: [
@@ -571,16 +558,10 @@ const TEXT_COLOR =
 
                 color: {
                     default:
-                        EntryStatic
-                            .colorSet
-                            .common
-                            .TRANSPARENT,
+                        TRANSPARENT,
 
                     darken:
-                        EntryStatic
-                            .colorSet
-                            .common
-                            .TRANSPARENT
+                        TRANSPARENT,
                 },
 
                 params: [
