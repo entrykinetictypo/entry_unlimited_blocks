@@ -451,6 +451,7 @@ function loadSavedUnofficialBlocks(projectId) {
     "unofficial/newblock.js",
     "unofficial/npi.js",
     "unofficial/dummy.js",
+    "unofficial/fileio.js",
     "unofficial/video.js"
 ];
 
