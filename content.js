@@ -545,30 +545,53 @@ return;
                             file
                         );
 
-                        loadScript(
-                            file,
-                            () => {
+                        function finishLoad(file) {
+    window.postMessage(
+        {
+            source: "ENTRY_UNLIMITED_BLOCKS",
+            type: "UNOFFICIAL_LOADED",
+            file: file
+        },
+        "*"
+    );
 
-                                window.postMessage(
-                                    {
-                                        source:
-                                            "ENTRY_UNLIMITED_BLOCKS",
-                                        type:
-                                            "UNOFFICIAL_LOADED",
-                                        file:
-                                            file
-                                    },
-                                    "*"
-                                );
+    loadNext();
+}
 
-                                loadNext();
-                            }
-                        );
-                    }
 
-                    loadNext();
+if (file === "uncharted/inject.js") {
+
+    loadScript(
+        "uncharted/matter.min.js",
+        () => {
+
+            loadScript(
+                "uncharted/three.min.js",
+                () => {
+
+                    loadScript(
+                        "uncharted/inject.js",
+                        () => {
+                            finishLoad(file);
+                        }
+                    );
+
                 }
             );
+
+        }
+    );
+
+} else {
+
+    loadScript(
+        file,
+        () => {
+            finishLoad(file);
+        }
+    );
+
+}
         }
     );
 }
