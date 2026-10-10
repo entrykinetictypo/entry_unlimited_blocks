@@ -241,6 +241,13 @@ if (!Array.isArray(Entry.staticBlocks)) {
     Entry.staticBlocks =
         baseBlocks;
 }
+        const TRANSPARENT =
+    window.EntryStatic?.colorSet?.common?.TRANSPARENT ??
+    "#00000000";
+
+const TEXT_COLOR =
+    window.EntryStatic?.colorSet?.common?.TEXT ??
+    "#000000";
         const blocks = [
 
             /* =====================================
