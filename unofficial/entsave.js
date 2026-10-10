@@ -877,24 +877,20 @@ document.head.appendChild(style);
 
 
         const categoryElement =
-            $(
-                `#entryCategory${CATEGORY}`
-            );
+    document.getElementById(
+        `entryCategory${CATEGORY}`
+    );
 
-
-        if (
-            categoryElement.length &&
-            !categoryElement
-                .text()
-                .includes(
-                    CATEGORY_NAME
-                )
-        ) {
-
-            categoryElement.append(
-                CATEGORY_NAME
-            );
-        }
+if (
+    categoryElement &&
+    !categoryElement.textContent.includes(
+        CATEGORY_NAME
+    )
+) {
+    categoryElement.append(
+        CATEGORY_NAME
+    );
+}
 
 
         window.__entryEntSaveLoaded =
