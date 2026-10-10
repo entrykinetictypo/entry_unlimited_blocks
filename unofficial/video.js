@@ -1,4 +1,10 @@
-//동영상 블록은 실제 작동하는 비공식 블록이 아닌 실험용 블록입니다.
+(() => {
+"use strict";
+
+if (window.__entryVideoBlocksLoaded) return;
+window.__entryVideoBlocksLoaded = true;
+
+const VIDEO_CATEGORY = "unofficial_video";
 
 Entry.staticBlocks = [
 
