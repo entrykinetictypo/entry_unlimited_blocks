@@ -208,23 +208,40 @@ if (!Array.isArray(Entry.staticBlocks)) {
 
     try {
         const all =
-            EntryStatic.getAllBlocks?.();
+            window.EntryStatic
+                ?.getAllBlocks?.();
 
         if (Array.isArray(all)) {
             baseBlocks = [...all];
         }
     } catch (_) {}
 
+
+    const blockMenu =
+        Entry.playground.mainWorkspace?.blockMenu ||
+        Entry.playground.blockMenu;
+
+
     if (
         !baseBlocks.length &&
         Array.isArray(
-            Entry.playground.blockMenu?._categoryData
+            blockMenu?._categoryData
         )
     ) {
         baseBlocks = [
-            ...Entry.playground.blockMenu._categoryData
+            ...blockMenu._categoryData
         ];
     }
+
+
+    if (!baseBlocks.length) {
+        console.warn(
+            "[EntSave] 기존 카테고리 정보를 아직 찾지 못함"
+        );
+
+        return false;
+    }
+
 
     Entry.staticBlocks =
         baseBlocks;
