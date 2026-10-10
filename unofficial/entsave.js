@@ -25,19 +25,20 @@
     const getColor =
         "#373737";
 
-
-    function ready() {
-        return !!(
-            window.Entry &&
-            window.EntryStatic &&
-            Entry.block &&
-            Array.isArray(Entry.staticBlocks) &&
-            Entry.playground &&
-            Entry.playground.mainWorkspace &&
-            Entry.playground.mainWorkspace.blockMenu &&
-            typeof window.$ === "function"
-        );
-    }
+function ready() {
+    return !!(
+        window.Entry &&
+        window.EntryStatic &&
+        Entry.block &&
+        Entry.playground &&
+        (
+            Entry.playground.mainWorkspace?.blockMenu ||
+            Entry.playground.blockMenu
+        ) &&
+        typeof window.$ === "function"
+    );
+}
+    
 
 
     function getStorageKey(
