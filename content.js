@@ -452,7 +452,8 @@ function loadSavedUnofficialBlocks(projectId) {
     "unofficial/npi.js",
     "unofficial/dummy.js",
     "unofficial/fileio.js",
-    "unofficial/video.js"
+    "unofficial/video.js",
+    "unofficial/entsave.js"
 ];
 
     const storageKey =
