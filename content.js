@@ -450,7 +450,7 @@ function loadSavedUnofficialBlocks(projectId) {
     "unofficial/mint.js",
     "unofficial/newblock.js",
     "unofficial/npi.js",
-    "unofficial/dummy.js"
+    "unofficial/dummy.js",
     "uncharted/inject.js"
 ];
 
