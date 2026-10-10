@@ -508,7 +508,7 @@ chrome.storage.local.get(
                     .appendChild(script);
             };
 
-            loadScript(
+             loadScript(
                 "unofficial/runtime.js",
                 () => {
 
@@ -516,26 +516,18 @@ chrome.storage.local.get(
 
                     function loadNext() {
 
-                       if (index >= files.length) {
+                        if (index >= files.length) {
 
-    console.log(
-        "[자동복원] 비공식 블록 정의 로드 완료"
-    );
+                            console.log(
+                                "[자동복원] 비공식 블록 정의 로드 완료"
+                            );
 
+                            restoreTempOrServerProject(
+                                projectId
+                            );
 
-    /*
-     * 저장된 작품일 때만
-     * 서버 작품을 다시 불러옴
-     */
-   
-
-restoreTempOrServerProject(
-    projectId
-);
-
-return;
-   
-}
+                            return;
+                        }
 
                         const file =
                             files[index++];
@@ -546,56 +538,67 @@ return;
                         );
 
                         function finishLoad(file) {
-    window.postMessage(
-        {
-            source: "ENTRY_UNLIMITED_BLOCKS",
-            type: "UNOFFICIAL_LOADED",
-            file: file
-        },
-        "*"
-    );
 
-    loadNext();
-}
+                            window.postMessage(
+                                {
+                                    source:
+                                        "ENTRY_UNLIMITED_BLOCKS",
+                                    type:
+                                        "UNOFFICIAL_LOADED",
+                                    file:
+                                        file
+                                },
+                                "*"
+                            );
 
-
-if (file === "uncharted/inject.js") {
-
-    loadScript(
-        "uncharted/matter.min.js",
-        () => {
-
-            loadScript(
-                "uncharted/three.min.js",
-                () => {
-
-                    loadScript(
-                        "uncharted/inject.js",
-                        () => {
-                            finishLoad(file);
+                            loadNext();
                         }
-                    );
 
+
+                        if (
+                            file ===
+                            "uncharted/inject.js"
+                        ) {
+
+                            loadScript(
+                                "uncharted/matter.min.js",
+                                () => {
+
+                                    loadScript(
+                                        "uncharted/three.min.js",
+                                        () => {
+
+                                            loadScript(
+                                                "uncharted/inject.js",
+                                                () => {
+                                                    finishLoad(file);
+                                                }
+                                            );
+
+                                        }
+                                    );
+
+                                }
+                            );
+
+                        } else {
+
+                            loadScript(
+                                file,
+                                () => {
+                                    finishLoad(file);
+                                }
+                            );
+
+                        }
+                    }
+
+                    loadNext();
                 }
             );
-
-        }
-    );
-
-} else {
-
-    loadScript(
-        file,
-        () => {
-            finishLoad(file);
-        }
-    );
-
-}
         }
     );
 }
-
 
 window.addEventListener("message", (event) => {
 
