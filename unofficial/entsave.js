@@ -218,7 +218,33 @@ function ready() {
             return false;
         }
 
+if (!Array.isArray(Entry.staticBlocks)) {
 
+    let baseBlocks = [];
+
+    try {
+        const all =
+            EntryStatic.getAllBlocks?.();
+
+        if (Array.isArray(all)) {
+            baseBlocks = [...all];
+        }
+    } catch (_) {}
+
+    if (
+        !baseBlocks.length &&
+        Array.isArray(
+            Entry.playground.blockMenu?._categoryData
+        )
+    ) {
+        baseBlocks = [
+            ...Entry.playground.blockMenu._categoryData
+        ];
+    }
+
+    Entry.staticBlocks =
+        baseBlocks;
+}
         const blocks = [
 
             /* =====================================
