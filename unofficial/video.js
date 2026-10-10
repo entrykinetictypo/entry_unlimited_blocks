@@ -1,2078 +1,14 @@
 (() => {
-"use strict";
+    "use strict";
 
-if (window.__entryVideoBlocksLoaded) return;
-window.__entryVideoBlocksLoaded = true;
-
-const VIDEO_CATEGORY = "unofficial_video";
-
-Entry.staticBlocks = [
-
-    {
-
-        category: 'start',
-
-        blocks: [
-
-            'when_run_button_click',
-
-            'when_some_key_pressed',
-
-            'mouse_clicked',
-
-            'mouse_click_cancled',
-
-            'when_object_click',
-
-            'when_object_click_canceled',
-
-            'when_message_cast',
-
-            'message_cast',
-
-            'message_cast_wait',
-
-            'when_scene_start',
-
-            'start_scene',
-
-            'start_neighbor_scene',
-
-            'check_object_property',
-
-            'check_block_execution',
-
-            'switch_scope',
-
-            'is_answer_submited',
-
-            'check_lecture_goal',
-
-            'check_variable_by_name',
-
-            'show_prompt',
-
-            'check_goal_success',
-
-            'positive_number',
-
-            'negative_number',
-
-            'wildcard_string',
-
-            'wildcard_boolean',
-
-            'register_score',
-
-        ],
-
-    },
-
-    {
-
-        category: 'flow',
-
-        blocks: [
-
-            'wait_second',
-
-            'repeat_basic',
-
-            'repeat_inf',
-
-            'repeat_while_true',
-
-            'stop_repeat',
-
-            '_if',
-
-            'if_else',
-
-            'wait_until_true',
-
-            'stop_object',
-
-            'restart_project',
-
-            'when_clone_start',
-
-            'create_clone',
-
-            'delete_clone',
-
-            'remove_all_clones',
-
-        ],
-
-    },
-
-    {
-
-        category: 'moving',
-
-        blocks: [
-
-            'move_direction',
-
-            'bounce_wall',
-
-            'move_x',
-
-            'move_y',
-
-            'move_xy_time',
-
-            'locate_x',
-
-            'locate_y',
-
-            'locate_xy',
-
-            'locate_xy_time',
-
-            'locate',
-
-            'locate_object_time',
-
-            'rotate_relative',
-
-            'direction_relative',
-
-            'rotate_by_time',
-
-            'direction_relative_duration',
-
-            'rotate_absolute',
-
-            'direction_absolute',
-
-            'see_angle_object',
-
-            'move_to_angle',
-
-        ],
-
-    },
-
-    {
-
-        category: 'looks',
-
-        blocks: [
-
-            'show',
-
-            'hide',
-
-            'dialog_time',
-
-            'dialog',
-
-            'remove_dialog',
-
-            'change_to_some_shape',
-
-            'change_to_next_shape',
-
-            'add_effect_amount',
-
-            'change_effect_amount',
-
-            'erase_all_effects',
-
-            'change_scale_size',
-
-            'set_scale_size',
-
-            'flip_x',
-
-            'flip_y',
-
-            'change_object_index',
-
-        ],
-
-    },
-
-    {
-
-        category: 'brush',
-
-        blocks: [
-
-            'brush_stamp',
-
-            'start_drawing',
-
-            'stop_drawing',
-
-            'set_color',
-
-            'set_random_color',
-
-            'change_thickness',
-
-            'set_thickness',
-
-            'change_brush_transparency',
-
-            'set_brush_tranparency',
-
-            'brush_erase_all',
-
-        ],
-
-    },
-
-    {
-
-        category: 'text',
-
-        blocks: ['text_blue', 'text_orange', 'text_Yello', 'text_gray ', 'text_flush'],
-
-    },
-
-    {
-
-        category: 'sound',
-
-        blocks: [
-
-            'sound_something_with_block',
-
-            'sound_something_second_with_block',
-
-            'sound_from_to',
-
-            'sound_something_wait_with_block',
-
-            'sound_something_second_wait_with_block',
-
-            'sound_from_to_and_wait',
-
-            'sound_volume_change',
-
-            'sound_volume_set',
-
-            'sound_silent_all',
-
-        ],
-
-    },
-
-    {
-
-        category: 'judgement',
-
-        blocks: [
-
-            'is_clicked',
-
-            'is_press_some_key',
-
-            'reach_something',
-
-            'boolean_basic_operator',
-
-            'boolean_and_or',
-
-            'boolean_not',
-
-        ],
-
-    },
-
-    {
-
-        category: 'calc',
-
-        blocks: [
-
-            'calc_basic',
-
-            'calc_rand',
-
-            'coordinate_mouse',
-
-            'coordinate_object',
-
-            'get_sound_volume',
-
-            'quotient_and_mod',
-
-            'calc_operation',
-
-            'get_project_timer_value',
-
-            'choose_project_timer_action',
-
-            'set_visible_project_timer',
-
-            'get_date',
-
-            'distance_something',
-
-            'get_sound_duration',
-
-            'get_user_name',
-
-            'length_of_string',
-
-            'combine_something',
-
-            'char_at',
-
-            'substring',
-
-            'index_of_string',
-
-            'replace_string',
-
-            'change_string_case',
-
-        ],
-
-    },
-
-    {
-
-        category: 'variable',
-
-        blocks: [
-
-            'variableAddButton',
-
-            'listAddButton',
-
-            'ask_and_wait',
-
-            'get_canvas_input_value',
-
-            'set_visible_answer',
-
-            'get_variable',
-
-            'change_variable',
-
-            'set_variable',
-
-            'show_variable',
-
-            'hide_variable',
-
-            'value_of_index_from_list',
-
-            'add_value_to_list',
-
-            'remove_value_from_list',
-
-            'insert_value_to_list',
-
-            'change_value_list_index',
-
-            'length_of_list',
-
-            'is_included_in_list',
-
-            'show_list',
-
-            'hide_list',
-
-        ],
-
-    },
-
-    {
-
-        category: 'func',
-
-        blocks: ['functionAddButton'],
-
-    },
-
-    {
-
-        category: 'analysis',
-
-        blocks: [
-
-            'analizyDataAddButton',
-
-            'append_row_to_table',
-
-            'insert_row_to_table',
-
-            'delete_row_from_table',
-
-            'set_value_from_table',
-
-            'get_table_count',
-
-            'get_value_from_table',
-
-            'calc_values_from_table',
-
-            'open_table_chart',
-
-            'close_table_chart',
-
-        ],
-
-    },
-
-    {
-
-        category: 'ai_utilize',
-
-        blocks: [
-
-            'aiUtilizeBlockAddButton',
-
-            'aiUtilizeModelTrainButton',
-
-            'audio_title',
-
-            'check_microphone',
-
-            'speech_to_text_convert',
-
-            'speech_to_text_get_value',
-
-            'get_microphone_volume',
-
-            'tts_title',
-
-            'read_text',
-
-            'read_text_wait_with_block',
-
-            'set_tts_property',
-
-            'translate_title',
-
-            'get_translated_string',
-
-            'check_language',
-
-            'video_title',
-
-            'video_draw_webcam',
-
-            'video_check_webcam',
-
-            'video_flip_camera',
-
-            'video_set_camera_opacity_option',
-
-            'video_motion_value',
-
-            'video_toggle_model',
-
-            'video_is_model_loaded',
-
-            'video_number_detect',
-
-            'video_toggle_ind',
-
-            'video_body_part_coord',
-
-            'video_face_part_coord',
-
-            'video_detected_face_info',
-
-        ],
-
-    },
-
-    {
-
-        category: 'expansion',
-
-        blocks: [
-
-            'expansionBlockAddButton',
-
-            'weather_title',
-
-            'check_weather',
-
-            'check_finedust',
-
-            'get_weather_data',
-
-            'get_current_weather_data',
-
-            'get_today_temperature',
-
-            'check_city_weather',
-
-            'check_city_finedust',
-
-            'get_city_weather_data',
-
-            'get_current_city_weather_data',
-
-            'get_today_city_temperature',
-
-            'festival_title',
-
-            'count_festival',
-
-            'get_festival_info',
-
-            'behaviorConductDisaster_title',
-
-            'count_disaster_behavior',
-
-            'get_disaster_behavior',
-
-            'behaviorConductLifeSafety_title',
-
-            'count_lifeSafety_behavior',
-
-            'get_lifeSafety_behavior',
-
-        ],
-
-    },
-
-    {
-
-        category: 'arduino',
-
-        blocks: [
-
-            'arduino_reconnect',
-
-            'arduino_open',
-
-            'arduino_cloud_pc_open',
-
-            'arduino_connect',
-
-            'arduino_download_connector',
-
-            'download_guide',
-
-            'arduino_download_source',
-
-            'arduino_noti',
-
-        ].concat(EntryStatic.DynamicHardwareBlocks),
-
+    if (window.__entryVideoBlocksLoaded || window.__entryVideoBlocksLoading) {
+        return;
     }
 
-];
+    window.__entryVideoBlocksLoading = true;
 
-EntryStatic.getAllBlocks = () => {
-
-    return Entry.staticBlocks;
-
-}
-
-const updateCategory = (category, options) => {
-
-    Entry.playground.mainWorkspace.blockMenu._generateCategoryView([
-
-        { category: 'start', visible: true },
-
-        { category: 'flow', visible: true },
-
-        { category: 'moving', visible: true },
-
-        { category: 'looks', visible: true },
-
-        { category: 'brush', visible: true },
-
-        { category: 'text', visible: true },
-
-        { category: 'sound', visible: true },
-
-        { category: 'judgement', visible: true },
-
-        { category: 'calc', visible: true },
-
-        { category: 'variable', visible: true },
-
-        { category: 'func', visible: true },
-
-        { category: 'analysis', visible: true },
-
-        { category: 'ai_utilize', visible: true },
-
-        { category: 'expansion', visible: true },
-
-        { category: 'arduino', visible: false }, { category: category, visible: true }
-
-    ]);
-
-    for (let i = 0; i < $('.entryCategoryElementWorkspace').length; i++) {
-
-        if (!($($('.entryCategoryElementWorkspace')[i]).attr('id') == 'entryCategorytext')) {
-
-            $($('.entryCategoryElementWorkspace')[i]).attr('class', 'entryCategoryElementWorkspace');
-
-        }
-
-    }
-
-    Entry.playground.blockMenu._categoryData = EntryStatic.getAllBlocks();
-
-    Entry.playground.blockMenu._generateCategoryCode(category);
-
-    if (options) {
-
-        if (options.background) {
-
-            $(`#entryCategory${category}`).css('background-image', 'url(' + options.background + ')');
-
-            $(`#entryCategory${category}`).css('background-repeat', 'no-repeat');
-
-            if (options.backgroundSize) {
-
-                $(`#entryCategory${category}`).css('background-size', options.backgroundSize + 'px');
-
-            }
-
-        }
-
-        if (options.name) {
-
-            $(`#entryCategory${category}`)[0].innerText = options.name
-
-        }
-
-    }
-
-}
-
-
-const addBlock = (blockname, template, color, params, _class, func, skeleton = 'basic') => {
-
-    Entry.block[blockname] = {
-
-        color: color.color,
-
-        outerLine: color.outerline,
-
-        fontColor: color.fontColor,
-
-        skeleton: skeleton,
-
-        statement: [],
-
-        params: params.params,
-
-        events: {},
-
-        def: {
-
-            params: params.def,
-
-            type: blockname
-
-        },
-
-        paramsKeyMap: params.map,
-
-        class: _class ? _class : 'default',
-
-        func: func,
-
-        template: template
-
-    }
-
-}
-
-
-
-
-c1 = '#6cb45cff',
-
-    c2 = c1
-
-c1o = '#369162ff',
-
-    Entry.addEventListener('loadComplete', function () {
-
-        addBlock('a', '동영상 %1 재생하기%2', {
-
-            color: c1,
-
-            outerLine: c1o
-
-        }, {
-
-            params: [
-
-                {
-
-                    type: 'Dropdown',
-
-                    options: [
-
-                        ['대상 없음', 'n'],
-
-                    ],
-
-                    fontSize: 11,
-
-                    arrowColor: c1o,
-
-                    value: 'n'
-
-                },
-
-                {
-
-                    type: 'Indicator',
-
-                    size: 11,
-
-                }
-
-            ],
-
-            def: [
-
-                null
-
-            ],
-
-            map: {}
-
-        })
-
-
-        addBlock('b', '동영상 %1 재생하고 기다리기%2', {
-
-            color: c1,
-
-            outerLine: c1o
-
-        }, {
-
-            params: [
-
-                {
-
-                    type: 'Dropdown',
-
-                    options: [
-
-                        ['대상 없음', 'n'],
-
-                    ],
-
-                    fontSize: 11,
-
-                    arrowColor: c1o,
-
-                    value: 'n'
-
-                },
-
-                {
-
-                    type: 'Indicator',
-
-                    size: 11,
-
-                }
-
-            ],
-
-            def: [
-
-                null
-
-            ],
-
-            map: {}
-
-        })
-
-
-        addBlock('c', '동영상 %1%2', {
-
-            color: c1,
-
-            outerLine: c1o
-
-        }, {
-
-            params: [
-
-                {
-
-                    type: 'Dropdown',
-
-                    options: [
-
-                        ['정지하기', 'stop'],
-
-                        ['다시 시작하기', 'resume'],
-
-                        ['끄기', 'off'],
-
-                    ],
-
-                    fontSize: 11,
-
-                    arrowColor: c1o,
-
-                    value: 'stop'
-
-                },
-
-                {
-
-                    type: 'Indicator',
-
-                    size: 11,
-
-                }
-
-            ],
-
-            def: [
-
-                null
-
-            ],
-
-            map: {}
-
-        })
-
-        addBlock('d', '동영상 닫기%1', {
-
-            color: c1,
-
-            outerLine: c1o
-
-        }, {
-
-            params: [
-
-                {
-
-                    type: 'Indicator',
-
-                    size: 11,
-
-                }
-
-            ],
-
-            def: [
-
-                null
-
-            ],
-
-            map: {}
-
-        })
-
-
-        addBlock('e', '동영상 %1 (을)를 x: %2 y: %3 위치로 이동시키기%4', {
-
-            color: c1,
-
-            outerLine: c1o
-
-        }, {
-
-            params: [
-
-                {
-
-                    type: 'Dropdown',
-
-                    options: [
-
-                        ['대상 없음', '대상 없음'],
-
-                    ],
-
-                    fontSize: 11,
-
-                    arrowColor: c1o,
-
-                    value: '대상없음'
-
-                },
-
-                {
-
-                    type: 'Block',
-
-                    accept: 'string'
-
-                },
-
-
-                {
-
-                    type: 'Block',
-
-                    accept: 'string'
-
-                },
-
-                {
-
-                    type: 'Indicator',
-
-                    size: 11,
-
-                }
-
-            ],
-
-            def: [
-
-                {
-
-                    type: 'text',
-
-                    params: ['0']
-
-                },
-
-                {
-
-                    type: 'text',
-
-                    params: ['0']
-
-                },
-
-            ],
-
-            map: {}
-
-        })
-
-
-        addBlock('f', '동영상 %1 의 %2', {
-
-            color: c1,
-
-            outerLine: c1o
-
-        }, {
-
-            params: [
-
-                {
-
-                    type: 'Dropdown',
-
-                    options: [
-
-                        ['대상 없음', 'n'],
-
-                    ],
-
-                    fontSize: 11,
-
-                    arrowColor: c1o,
-
-                    value: 'n'
-
-                },
-
-                {
-
-                    type: 'Dropdown',
-
-                    options: [
-
-                        ['길이', 'long'],
-
-                        ['배속', 'speed'],
-
-                        ['x 좌푯값', 'x'],
-
-                        ['y 좌푯값', 'y'],
-
-                        ['크기', 'size'],
-
-                        ['소리크기', 'sound'],
-
-                        ['방향', 'spinner'],
-
-                    ],
-
-                    fontSize: 11,
-
-                    arrowColor: c1o,
-
-                    value: 'long'
-
-                },
-
-            ],
-
-            def: [
-
-                null
-
-            ],
-
-            map: {}
-
-        }, 'text', (sprite, script) => {
-
-            return script
-
-        }, 'basic_string_field')
-
-
-        addBlock('g', '동영상 %1 하기%2', {
-
-            color: c1,
-
-            outerLine: c1o
-
-        }, {
-
-            params: [
-
-                {
-
-                    type: 'Dropdown',
-
-                    options: [
-
-                        ['음소거', 'ns'],
-
-                        ['음소거 해제', 's'],
-
-                    ],
-
-                    fontSize: 11,
-
-                    arrowColor: c1o,
-
-                    value: 'ns'
-
-                },
-
-                {
-
-                    type: 'Indicator',
-
-                    size: 11,
-
-                }
-
-            ],
-
-            def: [
-
-                null
-
-            ],
-
-            map: {}
-
-        })
-
-
-        addBlock('h', '동영상 %1 효과를 %2 만큼 주기%3', {
-
-            color: c1,
-
-            outerLine: c1o
-
-        }, {
-
-            params: [
-
-                {
-
-                    type: 'Dropdown',
-
-                    options: [
-
-                        ['밝기', '밝기'],
-
-                        ['투명도', '투명도'],
-
-                    ],
-
-                    fontSize: 11,
-
-                    arrowColor: c1o,
-
-                    value: '밝기'
-
-                },
-
-                {
-
-                    type: 'Block',
-
-                    accept: 'string'
-
-                },
-
-                {
-
-                    type: 'Indicator',
-
-                    size: 11,
-
-                }
-
-            ],
-
-            def: [
-
-                {
-
-                    type: "text",
-
-                    params: ['10']
-
-                },
-
-            ],
-
-            map: {}
-
-        })
-
-
-        addBlock('i', '동영상을 %1 배속으로 설정하기%2', {
-
-            color: c1,
-
-            outerLine: c1o
-
-        }, {
-
-            params: [
-
-                {
-
-                    type: 'Block',
-
-                    accept: 'string'
-
-                },
-
-                {
-
-                    type: 'Indicator',
-
-                    size: 11,
-
-                }
-
-            ],
-
-            def: [
-
-
-                {
-
-                    type: "text",
-
-                    params: ['2']
-
-                },
-
-            ],
-
-            map: {}
-
-        })
-
-
-        addBlock('j', '동영상이 %1 상태인가?', {
-
-            color: c1,
-
-            outerLine: c1o
-
-        }, {
-
-            params: [
-
-                {
-
-                    type: 'Dropdown',
-
-                    options: [
-
-                        ['음소거', 'ns'],
-
-                        ['음소거 해제', 's'],
-
-                    ],
-
-                    fontSize: 11,
-
-                    arrowColor: c1o,
-
-                    value: 'ns'
-
-                },
-
-            ],
-
-            def: [
-
-            ],
-
-            map: {}
-
-        }, 'text', async (sprite, script) => {
-
-            (typeof useWebGL == 'undefined') ? false : useWebGL == true ? false : true;
-
-        }, 'basic_boolean_field')
-
-
-        addBlock('k', '동영상의 크기를 %1 만큼 바꾸기%2', {
-
-            color: c1,
-
-            outerLine: c1o
-
-        }, {
-
-            params: [
-
-                {
-
-                    type: 'Block',
-
-                    accept: 'string'
-
-                },
-
-                {
-
-                    type: 'Indicator',
-
-                    size: 11,
-
-                }
-
-            ],
-
-            def: [
-
-
-                {
-
-                    type: "text",
-
-                    params: ['10']
-
-                },
-
-            ],
-
-            map: {}
-
-        })
-
-
-        addBlock('l', '동영상 방향을 %1 만큼 회전하기%2', {
-
-            color: c1,
-
-            outerLine: c1o
-
-        }, {
-
-            params: [
-
-                {
-
-                    type: 'Block',
-
-                    accept: 'string'
-
-                },
-
-                {
-
-                    type: 'Indicator',
-
-                    size: 11,
-
-                }
-
-            ],
-
-            def: [
-
-
-                {
-
-                    type: "text",
-
-                    params: ['90']
-
-                },
-
-            ],
-
-            map: {}
-
-        })
-
-
-        addBlock('m', '%1 동영상 멈추기%2', {
-
-            color: c1,
-
-            outerLine: c1o
-
-        }, {
-
-            params: [
-
-                {
-
-                    type: 'Dropdown',
-
-                    options: [
-
-                        ['모든', 'all'],
-
-                        ['자신의', 'i'],
-
-                        ['다른 오브젝트의', 'others'],
-
-                    ],
-
-                    fontSize: 11,
-
-                    arrowColor: c1o,
-
-                    value: 'all'
-
-                },
-
-                {
-
-                    type: 'Indicator',
-
-                    size: 11,
-
-                }
-
-            ],
-
-            def: [
-
-            ],
-
-            map: {}
-
-        })
-
-    });
-
-addBlock('a', '동영상 %1 재생하기%2', {
-
-    color: c1,
-
-    outerLine: c1o
-
-}, {
-
-    params: [
-
-        {
-
-            type: 'Dropdown',
-
-            options: [
-
-                ['대상 없음', 'n'],
-
-            ],
-
-            fontSize: 11,
-
-            arrowColor: c1o,
-
-            value: 'n'
-
-        },
-
-        {
-
-            type: 'Indicator',
-
-            size: 11,
-
-        }
-
-    ],
-
-    def: [
-
-        null
-
-    ],
-
-    map: {}
-
-})
-
-
-addBlock('b', '동영상 %1 재생하고 기다리기%2', {
-
-    color: c1,
-
-    outerLine: c1o
-
-}, {
-
-    params: [
-
-        {
-
-            type: 'Dropdown',
-
-            options: [
-
-                ['대상 없음', 'n'],
-
-            ],
-
-            fontSize: 11,
-
-            arrowColor: c1o,
-
-            value: 'n'
-
-        },
-
-        {
-
-            type: 'Indicator',
-
-            size: 11,
-
-        }
-
-    ],
-
-    def: [
-
-        null
-
-    ],
-
-    map: {}
-
-})
-
-
-addBlock('c', '동영상 %1%2', {
-
-    color: c1,
-
-    outerLine: c1o
-
-}, {
-
-    params: [
-
-        {
-
-            type: 'Dropdown',
-
-            options: [
-
-                ['정지하기', 'stop'],
-
-                ['다시 시작하기', 'resume'],
-
-                ['끄기', 'off'],
-
-            ],
-
-            fontSize: 11,
-
-            arrowColor: c1o,
-
-            value: 'stop'
-
-        },
-
-        {
-
-            type: 'Indicator',
-
-            size: 11,
-
-        }
-
-    ],
-
-    def: [
-
-        null
-
-    ],
-
-    map: {}
-
-})
-
-addBlock('d', '동영상 닫기%1', {
-
-    color: c1,
-
-    outerLine: c1o
-
-}, {
-
-    params: [
-
-        {
-
-            type: 'Indicator',
-
-            size: 11,
-
-        }
-
-    ],
-
-    def: [
-
-        null
-
-    ],
-
-    map: {}
-
-})
-
-
-addBlock('e', '동영상 %1 (을)를 x: %2 y: %3 위치로 이동시키기%4', {
-
-    color: c1,
-
-    outerLine: c1o
-
-}, {
-
-    params: [
-
-        {
-
-            type: 'Dropdown',
-
-            options: [
-
-                ['대상 없음', '대상 없음'],
-
-            ],
-
-            fontSize: 11,
-
-            arrowColor: c1o,
-
-            value: '대상없음'
-
-        },
-
-        {
-
-            type: 'Block',
-
-            accept: 'string'
-
-        },
-
-
-        {
-
-            type: 'Block',
-
-            accept: 'string'
-
-        },
-
-        {
-
-            type: 'Indicator',
-
-            size: 11,
-
-        }
-
-    ],
-
-    def: [
-
-        {
-
-            type: 'text',
-
-            params: ['0']
-
-        },
-
-        {
-
-            type: 'text',
-
-            params: ['0']
-
-        },
-
-    ],
-
-    map: {}
-
-})
-
-
-addBlock('f', '동영상 %1 의 %2', {
-
-    color: c1,
-
-    outerLine: c1o
-
-}, {
-
-    params: [
-
-        {
-
-            type: 'Dropdown',
-
-            options: [
-
-                ['대상 없음', 'n'],
-
-            ],
-
-            fontSize: 11,
-
-            arrowColor: c1o,
-
-            value: 'n'
-
-        },
-
-        {
-
-            type: 'Dropdown',
-
-            options: [
-
-                ['길이', 'long'],
-
-                ['배속', 'speed'],
-
-                ['x 좌푯값', 'x'],
-
-                ['y 좌푯값', 'y'],
-
-                ['크기', 'size'],
-
-                ['소리크기', 'sound'],
-
-                ['방향', 'spinner'],
-
-            ],
-
-            fontSize: 11,
-
-            arrowColor: c1o,
-
-            value: 'long'
-
-        },
-
-    ],
-
-    def: [
-
-        null
-
-    ],
-
-    map: {}
-
-}, 'text', (sprite, script) => {
-
-    return script
-
-}, 'basic_string_field')
-
-
-addBlock('g', '동영상 %1 하기%2', {
-
-    color: c1,
-
-    outerLine: c1o
-
-}, {
-
-    params: [
-
-        {
-
-            type: 'Dropdown',
-
-            options: [
-
-                ['음소거', 'ns'],
-
-                ['음소거 해제', 's'],
-
-            ],
-
-            fontSize: 11,
-
-            arrowColor: c1o,
-
-            value: 'ns'
-
-        },
-
-        {
-
-            type: 'Indicator',
-
-            size: 11,
-
-        }
-
-    ],
-
-    def: [
-
-        null
-
-    ],
-
-    map: {}
-
-})
-
-
-addBlock('h', '동영상 %1 효과를 %2 만큼 주기%3', {
-
-    color: c1,
-
-    outerLine: c1o
-
-}, {
-
-    params: [
-
-        {
-
-            type: 'Dropdown',
-
-            options: [
-
-                ['밝기', '밝기'],
-
-                ['투명도', '투명도'],
-
-            ],
-
-            fontSize: 11,
-
-            arrowColor: c1o,
-
-            value: '밝기'
-
-        },
-
-        {
-
-            type: 'Block',
-
-            accept: 'string'
-
-        },
-
-        {
-
-            type: 'Indicator',
-
-            size: 11,
-
-        }
-
-    ],
-
-    def: [
-
-        {
-
-            type: "text",
-
-            params: ['10']
-
-        },
-
-    ],
-
-    map: {}
-
-})
-
-
-addBlock('i', '동영상을 %1 배속으로 설정하기%2', {
-
-    color: c1,
-
-    outerLine: c1o
-
-}, {
-
-    params: [
-
-        {
-
-            type: 'Block',
-
-            accept: 'string'
-
-        },
-
-        {
-
-            type: 'Indicator',
-
-            size: 11,
-
-        }
-
-    ],
-
-    def: [
-
-
-        {
-
-            type: "text",
-
-            params: ['2']
-
-        },
-
-    ],
-
-    map: {}
-
-})
-
-
-addBlock('j', '동영상이 %1 상태인가?', {
-
-    color: c1,
-
-    outerLine: c1o
-
-}, {
-
-    params: [
-
-        {
-
-            type: 'Dropdown',
-
-            options: [
-
-                ['음소거', 'ns'],
-
-                ['음소거 해제', 's'],
-
-            ],
-
-            fontSize: 11,
-
-            arrowColor: c1o,
-
-            value: 'ns'
-
-        },
-
-    ],
-
-    def: [
-
-    ],
-
-    map: {}
-
-}, 'text', async (sprite, script) => {
-
-    (typeof useWebGL == 'undefined') ? false : useWebGL == true ? false : true;
-
-}, 'basic_boolean_field')
-
-
-addBlock('k', '동영상의 크기를 %1 만큼 바꾸기%2', {
-
-    color: c1,
-
-    outerLine: c1o
-
-}, {
-
-    params: [
-
-        {
-
-            type: 'Block',
-
-            accept: 'string'
-
-        },
-
-        {
-
-            type: 'Indicator',
-
-            size: 11,
-
-        }
-
-    ],
-
-    def: [
-
-
-        {
-
-            type: "text",
-
-            params: ['10']
-
-        },
-
-    ],
-
-    map: {}
-
-})
-
-
-addBlock('l', '동영상 방향을 %1 만큼 회전하기%2', {
-
-    color: c1,
-
-    outerLine: c1o
-
-}, {
-
-    params: [
-
-        {
-
-            type: 'Block',
-
-            accept: 'string'
-
-        },
-
-        {
-
-            type: 'Indicator',
-
-            size: 11,
-
-        }
-
-    ],
-
-    def: [
-
-
-        {
-
-            type: "text",
-
-            params: ['90']
-
-        },
-
-    ],
-
-    map: {}
-
-})
-
-
-addBlock('m', '%1 동영상 멈추기%2', {
-
-    color: c1,
-
-    outerLine: c1o
-
-}, {
-
-    params: [
-
-        {
-
-            type: 'Dropdown',
-
-            options: [
-
-                ['모든', 'all'],
-
-                ['자신의', 'i'],
-
-                ['다른 오브젝트의', 'others'],
-
-            ],
-
-            fontSize: 11,
-
-            arrowColor: c1o,
-
-            value: 'all'
-
-        },
-
-        {
-
-            type: 'Indicator',
-
-            size: 11,
-
-        }
-
-    ],
-
-    def: [
-
-    ],
-
-    map: {}
-
-})
-
-
-
-Entry.staticBlocks.push({
-    category: VIDEO_CATEGORY,
-    blocks: [
+    const VIDEO_CATEGORY = "unofficial_video";
+    const VIDEO_BLOCKS = [
         "unofficial_video_play",
         "unofficial_video_play_wait",
         "unofficial_video_control",
@@ -2086,30 +22,1026 @@ Entry.staticBlocks.push({
         "unofficial_video_size",
         "unofficial_video_rotate",
         "unofficial_video_stop"
-    ]
-});
+    ];
+
+    function ready() {
+        return !!(
+            window.Entry &&
+            Entry.block &&
+            Array.isArray(Entry.staticBlocks) &&
+            Entry.playground &&
+            Entry.playground.mainWorkspace &&
+            Entry.playground.mainWorkspace.blockMenu &&
+            typeof window.$ === "function"
+        );
+    }
+
+    function updateCategory(category, options) {
+        const blockMenu = Entry.playground.mainWorkspace.blockMenu;
+        const categories = [];
+        const seen = new Set();
+
+        Entry.staticBlocks.forEach((item) => {
+            if (!item || !item.category || seen.has(item.category)) return;
+
+            seen.add(item.category);
+
+            categories.push({
+                category: item.category,
+                visible: item.category !== "arduino"
+            });
+        });
+
+        if (!seen.has(category)) {
+            categories.push({
+                category,
+                visible: true
+            });
+        }
+
+        blockMenu._generateCategoryView(categories);
+
+        for (
+            let i = 0;
+            i < $(".entryCategoryElementWorkspace").length;
+            i++
+        ) {
+            const element =
+                $(".entryCategoryElementWorkspace")[i];
+
+            if (
+                $(element).attr("id") !==
+                "entryCategorytext"
+            ) {
+                $(element).attr(
+                    "class",
+                    "entryCategoryElementWorkspace"
+                );
+            }
+        }
+
+        blockMenu._categoryData =
+            Entry.staticBlocks;
+
+        blockMenu._generateCategoryCode(
+            category
+        );
+
+        if (
+            options?.background
+        ) {
+            $(`#entryCategory${category}`).css(
+                "background-image",
+                `url(${options.background})`
+            );
+
+            $(`#entryCategory${category}`).css(
+                "background-repeat",
+                "no-repeat"
+            );
+
+            if (
+                options.backgroundSize
+            ) {
+                $(`#entryCategory${category}`).css(
+                    "background-size",
+                    `${options.backgroundSize}px`
+                );
+            }
+        }
+
+        if (
+            options?.name
+        ) {
+            const categoryElement =
+                $(`#entryCategory${category}`)[0];
+
+            if (
+                categoryElement
+            ) {
+                categoryElement.innerText =
+                    options.name;
+            }
+        }
+    }
+
+    function addBlock(
+        blockname,
+        template,
+        color,
+        params,
+        _class,
+        func,
+        skeleton = "basic"
+    ) {
+        Entry.block[blockname] = {
+            color: color.color,
+            outerLine:
+                color.outerLine ??
+                color.outerline,
+            fontColor:
+                color.fontColor,
+            skeleton,
+            statement: [],
+            params: params.params,
+            events: {},
+            def: {
+                params: params.def,
+                type: blockname
+            },
+            paramsKeyMap:
+                params.map,
+            class:
+                _class || "default",
+            func,
+            template
+        };
+    }
+
+    function init() {
+        if (!ready()) {
+            return false;
+        }
+
+        const c1 =
+            "#6cb45cff";
+
+        const c2 =
+            c1;
+
+        const c1o =
+            "#369162ff";
 
 
-updateCategory(VIDEO_CATEGORY)
+        addBlock(
+            "unofficial_video_play",
+            "동영상 %1 재생하기%2",
+            {
+                color: c1,
+                outerLine: c1o
+            },
+            {
+                params: [
+                    {
+                        type:
+                            "Dropdown",
+
+                        options: [
+                            [
+                                "대상 없음",
+                                "n"
+                            ]
+                        ],
+
+                        fontSize:
+                            11,
+
+                        arrowColor:
+                            c1o,
+
+                        value:
+                            "n"
+                    },
+                    {
+                        type:
+                            "Indicator",
+
+                        size:
+                            11
+                    }
+                ],
+
+                def: [
+                    null
+                ],
+
+                map: {}
+            }
+        );
 
 
-$("head").append(`
-<style>
+        addBlock(
+            "unofficial_video_play_wait",
+            "동영상 %1 재생하고 기다리기%2",
+            {
+                color:
+                    c1,
+
+                outerLine:
+                    c1o
+            },
+            {
+                params: [
+                    {
+                        type:
+                            "Dropdown",
+
+                        options: [
+                            [
+                                "대상 없음",
+                                "n"
+                            ]
+                        ],
+
+                        fontSize:
+                            11,
+
+                        arrowColor:
+                            c1o,
+
+                        value:
+                            "n"
+                    },
+                    {
+                        type:
+                            "Indicator",
+
+                        size:
+                            11
+                    }
+                ],
+
+                def: [
+                    null
+                ],
+
+                map: {}
+            }
+        );
+
+
+        addBlock(
+            "unofficial_video_control",
+            "동영상 %1%2",
+            {
+                color:
+                    c1,
+
+                outerLine:
+                    c1o
+            },
+            {
+                params: [
+                    {
+                        type:
+                            "Dropdown",
+
+                        options: [
+                            [
+                                "정지하기",
+                                "stop"
+                            ],
+                            [
+                                "다시 시작하기",
+                                "resume"
+                            ],
+                            [
+                                "끄기",
+                                "off"
+                            ]
+                        ],
+
+                        fontSize:
+                            11,
+
+                        arrowColor:
+                            c1o,
+
+                        value:
+                            "stop"
+                    },
+                    {
+                        type:
+                            "Indicator",
+
+                        size:
+                            11
+                    }
+                ],
+
+                def: [
+                    null
+                ],
+
+                map: {}
+            }
+        );
+
+
+        addBlock(
+            "unofficial_video_close",
+            "동영상 닫기%1",
+            {
+                color:
+                    c1,
+
+                outerLine:
+                    c1o
+            },
+            {
+                params: [
+                    {
+                        type:
+                            "Indicator",
+
+                        size:
+                            11
+                    }
+                ],
+
+                def: [
+                    null
+                ],
+
+                map: {}
+            }
+        );
+
+
+        addBlock(
+            "unofficial_video_move",
+            "동영상 %1 (을)를 x: %2 y: %3 위치로 이동시키기%4",
+            {
+                color:
+                    c1,
+
+                outerLine:
+                    c1o
+            },
+            {
+                params: [
+                    {
+                        type:
+                            "Dropdown",
+
+                        options: [
+                            [
+                                "대상 없음",
+                                "대상 없음"
+                            ]
+                        ],
+
+                        fontSize:
+                            11,
+
+                        arrowColor:
+                            c1o,
+
+                        value:
+                            "대상없음"
+                    },
+                    {
+                        type:
+                            "Block",
+
+                        accept:
+                            "string"
+                    },
+                    {
+                        type:
+                            "Block",
+
+                        accept:
+                            "string"
+                    },
+                    {
+                        type:
+                            "Indicator",
+
+                        size:
+                            11
+                    }
+                ],
+
+                def: [
+                    {
+                        type:
+                            "text",
+
+                        params: [
+                            "0"
+                        ]
+                    },
+                    {
+                        type:
+                            "text",
+
+                        params: [
+                            "0"
+                        ]
+                    }
+                ],
+
+                map: {}
+            }
+        );
+
+
+        addBlock(
+            "unofficial_video_get",
+            "동영상 %1 의 %2",
+            {
+                color:
+                    c1,
+
+                outerLine:
+                    c1o
+            },
+            {
+                params: [
+                    {
+                        type:
+                            "Dropdown",
+
+                        options: [
+                            [
+                                "대상 없음",
+                                "n"
+                            ]
+                        ],
+
+                        fontSize:
+                            11,
+
+                        arrowColor:
+                            c1o,
+
+                        value:
+                            "n"
+                    },
+                    {
+                        type:
+                            "Dropdown",
+
+                        options: [
+                            [
+                                "길이",
+                                "long"
+                            ],
+                            [
+                                "배속",
+                                "speed"
+                            ],
+                            [
+                                "x 좌푯값",
+                                "x"
+                            ],
+                            [
+                                "y 좌푯값",
+                                "y"
+                            ],
+                            [
+                                "크기",
+                                "size"
+                            ],
+                            [
+                                "소리크기",
+                                "sound"
+                            ],
+                            [
+                                "방향",
+                                "spinner"
+                            ]
+                        ],
+
+                        fontSize:
+                            11,
+
+                        arrowColor:
+                            c1o,
+
+                        value:
+                            "long"
+                    }
+                ],
+
+                def: [
+                    null
+                ],
+
+                map: {}
+            },
+            "text",
+            (sprite, script) => {
+                return script;
+            },
+            "basic_string_field"
+        );
+
+
+        addBlock(
+            "unofficial_video_mute",
+            "동영상 %1 하기%2",
+            {
+                color:
+                    c1,
+
+                outerLine:
+                    c1o
+            },
+            {
+                params: [
+                    {
+                        type:
+                            "Dropdown",
+
+                        options: [
+                            [
+                                "음소거",
+                                "ns"
+                            ],
+                            [
+                                "음소거 해제",
+                                "s"
+                            ]
+                        ],
+
+                        fontSize:
+                            11,
+
+                        arrowColor:
+                            c1o,
+
+                        value:
+                            "ns"
+                    },
+                    {
+                        type:
+                            "Indicator",
+
+                        size:
+                            11
+                    }
+                ],
+
+                def: [
+                    null
+                ],
+
+                map: {}
+            }
+        );
+
+
+        addBlock(
+            "unofficial_video_effect",
+            "동영상 %1 효과를 %2 만큼 주기%3",
+            {
+                color:
+                    c1,
+
+                outerLine:
+                    c1o
+            },
+            {
+                params: [
+                    {
+                        type:
+                            "Dropdown",
+
+                        options: [
+                            [
+                                "밝기",
+                                "밝기"
+                            ],
+                            [
+                                "투명도",
+                                "투명도"
+                            ]
+                        ],
+
+                        fontSize:
+                            11,
+
+                        arrowColor:
+                            c1o,
+
+                        value:
+                            "밝기"
+                    },
+                    {
+                        type:
+                            "Block",
+
+                        accept:
+                            "string"
+                    },
+                    {
+                        type:
+                            "Indicator",
+
+                        size:
+                            11
+                    }
+                ],
+
+                def: [
+                    {
+                        type:
+                            "text",
+
+                        params: [
+                            "10"
+                        ]
+                    }
+                ],
+
+                map: {}
+            }
+        );
+
+
+        addBlock(
+            "unofficial_video_speed",
+            "동영상을 %1 배속으로 설정하기%2",
+            {
+                color:
+                    c1,
+
+                outerLine:
+                    c1o
+            },
+            {
+                params: [
+                    {
+                        type:
+                            "Block",
+
+                        accept:
+                            "string"
+                    },
+                    {
+                        type:
+                            "Indicator",
+
+                        size:
+                            11
+                    }
+                ],
+
+                def: [
+                    {
+                        type:
+                            "text",
+
+                        params: [
+                            "2"
+                        ]
+                    }
+                ],
+
+                map: {}
+            }
+        );
+
+
+        addBlock(
+            "unofficial_video_state",
+            "동영상이 %1 상태인가?",
+            {
+                color:
+                    c1,
+
+                outerLine:
+                    c1o
+            },
+            {
+                params: [
+                    {
+                        type:
+                            "Dropdown",
+
+                        options: [
+                            [
+                                "음소거",
+                                "ns"
+                            ],
+                            [
+                                "음소거 해제",
+                                "s"
+                            ]
+                        ],
+
+                        fontSize:
+                            11,
+
+                        arrowColor:
+                            c1o,
+
+                        value:
+                            "ns"
+                    }
+                ],
+
+                def: [],
+
+                map: {}
+            },
+            "text",
+            async () => {
+                return false;
+            },
+            "basic_boolean_field"
+        );
+
+
+        addBlock(
+            "unofficial_video_size",
+            "동영상의 크기를 %1 만큼 바꾸기%2",
+            {
+                color:
+                    c1,
+
+                outerLine:
+                    c1o
+            },
+            {
+                params: [
+                    {
+                        type:
+                            "Block",
+
+                        accept:
+                            "string"
+                    },
+                    {
+                        type:
+                            "Indicator",
+
+                        size:
+                            11
+                    }
+                ],
+
+                def: [
+                    {
+                        type:
+                            "text",
+
+                        params: [
+                            "10"
+                        ]
+                    }
+                ],
+
+                map: {}
+            }
+        );
+
+
+        addBlock(
+            "unofficial_video_rotate",
+            "동영상 방향을 %1 만큼 회전하기%2",
+            {
+                color:
+                    c1,
+
+                outerLine:
+                    c1o
+            },
+            {
+                params: [
+                    {
+                        type:
+                            "Block",
+
+                        accept:
+                            "string"
+                    },
+                    {
+                        type:
+                            "Indicator",
+
+                        size:
+                            11
+                    }
+                ],
+
+                def: [
+                    {
+                        type:
+                            "text",
+
+                        params: [
+                            "90"
+                        ]
+                    }
+                ],
+
+                map: {}
+            }
+        );
+
+
+        addBlock(
+            "unofficial_video_stop",
+            "%1 동영상 멈추기%2",
+            {
+                color:
+                    c1,
+
+                outerLine:
+                    c1o
+            },
+            {
+                params: [
+                    {
+                        type:
+                            "Dropdown",
+
+                        options: [
+                            [
+                                "모든",
+                                "all"
+                            ],
+                            [
+                                "자신의",
+                                "i"
+                            ],
+                            [
+                                "다른 오브젝트의",
+                                "others"
+                            ]
+                        ],
+
+                        fontSize:
+                            11,
+
+                        arrowColor:
+                            c1o,
+
+                        value:
+                            "all"
+                    },
+                    {
+                        type:
+                            "Indicator",
+
+                        size:
+                            11
+                    }
+                ],
+
+                def: [],
+
+                map: {}
+            }
+        );
+
+
+        for (
+            let i =
+                Entry.staticBlocks.length - 1;
+            i >= 0;
+            i--
+        ) {
+            if (
+                Entry.staticBlocks[i]
+                    ?.category ===
+                VIDEO_CATEGORY
+            ) {
+                Entry.staticBlocks.splice(
+                    i,
+                    1
+                );
+            }
+        }
+
+
+        Entry.staticBlocks.push({
+            category:
+                VIDEO_CATEGORY,
+
+            blocks:
+                VIDEO_BLOCKS
+        });
+
+
+        updateCategory(
+            VIDEO_CATEGORY
+        );
+
+
+        if (
+            !document.getElementById(
+                "entry-video-block-style"
+            )
+        ) {
+            $("head").append(`
+<style id="entry-video-block-style">
+
 #entryCategory${VIDEO_CATEGORY} {
-    background-image: url(/lib/entry-js/images/sensor.svg);
-    background-repeat: no-repeat;
-    border-bottom-right-radius: 6px;
-    border-bottom-left-radius: 6px;
-    margin-bottom: 1px;
+    background-image:
+        url(/lib/entry-js/images/sensor.svg);
+
+    background-repeat:
+        no-repeat;
+
+    border-bottom-right-radius:
+        6px;
+
+    border-bottom-left-radius:
+        6px;
+
+    margin-bottom:
+        1px;
 }
 
 .entrySelectedCategory#entryCategory${VIDEO_CATEGORY} {
-    background-image: url(/lib/entry-js/images/sensor.on.svg);
-    border-color: #ffffffff;
-    color: #ffffffff;
-}
-</style>
-`);
+    background-image:
+        url(/lib/entry-js/images/sensor.on.svg);
 
-$(`#entryCategory${VIDEO_CATEGORY}`).append("동영상");
+    border-color:
+        #ffffffff;
+
+    color:
+        #ffffffff;
+}
+
+</style>
+            `);
+        }
+
+
+        const categoryElement =
+            $(
+                `#entryCategory${VIDEO_CATEGORY}`
+            );
+
+        if (
+            categoryElement.length &&
+            !categoryElement
+                .text()
+                .includes(
+                    "동영상"
+                )
+        ) {
+            categoryElement.append(
+                "동영상"
+            );
+        }
+
+
+        window.__entryVideoBlocksLoaded =
+            true;
+
+        window.__entryVideoBlocksLoading =
+            false;
+
+
+        console.log(
+            "[동영상블록] 등록 완료"
+        );
+
+
+        return true;
+    }
+
+
+    if (
+        init()
+    ) {
+        return;
+    }
+
+
+    let retryCount =
+        0;
+
+
+    const retryTimer =
+        setInterval(
+            () => {
+
+                retryCount++;
+
+
+                if (
+                    init() ||
+                    retryCount >= 200
+                ) {
+                    clearInterval(
+                        retryTimer
+                    );
+
+
+                    if (
+                        !window
+                            .__entryVideoBlocksLoaded
+                    ) {
+                        window
+                            .__entryVideoBlocksLoading =
+                            false;
+
+
+                        console.warn(
+                            "[동영상블록] Entry 준비 시간 초과"
+                        );
+                    }
+                }
+
+            },
+            100
+        );
+
 })();
