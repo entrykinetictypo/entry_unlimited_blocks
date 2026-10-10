@@ -2773,13 +2773,17 @@ async function installExtensionCheckFunction() {
    ========================================= */
 
 let extensionCheckStableCount = 0;
-
 const extensionCheckInstaller =
     setInterval(
         async () => {
 
+            if (window.top !== window) {
+                return;
+            }
+
             if (
                 !window.Entry ||
+
                 !Entry.variableContainer ||
                 typeof Entry.exportProject !== "function"
             ) {
