@@ -47,19 +47,7 @@
       "world": "MAIN",
       "all_frames": true
     },
-    {
-      "matches": [
-        "https://playentry.org/*"
-      ],
-      "js": [
-        "uncharted/matter.min.js",
-        "uncharted/three.min.js",
-        "uncharted/inject.js"
-      ],
-      "run_at": "document_start",
-      "world": "MAIN",
-      "all_frames": true
-    },
+    
     {
       "matches": [
         "https://playentry.org/*"
