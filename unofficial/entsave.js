@@ -197,24 +197,38 @@ function ready() {
             return false;
         }
 
-if (!Array.isArray(Entry.staticBlocks)) {
+const blockMenu =
+    Entry.playground?.mainWorkspace?.blockMenu ||
+    Entry.playground?.blockMenu ||
+    null;
+
+const isEditor =
+    !!blockMenu;
+
+
+if (
+    isEditor &&
+    !Array.isArray(Entry.staticBlocks)
+) {
 
     let baseBlocks = [];
 
     try {
+
         const all =
             window.EntryStatic
                 ?.getAllBlocks?.();
 
-        if (Array.isArray(all)) {
-            baseBlocks = [...all];
+        if (
+            Array.isArray(all)
+        ) {
+
+            baseBlocks = [
+                ...all
+            ];
         }
+
     } catch (_) {}
-
-
-    const blockMenu =
-        Entry.playground.mainWorkspace?.blockMenu ||
-        Entry.playground.blockMenu;
 
 
     if (
@@ -223,23 +237,20 @@ if (!Array.isArray(Entry.staticBlocks)) {
             blockMenu?._categoryData
         )
     ) {
+
         baseBlocks = [
             ...blockMenu._categoryData
         ];
     }
 
 
-    if (!baseBlocks.length) {
-        console.warn(
-            "[EntSave] 기존 카테고리 정보를 아직 찾지 못함"
-        );
+    if (
+        baseBlocks.length
+    ) {
 
-        return false;
+        Entry.staticBlocks =
+            baseBlocks;
     }
-
-
-    Entry.staticBlocks =
-        baseBlocks;
 }
         const TRANSPARENT =
     window.EntryStatic?.colorSet?.common?.TRANSPARENT ??
@@ -808,67 +819,73 @@ const TEXT_COLOR =
             }
         );
 
+if (
+    isEditor &&
+    Array.isArray(Entry.staticBlocks)
+) {
 
-        /* =========================================
-           기존 동일 카테고리 제거
-           ========================================= */
+    /* =========================================
+       기존 동일 카테고리 제거
+       ========================================= */
 
-        for (
-            let i =
-                Entry.staticBlocks.length - 1;
-            i >= 0;
-            i--
-        ) {
-
-            if (
-                Entry.staticBlocks[i]
-                    ?.category ===
-                CATEGORY
-            ) {
-
-                Entry.staticBlocks.splice(
-                    i,
-                    1
-                );
-            }
-        }
-
-
-        /* =========================================
-           EntSave 카테고리 추가
-           ========================================= */
-
-        Entry.staticBlocks.push({
-            category:
-                CATEGORY,
-
-            blocks:
-                blockIds
-        });
-
-
-        updateCategory(
-            CATEGORY
-        );
-
-
-        /* =========================================
-           아이콘
-           ========================================= */
+    for (
+        let i =
+            Entry.staticBlocks.length - 1;
+        i >= 0;
+        i--
+    ) {
 
         if (
-            !document.getElementById(
-                "unofficial-entsave-style"
-            )
+            Entry.staticBlocks[i]
+                ?.category ===
+            CATEGORY
         ) {
 
-          const style =
-    document.createElement("style");
+            Entry.staticBlocks.splice(
+                i,
+                1
+            );
+        }
+    }
 
-style.id =
-    "unofficial-entsave-style";
 
-style.textContent = `
+    /* =========================================
+       EntSave 카테고리 추가
+       ========================================= */
+
+    Entry.staticBlocks.push({
+        category:
+            CATEGORY,
+
+        blocks:
+            blockIds
+    });
+
+
+    updateCategory(
+        CATEGORY
+    );
+
+
+    /* =========================================
+       아이콘
+       ========================================= */
+
+    if (
+        !document.getElementById(
+            "unofficial-entsave-style"
+        )
+    ) {
+
+        const style =
+            document.createElement(
+                "style"
+            );
+
+        style.id =
+            "unofficial-entsave-style";
+
+        style.textContent = `
 #entryCategory${CATEGORY} {
     background-image:
         url(/lib/entry-js/images/variable.svg);
@@ -884,27 +901,31 @@ style.textContent = `
 }
 `;
 
-document.head.appendChild(style); 
-        }
+        document.head.appendChild(
+            style
+        );
+    }
 
 
-        const categoryElement =
-    document.getElementById(
-        `entryCategory${CATEGORY}`
-    );
+    const categoryElement =
+        document.getElementById(
+            `entryCategory${CATEGORY}`
+        );
 
-if (
-    categoryElement &&
-    !categoryElement.textContent.includes(
-        CATEGORY_NAME
-    )
-) {
-    categoryElement.append(
-        CATEGORY_NAME
-    );
+
+    if (
+        categoryElement &&
+        !categoryElement.textContent.includes(
+            CATEGORY_NAME
+        )
+    ) {
+
+        categoryElement.append(
+            CATEGORY_NAME
+        );
+    }
 }
-
-
+       
         window.__entryEntSaveLoaded =
             true;
 
