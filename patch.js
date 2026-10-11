@@ -2834,6 +2834,7 @@ const extensionCheckInstaller =
 const AUTO_SAVE_NEW_URL =
     "https://playentry.org/ws/new?type=normal&mode=block&lang=ko";
 
+
 async function autoSaveNewEntryProject() {
 
     if (
@@ -2846,6 +2847,7 @@ async function autoSaveNewEntryProject() {
 
     window.__entryAutoSaveNewRunning = true;
 
+
     const sleep =
         ms =>
             new Promise(
@@ -2853,35 +2855,26 @@ async function autoSaveNewEntryProject() {
                     setTimeout(resolve, ms)
             );
 
+
     console.log(
-        "[새 작품 자동 저장] 실행"
+        "[새 작품 자동 저장] 준비 대기"
     );
 
 
     /*
-     * Entry 화면이 완전히 뜰 때까지
-     * 저장 메뉴 버튼 대기
+     * 1. Entry가 실제로 준비될 때까지 기다림
      */
-    let menu = null;
-
     for (
         let i = 0;
-        i < 200;
+        i < 300;
         i++
     ) {
 
-        menu =
-            [...document.querySelectorAll("button")]
-                .find(
-                    button =>
-                        button
-                            .querySelector("span")
-                            ?.textContent
-                            .trim() ===
-                        "save"
-                );
-
-        if (menu) {
+        if (
+            window.Entry &&
+            Entry.playground &&
+            typeof Entry.exportProject === "function"
+        ) {
             break;
         }
 
@@ -2889,35 +2882,17 @@ async function autoSaveNewEntryProject() {
     }
 
 
-    if (!menu) {
-
-        console.error(
-            "[새 작품 자동 저장] 저장 메뉴 버튼 없음"
-        );
-
-        window.__entryAutoSaveNewRunning =
-            false;
-
-        return;
-    }
-
-
     /*
-     * 저장 메뉴 열기
+     * Entry 준비 후 약간 더 기다림
      */
-    if (
-        !document.querySelector(
-            '[value="saveProject"]'
-        )
-    ) {
-        menu.click();
-    }
+    await sleep(1000);
 
 
     /*
-     * 저장하기 버튼 대기
+     * 2. 저장 메뉴를 실제로 열 때까지 반복
      */
     let saveButton = null;
+
 
     for (
         let i = 0;
@@ -2925,19 +2900,63 @@ async function autoSaveNewEntryProject() {
         i++
     ) {
 
+        /*
+         * 이미 메뉴가 열렸는지 먼저 확인
+         */
         saveButton =
             document.querySelector(
                 '[value="saveProject"]'
             );
 
+
         if (saveButton) {
+
+            console.log(
+                "[새 작품 자동 저장] 저장 메뉴 확인"
+            );
+
             break;
         }
 
-        await sleep(50);
+
+        /*
+         * save 아이콘 찾기
+         */
+        const menu =
+            [
+                ...document
+                    .querySelectorAll(
+                        "button"
+                    )
+            ].find(
+                button =>
+                    button
+                        .querySelector(
+                            "span"
+                        )
+                        ?.textContent
+                        ?.trim() ===
+                    "save"
+            );
+
+
+        if (menu) {
+
+            console.log(
+                "[새 작품 자동 저장] 저장 메뉴 클릭"
+            );
+
+            menu.click();
+        }
+
+
+        await sleep(300);
     }
 
 
+    /*
+     * 저장하기 버튼 못 찾음
+     */
     if (!saveButton) {
 
         console.error(
@@ -2951,7 +2970,11 @@ async function autoSaveNewEntryProject() {
     }
 
 
+    /*
+     * 3. 저장하기 클릭
+     */
     saveButton.click();
+
 
     console.log(
         "[새 작품 자동 저장] 저장 요청"
@@ -2959,7 +2982,7 @@ async function autoSaveNewEntryProject() {
 
 
     /*
-     * 저장 완료 팝업의 확인 자동 클릭
+     * 4. 저장 완료창 기다리기
      */
     for (
         let i = 0;
@@ -2979,7 +3002,7 @@ async function autoSaveNewEntryProject() {
 
             if (
                 element.textContent
-                    .trim() !==
+                    ?.trim() !==
                 "확인"
             ) {
                 continue;
@@ -2999,16 +3022,18 @@ async function autoSaveNewEntryProject() {
 
                 if (
                     parent.textContent
-                        .includes(
+                        ?.includes(
                             "작품을 마이 페이지에 저장했습니다"
                         )
                 ) {
 
                     element.click();
 
+
                     console.log(
                         "[새 작품 자동 저장] 저장 완료"
                     );
+
 
                     return;
                 }
@@ -3025,21 +3050,19 @@ async function autoSaveNewEntryProject() {
 
 
     console.warn(
-        "[새 작품 자동 저장] 완료 확인창 못 찾음"
+        "[새 작품 자동 저장] 저장 완료 확인창 못 찾음"
     );
 }
 
 
 /*
- * 정확히 /ws/new 주소일 때만 자동 실행
+ * 정확히 이 주소일 때만 실행
  */
 if (
     location.href ===
     AUTO_SAVE_NEW_URL
 ) {
 
-    setTimeout(
-        autoSaveNewEntryProject,
-        500
-    );
+    autoSaveNewEntryProject();
+
 }
