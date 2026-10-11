@@ -462,7 +462,7 @@ unloadUnofficialButton.addEventListener(
                     checkbox.checked = false;
                 });
 
-                chrome.tabs.reload(tab.id);
+                
             }
         );
     }
