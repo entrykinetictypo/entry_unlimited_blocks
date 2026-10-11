@@ -2831,3 +2831,215 @@ const extensionCheckInstaller =
         },
         500
     );
+const AUTO_SAVE_NEW_URL =
+    "https://playentry.org/ws/new?type=normal&mode=block&lang=ko";
+
+async function autoSaveNewEntryProject() {
+
+    if (
+        window.top !== window ||
+        location.href !== AUTO_SAVE_NEW_URL ||
+        window.__entryAutoSaveNewRunning
+    ) {
+        return;
+    }
+
+    window.__entryAutoSaveNewRunning = true;
+
+    const sleep =
+        ms =>
+            new Promise(
+                resolve =>
+                    setTimeout(resolve, ms)
+            );
+
+    console.log(
+        "[새 작품 자동 저장] 실행"
+    );
+
+
+    /*
+     * Entry 화면이 완전히 뜰 때까지
+     * 저장 메뉴 버튼 대기
+     */
+    let menu = null;
+
+    for (
+        let i = 0;
+        i < 200;
+        i++
+    ) {
+
+        menu =
+            [...document.querySelectorAll("button")]
+                .find(
+                    button =>
+                        button
+                            .querySelector("span")
+                            ?.textContent
+                            .trim() ===
+                        "save"
+                );
+
+        if (menu) {
+            break;
+        }
+
+        await sleep(100);
+    }
+
+
+    if (!menu) {
+
+        console.error(
+            "[새 작품 자동 저장] 저장 메뉴 버튼 없음"
+        );
+
+        window.__entryAutoSaveNewRunning =
+            false;
+
+        return;
+    }
+
+
+    /*
+     * 저장 메뉴 열기
+     */
+    if (
+        !document.querySelector(
+            '[value="saveProject"]'
+        )
+    ) {
+        menu.click();
+    }
+
+
+    /*
+     * 저장하기 버튼 대기
+     */
+    let saveButton = null;
+
+    for (
+        let i = 0;
+        i < 100;
+        i++
+    ) {
+
+        saveButton =
+            document.querySelector(
+                '[value="saveProject"]'
+            );
+
+        if (saveButton) {
+            break;
+        }
+
+        await sleep(50);
+    }
+
+
+    if (!saveButton) {
+
+        console.error(
+            "[새 작품 자동 저장] 저장하기 버튼 없음"
+        );
+
+        window.__entryAutoSaveNewRunning =
+            false;
+
+        return;
+    }
+
+
+    saveButton.click();
+
+    console.log(
+        "[새 작품 자동 저장] 저장 요청"
+    );
+
+
+    /*
+     * 저장 완료 팝업의 확인 자동 클릭
+     */
+    for (
+        let i = 0;
+        i < 200;
+        i++
+    ) {
+
+        const elements =
+            document.querySelectorAll(
+                "button, div, span, [role='button']"
+            );
+
+
+        for (
+            const element of elements
+        ) {
+
+            if (
+                element.textContent
+                    .trim() !==
+                "확인"
+            ) {
+                continue;
+            }
+
+
+            let parent =
+                element.parentElement;
+
+
+            for (
+                let j = 0;
+                j < 10 &&
+                parent;
+                j++
+            ) {
+
+                if (
+                    parent.textContent
+                        .includes(
+                            "작품을 마이 페이지에 저장했습니다"
+                        )
+                ) {
+
+                    element.click();
+
+                    console.log(
+                        "[새 작품 자동 저장] 저장 완료"
+                    );
+
+                    return;
+                }
+
+
+                parent =
+                    parent.parentElement;
+            }
+        }
+
+
+        await sleep(150);
+    }
+
+
+    console.warn(
+        "[새 작품 자동 저장] 완료 확인창 못 찾음"
+    );
+}
+
+
+/*
+ * 정확히 /ws/new 주소일 때만 자동 실행
+ */
+if (
+    location.href ===
+    AUTO_SAVE_NEW_URL
+) {
+
+    setTimeout(
+        autoSaveNewEntryProject,
+        500
+    );
+}
