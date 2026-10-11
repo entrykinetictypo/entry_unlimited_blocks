@@ -1399,5 +1399,5 @@ color: #ffff;
 </style>
 `)
 
-$('#entryCategorySpecialBlock').append('스폐셜'),console.log("스페셜블럭 작동이 시작되었습니다."),document.title = "Special_Block_entry";
+$('#entryCategorySpecialBlock').append('스폐셜'),console.log("스페셜블럭 작동이 시작되었습니다.");
 })();
