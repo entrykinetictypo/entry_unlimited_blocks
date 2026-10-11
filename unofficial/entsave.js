@@ -28,12 +28,7 @@
 function ready() {
     return !!(
         window.Entry &&
-        Entry.block &&
-        Entry.playground &&
-        (
-            Entry.playground.mainWorkspace?.blockMenu ||
-            Entry.playground.blockMenu
-        )
+        Entry.block
     );
 }
     
