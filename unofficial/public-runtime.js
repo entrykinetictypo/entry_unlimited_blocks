@@ -27,11 +27,12 @@
     "unofficial/mint.js",
     "unofficial/newblock.js",
     "unofficial/npi.js",
-
     "unofficial/etc.js",
     "unofficial/nyang.js",
     "unofficial/strong.js",
     "unofficial/kris.js",
+    "unofficial/entsave.js",
+    "unofficial/video.js",
     "unofficial/express.js"
 ];
 
