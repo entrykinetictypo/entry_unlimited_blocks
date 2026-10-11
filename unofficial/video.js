@@ -25,16 +25,11 @@
     ];
 
     function ready() {
-        return !!(
-            window.Entry &&
-            Entry.block &&
-            Array.isArray(Entry.staticBlocks) &&
-            Entry.playground &&
-            Entry.playground.mainWorkspace &&
-            Entry.playground.mainWorkspace.blockMenu &&
-            typeof window.$ === "function"
-        );
-    }
+    return !!(
+        window.Entry &&
+        Entry.block
+    );
+}
 
     function updateCategory(category, options) {
         const blockMenu = Entry.playground.mainWorkspace.blockMenu;
@@ -888,7 +883,13 @@
             }
         );
 
+const isEditor =
+    !!(
+        Entry.playground?.mainWorkspace?.blockMenu &&
+        Array.isArray(Entry.staticBlocks)
+    );
 
+if (isEditor) {
         for (
             let i =
                 Entry.staticBlocks.length - 1;
@@ -980,7 +981,7 @@
                 "동영상"
             );
         }
-
+}
 
         window.__entryVideoBlocksLoaded =
             true;
