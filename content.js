@@ -24,11 +24,66 @@
             callback(enabled);
         });
     }
+const AUTO_SAVE_NEW_PROJECT_KEY =
+    "autoSaveNewProjectAllowed";
 
+
+function sendAutoSaveState(
+    allowed
+) {
+
+    window.postMessage(
+        {
+            source:
+                SOURCE,
+
+            type:
+                "SET_AUTO_SAVE_NEW_PROJECT",
+
+            allowed:
+                Boolean(
+                    allowed
+                )
+        },
+        "*"
+    );
+}
+
+
+function getAutoSaveState(
+    callback
+) {
+
+    chrome.storage.local.get(
+        [AUTO_SAVE_NEW_PROJECT_KEY],
+        (result) => {
+
+            const allowed =
+                typeof result[
+                    AUTO_SAVE_NEW_PROJECT_KEY
+                ] === "boolean"
+                    ? result[
+                        AUTO_SAVE_NEW_PROJECT_KEY
+                    ]
+                    : true;
+
+            callback(
+                allowed
+            );
+        }
+    );
+}
     getCurrentState((enabled) => {
         sendState(enabled);
     });
+getAutoSaveState(
+    (allowed) => {
 
+        sendAutoSaveState(
+            allowed
+        );
+    }
+);
     chrome.storage.onChanged.addListener((changes, areaName) => {
         if (
             areaName !== "local" ||
@@ -39,7 +94,29 @@
 
         sendState(changes.enabled.newValue);
     });
+chrome.storage.onChanged.addListener(
+    (
+        changes,
+        areaName
+    ) => {
 
+        if (
+            areaName !==
+                "local" ||
+            !changes[
+                AUTO_SAVE_NEW_PROJECT_KEY
+            ]
+        ) {
+            return;
+        }
+
+        sendAutoSaveState(
+            changes[
+                AUTO_SAVE_NEW_PROJECT_KEY
+            ].newValue
+        );
+    }
+);
     window.addEventListener(
         "message",
         (event) => {
