@@ -1520,3 +1520,100 @@ function compareUnchartedVersions(
 
     return 0;
 }
+/* =========================================
+   새 작품 자동 저장 ON / OFF
+   ========================================= */
+
+const AUTO_SAVE_NEW_PROJECT_KEY =
+    "autoSaveNewProjectAllowed";
+
+const autoSaveStatus =
+    document.getElementById(
+        "autoSaveStatus"
+    );
+
+const autoSaveToggle =
+    document.getElementById(
+        "autoSaveToggle"
+    );
+
+
+function renderAutoSaveState(
+    allowed
+) {
+
+    autoSaveStatus.textContent =
+        allowed
+            ? "상태: 자동 저장 허용"
+            : "상태: 자동 저장 차단";
+
+    autoSaveToggle.textContent =
+        allowed
+            ? "자동 저장 차단"
+            : "자동 저장 허용";
+}
+
+
+/*
+ * 최초 상태
+ * 값이 없으면 기본 ON
+ */
+chrome.storage.local.get(
+    [AUTO_SAVE_NEW_PROJECT_KEY],
+    (result) => {
+
+        const allowed =
+            typeof result[
+                AUTO_SAVE_NEW_PROJECT_KEY
+            ] === "boolean"
+                ? result[
+                    AUTO_SAVE_NEW_PROJECT_KEY
+                ]
+                : true;
+
+        renderAutoSaveState(
+            allowed
+        );
+    }
+);
+
+
+/*
+ * ON / OFF
+ */
+autoSaveToggle.addEventListener(
+    "click",
+    () => {
+
+        chrome.storage.local.get(
+            [AUTO_SAVE_NEW_PROJECT_KEY],
+            (result) => {
+
+                const current =
+                    typeof result[
+                        AUTO_SAVE_NEW_PROJECT_KEY
+                    ] === "boolean"
+                        ? result[
+                            AUTO_SAVE_NEW_PROJECT_KEY
+                        ]
+                        : true;
+
+                const next =
+                    !current;
+
+                chrome.storage.local.set(
+                    {
+                        [AUTO_SAVE_NEW_PROJECT_KEY]:
+                            next
+                    },
+                    () => {
+
+                        renderAutoSaveState(
+                            next
+                        );
+                    }
+                );
+            }
+        );
+    }
+);
