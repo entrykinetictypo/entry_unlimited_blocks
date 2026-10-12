@@ -3014,7 +3014,20 @@ async function autoSaveNewEntryProject() {
 
         return;
     }
+/* 자동 저장이 중간에 차단됐는지 다시 확인 */
+if (
+    !autoSaveNewProjectAllowed
+) {
 
+    console.log(
+        "[새 작품 자동 저장] 사용자 차단으로 중지"
+    );
+
+    window.__entryAutoSaveNewRunning =
+        false;
+
+    return;
+}
 
     /*
      * 3. 저장하기 클릭
