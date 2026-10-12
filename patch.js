@@ -2833,17 +2833,63 @@ const extensionCheckInstaller =
     );
 const AUTO_SAVE_NEW_URL =
     "https://playentry.org/ws/new?type=normal&mode=block&lang=ko";
+let autoSaveNewProjectAllowed =
+    null;
+window.addEventListener(
+    "message",
+    (event) => {
+
+        if (
+            event.source !==
+                window ||
+            event.data?.source !==
+                "ENTRY_UNLIMITED_BLOCKS" ||
+            event.data?.type !==
+                "SET_AUTO_SAVE_NEW_PROJECT"
+        ) {
+            return;
+        }
 
 
+        autoSaveNewProjectAllowed =
+            event.data.allowed ===
+            true;
+
+
+        console.log(
+            "[새 작품 자동 저장]",
+            autoSaveNewProjectAllowed
+                ? "허용"
+                : "차단"
+        );
+
+
+        /*
+         * 현재 새 작품 화면인데
+         * ON으로 변경했다면 바로 실행
+         */
+        if (
+            autoSaveNewProjectAllowed &&
+            location.href ===
+                AUTO_SAVE_NEW_URL
+        ) {
+
+            autoSaveNewEntryProject();
+        }
+    }
+);
 async function autoSaveNewEntryProject() {
 
-    if (
-        window.top !== window ||
-        location.href !== AUTO_SAVE_NEW_URL ||
-        window.__entryAutoSaveNewRunning
-    ) {
-        return;
-    }
+   if (
+    window.top !== window ||
+    location.href !==
+        AUTO_SAVE_NEW_URL ||
+    autoSaveNewProjectAllowed !==
+        true ||
+    window.__entryAutoSaveNewRunning
+) {
+    return;
+}
 
     window.__entryAutoSaveNewRunning = true;
 
@@ -3052,17 +3098,4 @@ async function autoSaveNewEntryProject() {
     console.warn(
         "[새 작품 자동 저장] 저장 완료 확인창 못 찾음"
     );
-}
-
-
-/*
- * 정확히 이 주소일 때만 실행
- */
-if (
-    location.href ===
-    AUTO_SAVE_NEW_URL
-) {
-
-    autoSaveNewEntryProject();
-
 }
