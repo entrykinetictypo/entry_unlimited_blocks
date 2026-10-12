@@ -117,23 +117,41 @@ chrome.storage.onChanged.addListener(
         );
     }
 );
-    window.addEventListener(
-        "message",
-        (event) => {
-            if (
-                event.source !== window ||
-                event.data?.source !== "ENTRY_UNLIMITED_BLOCKS_PATCH" ||
-                event.data?.type !== "REQUEST_STATE"
-            ) {
-                return;
-            }
+   window.addEventListener(
+    "message",
+    (event) => {
 
-            getCurrentState((enabled) => {
-                sendState(enabled);
-            });
+        if (
+            event.source !== window ||
+            event.data?.source !==
+                "ENTRY_UNLIMITED_BLOCKS_PATCH" ||
+            event.data?.type !==
+                "REQUEST_STATE"
+        ) {
+            return;
         }
-    );
 
+
+        getCurrentState(
+            (enabled) => {
+
+                sendState(
+                    enabled
+                );
+            }
+        );
+
+
+        getAutoSaveState(
+            (allowed) => {
+
+                sendAutoSaveState(
+                    allowed
+                );
+            }
+        );
+    }
+);
     chrome.runtime.onMessage.addListener(
         (message, sender, sendResponse) => {
 
