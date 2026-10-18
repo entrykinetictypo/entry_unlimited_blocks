@@ -1521,6 +1521,79 @@ function compareUnchartedVersions(
     return 0;
 }
 /* =========================================
+   복사한 블록 ID 보기
+   ========================================= */
+
+const clipboardBlockId =
+    document.getElementById(
+        "clipboardBlockId"
+    );
+
+const showClipboardBlockId =
+    document.getElementById(
+        "showClipboardBlockId"
+    );
+
+showClipboardBlockId.addEventListener(
+    "click",
+    async () => {
+
+        const [tab] =
+            await chrome.tabs.query({
+                active: true,
+                currentWindow: true
+            });
+
+        if (
+            !tab ||
+            !tab.id ||
+            !tab.url ||
+            !tab.url.startsWith(
+                "https://playentry.org/"
+            )
+        ) {
+            clipboardBlockId.textContent =
+                "엔트리 페이지가 아닙니다.";
+            return;
+        }
+
+        try {
+            const result =
+                await chrome.scripting.executeScript({
+                    target: {
+                        tabId: tab.id
+                    },
+                    world: "MAIN",
+                    func: () => {
+                        return (
+                            window.Entry
+                                ?.clipboard
+                                ?.[0]
+                                ?.type ||
+                            null
+                        );
+                    }
+                });
+
+            const blockId =
+                result?.[0]?.result;
+
+            clipboardBlockId.textContent =
+                blockId ||
+                "복사한 블록이 없습니다.";
+        } catch (error) {
+            clipboardBlockId.textContent =
+                "블록 ID 확인 실패";
+            console.error(
+                "[콘솔을 편하게] 복사한 블록 ID 확인 실패",
+                error
+            );
+        }
+    }
+);
+
+
+/* =========================================
    새 작품 자동 저장 ON / OFF
    ========================================= */
 
