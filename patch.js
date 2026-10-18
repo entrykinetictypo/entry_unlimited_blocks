@@ -348,7 +348,7 @@ const response = await fetch(
             typeof Entry.container.getAllObjects === "function"
         );
     }
-    function addBlockById(blockId) {
+    async function addBlockById(blockId) {
     try {
         if (!window.Entry) {
             throw new Error("Entry가 아직 준비되지 않았습니다.");
@@ -428,11 +428,43 @@ const content = JSON.parse(
         targetObject.script =
     JSON.stringify(content);
 
-        Entry.clearProject();
-        Entry.loadProject(project);
+        const hadRegisterAchievement =
+            typeof Entry.registerAchievement === "function";
+
+        const originalRegisterAchievement =
+            Entry.registerAchievement;
+
+        // 일반 작품에서는 TargetChecker가 없어서 registerAchievement가
+        // 정의되지 않을 수 있다. 프로젝트 재로드 중 check_lecture_goal
+        // 블록의 dataAdd 이벤트가 호출되어도 실패하지 않도록 임시 처리한다.
+        if (!hadRegisterAchievement) {
+            Entry.registerAchievement = () => {};
+        }
+
+        try {
+            Entry.clearProject();
+
+            const loadResult =
+                Entry.loadProject(project);
+
+            if (
+                loadResult &&
+                typeof loadResult.then === "function"
+            ) {
+                await loadResult;
+            }
+        } finally {
+            if (hadRegisterAchievement) {
+                Entry.registerAchievement =
+                    originalRegisterAchievement;
+            } else {
+                delete Entry.registerAchievement;
+            }
+        }
+
         setTimeout(() => {
-    Entry.container.selectObject(selectedId);
-}, 100);
+            Entry.container.selectObject(selectedId);
+        }, 100);
 
         console.log(
             `${NAME} block added: ${id}`
