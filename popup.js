@@ -682,6 +682,19 @@ document
     );
 
 });
+// Selected-block JSON property controls
+document.getElementById("applyBlockProperties").addEventListener("click", () => {
+    const read = (id) => document.getElementById(id).checked;
+    runEntryAction("SET_SELECTED_BLOCK_PROPERTIES", {
+        deletable: read("propDeletable") ? 0 : 1,
+        copyable: !read("propCopyable"),
+        assemble: !read("propAssemble"),
+        readOnly: read("propReadOnly"),
+        emphasized: read("propEmphasized"),
+        recursive: read("propRecursive")
+    });
+});
+
 /* =========================================================
    언차티드 확장 설정
    ========================================================= */
