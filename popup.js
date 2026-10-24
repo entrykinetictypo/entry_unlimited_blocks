@@ -678,14 +678,14 @@ document
 .addEventListener("click", () => {
 
     runEntryAction(
-        "LOCK_SELECTED_PARAMS"
+        "LOCK_COPIED_PARAMS"
     );
 
 });
-// Selected-block JSON property controls
+// Copied-block JSON property controls
 document.getElementById("applyBlockProperties").addEventListener("click", () => {
     const read = (id) => document.getElementById(id).checked;
-    runEntryAction("SET_SELECTED_BLOCK_PROPERTIES", {
+    runEntryAction("SET_COPIED_BLOCK_PROPERTIES", {
         deletable: read("propDeletable") ? 0 : 1,
         copyable: !read("propCopyable"),
         assemble: !read("propAssemble"),
