@@ -2164,6 +2164,56 @@ function stopVariableMove() {
 
     return;
 }      
+if (action === "SET_SELECTED_BLOCK_PROPERTIES") {
+    const board = Entry.playground?.mainWorkspace?.board;
+    const selectedView = board?.selectedBlockView ||
+        board?.workspace?.selectedBlockView;
+    const root = selectedView?.block;
+    if (!(root instanceof Entry.Block)) {
+        alert("먼저 엔트리 작업 공간에서 변경할 블록을 선택하세요.");
+        return;
+    }
+
+    const props = {
+        deletable: data.deletable === 0 ? 0 : 1,
+        copyable: data.copyable !== false,
+        assemble: data.assemble !== false,
+        readOnly: data.readOnly === true,
+        emphasized: data.emphasized === true
+    };
+    const visited = new Set();
+    const apply = (block) => {
+        if (!(block instanceof Entry.Block) || visited.has(block)) return;
+        visited.add(block);
+        block.set(props);
+        if (block.view) {
+            block.view.readOnly = props.readOnly;
+            if (typeof block.view._setReadOnly === "function") {
+                block.view._setReadOnly();
+            }
+            if (typeof block.view.reDraw === "function") {
+                block.view.reDraw();
+            }
+        }
+        if (data.recursive === true) {
+            for (const param of block.params || []) apply(param);
+            for (const statement of block.statements || []) {
+                if (Array.isArray(statement)) {
+                    for (const nested of statement) apply(nested);
+                } else {
+                    apply(statement);
+                }
+            }
+            if (typeof block.getNextBlock === "function") {
+                apply(block.getNextBlock());
+            }
+        }
+    };
+    apply(root);
+    try { root.getCode()?.changeEvent?.notify(); } catch (_) {}
+    alert(visited.size + "개 블록에 속성을 적용했습니다.");
+    return;
+}
 if (action === "LOCK_SELECTED_PARAMS") {
 
     const board =
