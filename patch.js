@@ -2164,16 +2164,41 @@ function stopVariableMove() {
 
     return;
 }      
-if (action === "SET_SELECTED_BLOCK_PROPERTIES") {
-    const board = Entry.playground?.mainWorkspace?.board;
-    const selectedView = board?.selectedBlockView ||
-        board?.workspace?.selectedBlockView;
-    const root = selectedView?.block;
-    if (!(root instanceof Entry.Block)) {
-        alert("먼저 엔트리 작업 공간에서 변경할 블록을 선택하세요.");
+// Clipboard modifications work on exported block JSON, not a selected canvas block.
+if (action === "SET_COPIED_BLOCK_PROPERTIES" || action === "LOCK_COPIED_PARAMS") {
+    const clipboard = Entry.clipboard;
+    if (!Array.isArray(clipboard) || clipboard.length === 0) {
+        alert("먼저 엔트리에서 블록을 Ctrl+C로 복사하세요.");
         return;
     }
-
+    const seen = new WeakSet();
+    let changed = 0;
+    function visit(node, includeNested, callback) {
+        if (!node || typeof node !== "object" || seen.has(node)) return;
+        seen.add(node);
+        if (typeof node.type === "string" && Array.isArray(node.params)) {
+            callback(node);
+            changed++;
+            if (!includeNested) return;
+        }
+        if (Array.isArray(node)) {
+            for (const child of node) visit(child, includeNested, callback);
+        } else {
+            for (const child of Object.values(node)) visit(child, includeNested, callback);
+        }
+    }
+    if (action === "LOCK_COPIED_PARAMS") {
+        // Lock parameter block(s), leaving the top-level copied block editable.
+        for (const block of clipboard) {
+            if (!block || !Array.isArray(block.params)) continue;
+            for (const param of block.params) {
+                visit(param, true, (item) => { item.readOnly = true; });
+            }
+        }
+        alert(changed ? changed + "개 매개변수 블록 잠금 완료. Ctrl+V로 붙여넣으세요." :
+            "잠글 매개변수 블록이 없습니다.");
+        return;
+    }
     const props = {
         deletable: data.deletable === 0 ? 0 : 1,
         copyable: data.copyable !== false,
@@ -2181,134 +2206,10 @@ if (action === "SET_SELECTED_BLOCK_PROPERTIES") {
         readOnly: data.readOnly === true,
         emphasized: data.emphasized === true
     };
-    const visited = new Set();
-    const apply = (block) => {
-        if (!(block instanceof Entry.Block) || visited.has(block)) return;
-        visited.add(block);
-        block.set(props);
-        if (block.view) {
-            block.view.readOnly = props.readOnly;
-            if (typeof block.view._setReadOnly === "function") {
-                block.view._setReadOnly();
-            }
-            if (typeof block.view.reDraw === "function") {
-                block.view.reDraw();
-            }
-        }
-        if (data.recursive === true) {
-            for (const param of block.params || []) apply(param);
-            for (const statement of block.statements || []) {
-                if (Array.isArray(statement)) {
-                    for (const nested of statement) apply(nested);
-                } else {
-                    apply(statement);
-                }
-            }
-            if (typeof block.getNextBlock === "function") {
-                apply(block.getNextBlock());
-            }
-        }
-    };
-    apply(root);
-    try { root.getCode()?.changeEvent?.notify(); } catch (_) {}
-    alert(visited.size + "개 블록에 속성을 적용했습니다.");
-    return;
-}
-if (action === "LOCK_SELECTED_PARAMS") {
-
-    const board =
-        Entry.playground
-            ?.mainWorkspace
-            ?.board;
-
-    const selectedView =
-        board?.selectedBlockView ||
-        board?.workspace?.selectedBlockView;
-
-    const rootBlock =
-        selectedView?.block;
-
-    if (!(rootBlock instanceof Entry.Block)) {
-        alert("먼저 잠글 블록을 클릭해 주세요.");
-        return;
+    for (const root of clipboard) {
+        visit(root, data.recursive === true, (block) => Object.assign(block, props));
     }
-
-
-    let lockedCount = 0;
-
-
-    function lockParams(block) {
-
-        const params =
-            block.params || [];
-
-        for (const param of params) {
-
-            if (!(param instanceof Entry.Block)) {
-                continue;
-            }
-
-
-            /*
-             * 실제 저장되는 블록 속성
-             */
-            param.set({
-                readOnly: true
-            });
-
-
-            /*
-             * 화면에도 즉시 반영
-             */
-            if (param.view) {
-
-                param.view.readOnly = true;
-
-                if (
-                    typeof param.view._setReadOnly ===
-                    "function"
-                ) {
-                    param.view._setReadOnly();
-                }
-            }
-
-
-            lockedCount++;
-
-
-            /*
-             * 그 안의 매개변수도 계속 탐색
-             */
-            lockParams(param);
-        }
-    }
-
-
-    lockParams(rootBlock);
-
-
-    /*
-     * 작품 변경 알림
-     */
-    try {
-        rootBlock
-            .getCode()
-            ?.changeEvent
-            ?.notify();
-    } catch (_) {}
-
-
-    if (lockedCount === 0) {
-        alert(
-            "잠글 매개변수 블록이 없습니다."
-        );
-    } else {
-        alert(
-            lockedCount +
-            "개의 매개변수 블록을 잠갔습니다."
-        );
-    }
-
+    alert(changed + "개 복사된 블록에 속성 적용 완료. Ctrl+V로 붙여넣으세요.");
     return;
 }
             if (action === "UNBAN_BLOCKS") {
