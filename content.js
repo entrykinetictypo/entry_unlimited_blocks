@@ -65,7 +65,7 @@ function getAutoSaveState(
                     ? result[
                         AUTO_SAVE_NEW_PROJECT_KEY
                     ]
-                    : true;
+                    : false;
 
             callback(
                 allowed
@@ -917,3 +917,41 @@ function migrateNewProjectData(
         }
     );
 }
+
+
+// Bridge creation permissions from extension storage to Entry's main world.
+(() => {
+  const source = 'ENTRY_UNLIMITED_BLOCKS';
+  const keys = {
+    function: 'allowEntryFunctionCreate',
+    variable: 'allowEntryVariableCreate'
+  };
+  const send = (kind, allowed) => {
+    window.postMessage({
+      source,
+      type: 'SET_ENTRY_CREATE_PERMISSION',
+      kind,
+      allowed: allowed === true
+    }, '*');
+  };
+  const sendCurrent = () => {
+    chrome.storage.local.get(Object.values(keys), (result) => {
+      for (const [kind, key] of Object.entries(keys)) {
+        send(kind, result[key] === true);
+      }
+    });
+  };
+  sendCurrent();
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area !== 'local') return;
+    for (const [kind, key] of Object.entries(keys)) {
+      if (changes[key]) send(kind, changes[key].newValue === true);
+    }
+  });
+  window.addEventListener('message', (event) => {
+    if (event.source !== window ||
+        event.data?.source !== 'ENTRY_UNLIMITED_BLOCKS_PATCH' ||
+        event.data?.type !== 'REQUEST_STATE') return;
+    sendCurrent();
+  });
+})();
