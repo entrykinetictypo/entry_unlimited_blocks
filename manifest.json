@@ -1,25 +1,23 @@
 {
   "manifest_version": 3,
   "name": "콘솔을 편하게",
-  "version": "1.14.6",
+  "version": "1.14.8",
   "description": "엔트리의 블록 연결 제한을 해제하고, 블록 ID 및 비공식 블록을 편리하게 불러옵니다.",
-
   "permissions": [
-  "storage",
-  "tabs",
-  "scripting",
-  "activeTab"
-],
-"host_permissions": [
-  "https://raw.githubusercontent.com/*"
-],
+    "storage",
+    "tabs",
+    "scripting",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "https://raw.githubusercontent.com/*"
+  ],
   "icons": {
     "16": "icon16.png",
     "32": "icon32.png",
     "48": "icon48.png",
     "128": "icon128.png"
   },
-
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
@@ -28,7 +26,6 @@
       "48": "icon48.png"
     }
   },
-
   "content_scripts": [
     {
       "matches": [
@@ -51,7 +48,6 @@
       "world": "MAIN",
       "all_frames": true
     },
-    
     {
       "matches": [
         "https://playentry.org/*"
@@ -63,7 +59,6 @@
       "all_frames": true
     }
   ],
-
   "web_accessible_resources": [
     {
       "resources": [
