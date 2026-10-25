@@ -1642,7 +1642,7 @@ function renderAutoSaveState(
 
 /*
  * 최초 상태
- * 값이 없으면 기본 ON
+ * 값이 없으면 기본 OFF
  */
 chrome.storage.local.get(
     [AUTO_SAVE_NEW_PROJECT_KEY],
@@ -1655,7 +1655,7 @@ chrome.storage.local.get(
                 ? result[
                     AUTO_SAVE_NEW_PROJECT_KEY
                 ]
-                : true;
+                : false;
 
         renderAutoSaveState(
             allowed
@@ -1682,7 +1682,7 @@ autoSaveToggle.addEventListener(
                         ? result[
                             AUTO_SAVE_NEW_PROJECT_KEY
                         ]
-                        : true;
+                        : false;
 
                 const next =
                     !current;
@@ -1703,3 +1703,34 @@ autoSaveToggle.addEventListener(
         );
     }
 );
+
+
+// Function/variable creation preferences: absent key means forbidden.
+(() => {
+  const items = [
+    { key: 'allowEntryFunctionCreate', status: 'functionCreateStatus', toggle: 'functionCreateToggle', label: '함수' },
+    { key: 'allowEntryVariableCreate', status: 'variableCreateStatus', toggle: 'variableCreateToggle', label: '변수' }
+  ];
+  for (const item of items) {
+    const status = document.getElementById(item.status);
+    const button = document.getElementById(item.toggle);
+    if (!status || !button) continue;
+    const render = (allowed) => {
+      status.textContent = '상태: ' + (allowed ? '허용' : '금지');
+      button.textContent = item.label + ' 추가 ' + (allowed ? '금지하기' : '허용하기');
+    };
+    chrome.storage.local.get([item.key], (result) => render(result[item.key] === true));
+    button.addEventListener('click', () => {
+      chrome.storage.local.get([item.key], (result) => {
+        const next = result[item.key] !== true;
+        chrome.storage.local.set({ [item.key]: next }, () => {
+          if (chrome.runtime.lastError) {
+            console.error('[콘솔을 편하게] 설정 저장 실패', chrome.runtime.lastError);
+            return;
+          }
+          render(next);
+        });
+      });
+    });
+  }
+})();
