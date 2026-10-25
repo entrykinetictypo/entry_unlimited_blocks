@@ -3095,3 +3095,68 @@ if (
         "[새 작품 자동 저장] 저장 완료 확인창 못 찾음"
     );
 }
+
+
+// Guard user-initiated Entry function/variable creation commands.
+// No project data or existing variable/function values are changed.
+(() => {
+  if (window.__entryCreationPermissionsInstalled) return;
+  window.__entryCreationPermissionsInstalled = true;
+  const permitted = { function: false, variable: false };
+
+  window.addEventListener('message', event => {
+    const data = event.data;
+    if (event.source !== window || !data ||
+        data.source !== 'ENTRY_UNLIMITED_BLOCKS' ||
+        data.type !== 'SET_ENTRY_CREATE_PERMISSION') return;
+    if (data.kind === 'function' || data.kind === 'variable') {
+      permitted[data.kind] = data.allowed === true;
+    }
+  });
+
+  const notify = label => {
+    console.warn('[콘솔을 편하게] ' + label + ' 추가가 금지되어 있습니다. 확장 프로그램에서 허용할 수 있습니다.');
+  };
+
+  const hook = () => {
+    const E = window.Entry;
+    if (!E || typeof E.do !== 'function') return;
+    if (E.do.__entryCreationGuard === true) return;
+    const original = E.do;
+    function guardedDo(command, ...args) {
+      if (!permitted.variable && command === 'variableContainerAddVariable') {
+        notify('변수');
+        return;
+      }
+      if (!permitted.function) {
+        if (command === 'funcCreate') {
+          notify('함수');
+          return;
+        }
+        if (command === 'funcEditStart') {
+          // Opening a previously created function for editing remains allowed.
+          const id = args[0];
+          const functions = E.variableContainer?.functions_;
+          const known = id != null && functions &&
+            Object.prototype.hasOwnProperty.call(functions, id);
+          if (!known) {
+            notify('함수');
+            return;
+          }
+        }
+      }
+      return original.apply(this, [command, ...args]);
+    }
+    Object.defineProperty(guardedDo, '__entryCreationGuard', { value: true });
+    try { E.do = guardedDo; } catch (error) {
+      console.warn('[콘솔을 편하게] Entry 생성 명령 제어 적용 실패', error);
+    }
+  };
+  hook();
+  const check = setInterval(hook, 700);
+  window.addEventListener('pagehide', () => clearInterval(check), { once: true });
+  window.postMessage({
+    source: 'ENTRY_UNLIMITED_BLOCKS_PATCH',
+    type: 'REQUEST_STATE'
+  }, '*');
+})();
